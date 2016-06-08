@@ -8,12 +8,13 @@ shared data from other sites or apps. Many modern operating systems have a
 The goal is to allow web apps to appear in the UI for picking an app to share
 to.
 
-In combination with the [Web Share API](../../share/docs/explainer.md) (being
-proposed in parallel), this would allow cross-sharing between websites on any
-platform (even those without a native sharing system).
+In combination with the [Web Share API](https://github.com/mgiuca/web-share)
+(being proposed in parallel), this would allow cross-sharing between websites on
+any platform (even those without a native sharing system).
 
-This is a product of the [Ballista project](../../README.md), which aims to
-explore website-to-website and website-to-native interoperability.
+This is a product of the [Ballista
+project](https://github.com/chromium/ballista), which aims to explore
+website-to-website and website-to-native interoperability.
 
 See also:
 * [Interface document](interface.md), an informal spec.
@@ -55,8 +56,8 @@ underlying system, as explored in the next section.
 ### Sharing from web to web on mobile
 
 Here we see the interaction between the [Web Share
-API](../../share/docs/explainer.md) and the Share Target API. You could also
-share from a native app (depending on the system).
+API](https://github.com/mgiuca/web-share) and the Share Target API. You could
+also share from a native app (depending on the system).
 
 ![Share on mobile: web to web](mocks/share_mobile_web_web.png)
 
@@ -142,9 +143,9 @@ native apps.
 ### Why not use registerProtocolHandler?
 
 This is discussed at length in the [Web Share
-Explainer](../../share/docs/explainer.md), and depends on the outcome of that
-decision. If we use a URI scheme for Share (instead of an API), then it would
-make sense to use the existing
+Explainer](https://github.com/mgiuca/web-share/blob/master/docs/explainer.md),
+and depends on the outcome of that decision. If we use a URI scheme for Share
+(instead of an API), then it would make sense to use the existing
 [registerProtocolHandler](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler)
 API to let websites receive shares.
 

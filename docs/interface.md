@@ -4,20 +4,20 @@
 
 This document is a rough spec (i.e., *not* a formal web standard draft) of the
 Web Share Target API. This API allows websites to register to receive shared
-content from either the [Web Share API](../../share/docs/interface.md), or
+content from either the [Web Share API](https://github.com/mgiuca/web-share), or
 system events (e.g., shares from native apps).
 
 This API requires the user agent to support both [service
 workers](https://www.w3.org/TR/service-workers/) and [web app
 manifests](https://www.w3.org/TR/appmanifest/). The [Web Share
-API](../../share/docs/interface.md) is not required, but recommended.
+API](https://github.com/mgiuca/web-share) is not required, but recommended.
 
 Examples of using the Share Target API for sharing can be seen in the
 [explainer document](explainer.md).
 
 **Note**: The Web Share Target API is a proposal of the [Ballista
-project](../../README.md), which aims to explore website-to-website and
-website-to-native interoperability.
+project](https://github.com/chromium/ballista), which aims to explore
+website-to-website and website-to-native interoperability.
 
 ## App manifest
 
@@ -123,7 +123,8 @@ Share events can be sent from a variety of places:
 * Built-in trigger (e.g., user picks "Share" from a browser's menu, to share the
   URL in the address bar).
 * A native application.
-* A web application using the [Web Share API](../../share/docs/interface.md).
+* A web application using the [Web Share
+  API](https://github.com/mgiuca/web-share).
 
 There will usually be a picker that lets the user select a target app. This
 could be the native system app picker, or a user-agent-supplied picker. The apps

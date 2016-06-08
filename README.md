@@ -9,5 +9,6 @@ data from other sites and apps.
 * [Interface document](docs/interface.md), an informal spec.
 * [Native integration survey](docs/native.md), for platform-specific matters.
 
-This is a product of the [Ballista project](../README.md), which aims to explore
+This is a product of the [Ballista
+project](https://github.com/chromium/ballista), which aims to explore
 website-to-website and website-to-native interoperability.
