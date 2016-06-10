@@ -12,3 +12,7 @@ data from other sites and apps.
 This is a product of the [Ballista
 project](https://github.com/chromium/ballista), which aims to explore
 website-to-website and website-to-native interoperability.
+
+## Licensing and contributions
+
+See [LICENSE](LICENSE.md) and [CONTRIBUTING](CONTRIBUTING.md).
