@@ -1,0 +1,43 @@
+<!-- This work is licensed under the W3C Software and Document License
+     (http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
+  -->
+<html>
+<head>
+  <title>Web Share Target Test App</title>
+  <style>
+    .error {
+      color: #d22;
+    }
+  </style>
+</head>
+<body>
+  <h1>Web Share Target Test App</h1>
+  <div id="output"></div>
+  <p>This is a test app for the <a href="https://github.com/WICG/web-share-target">Web
+  Share Target API</a></p>
+  <script>
+    'use strict';
+
+    function logText(message, isError) {
+      if (isError)
+        console.error(message);
+      else
+        console.log(message);
+      var p = document.createElement('p');
+      if (isError)
+        p.setAttribute('class', 'error');
+      document.querySelector('#output').appendChild(p);
+      p.appendChild(document.createTextNode(message));
+    }
+
+    function onLoad() {
+      var parsedUrl = new URL(window.location.toString());
+      logText("Title shared: " + parsedUrl.searchParams.get("title"));
+      logText("Text shared: " + parsedUrl.searchParams.get("text"));
+      logText("URL shared: " + parsedUrl.searchParams.get("url"));
+    }
+
+    window.addEventListener('load', onLoad);
+  </script>
+</body>
+</html>
