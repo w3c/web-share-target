@@ -27,10 +27,25 @@ website-to-website and website-to-native interoperability.
 The first thing a handler needs to do is declare its share handling capabilities
 in its [web app manifest](https://www.w3.org/TR/appmanifest/):
 
-# Approach 1:
-<!-- TODO: add new approach here -->
+### Approach 1:
 
-# Approach 2:
+We expect apps that are sharing data to share one or more fields, including title, text, and URL. These fields can be passed to the target app as query parameters, and each is optional. If a web app can handle a share, they should include (in the manifest) a template URL (relative to the domain) that the shared data can be inserted into.
+
+```WebIDL
+partial dictionary Manifest {
+  string share_url_template;
+};
+```
+
+The share_url_template member will contain placeholders for each field of the form {field}. Each placeholder with be replaced with the value of the corresponding field, that has been shared by the source app. If a given field was not shared, it’s placeholder will be replaced with an empty string. An example url template is here:
+
+```WebIDL
+"share_url_template": "/share?title={title}&text={text}&url={url}"
+```
+
+The share_url_template member also allows the target web app to specify which attributes of the shared data it cares about. e.g. for Web Share, the passed data includes title, text, and URL, but the receiving web app may only care about message and URL.
+
+### Approach 2:
 
 ```WebIDL
 partial dictionary Manifest {
@@ -40,7 +55,7 @@ partial dictionary Manifest {
 The `"supports_share"` member of the manifest, if `true`, indicates that the app
 can receive share events from requesters, or the system.
 
-<!-- Denote end of approaches -->
+### Things to note
 
 The declarative nature of the manifest allows search services to index and
 present web applications that handle shares.
@@ -54,9 +69,9 @@ request registration).
 
 ## Handling incoming shares
 
-# Approach 1
+### Approach 1
 
-Recall the URL template from “Declaring ability to handle shares, Approach 1”.
+Recall the URL template from “App manifest, Approach 1”.
 
 /share?title={title}&text={text}&url={url}
 
@@ -83,7 +98,7 @@ https://www.example.com/share
 Thus, the receiving web app should handle the shared data as desired, at that URL.
 ```
 
-# Approach 2
+### Approach 2
 
 Handlers **must** have a registered [service
 worker](https://www.w3.org/TR/service-workers/).
