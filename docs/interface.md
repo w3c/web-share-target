@@ -1,25 +1,30 @@
 # Web Share Target API Interface
 
-**Date**: 2016-05-30
+## Status of this document
 
 This document is a rough spec (i.e., *not* a formal web standard draft) of the
 Web Share Target API. This API allows websites to register to receive shared
-content from either the [Web Share API](https://github.com/mgiuca/web-share), or
+content from either the [Web Share API](https://github.com/WICG/web-share), or
 system events (e.g., shares from native apps).
+
+**Note**: The Web Share Target API is a proposal of the [Ballista
+project](https://github.com/chromium/ballista), which aims to explore
+website-to-website and website-to-native interoperability.
+
+## Dependencies
 
 This API requires the user agent to support both [service
 workers](https://www.w3.org/TR/service-workers/) and [web app
 manifests](https://www.w3.org/TR/appmanifest/). The [Web Share
 API](https://github.com/mgiuca/web-share) is not required, but recommended.
 
+
+## Examples of usage
+
 Examples of using the Share Target API for sharing can be seen in the
 [explainer document](explainer.md).
 
-**Note**: The Web Share Target API is a proposal of the [Ballista
-project](https://github.com/chromium/ballista), which aims to explore
-website-to-website and website-to-native interoperability.
-
-## App manifest
+## Extensions to App manifest
 
 The first thing a handler needs to do is declare its share handling capabilities
 in its [web app manifest](https://www.w3.org/TR/appmanifest/):
@@ -50,9 +55,6 @@ agents. It is easier to add such a method later than remove it.
 
 ## Event handlers
 
-Handlers **must** have a registered [service
-worker](https://www.w3.org/TR/service-workers/).
-
 When the user picks a registered web app as the target of a share, the
 handler's service worker starts up (if it is not already running), and a
 `"share"` event is fired at the global object.
@@ -63,12 +65,6 @@ partial interface WorkerGlobalScope {
 };
 
 interface ShareEvent : ExtendableEvent {
-  readonly attribute ShareData data;
-
-  void reject(DOMException error);
-};
-
-dictionary ShareData {
   DOMString? title;
   DOMString? text;
   DOMString? url;
@@ -76,7 +72,7 @@ dictionary ShareData {
 ```
 
 The `onshare` handler (with corresponding event type `"share"`) takes a
-`ShareEvent`. The `data` field provides data from the sending application.
+`ShareEvent`.
 
 How the handler deals with the data object is at the handler's discretion, and
 will generally depend on the type of app. Here are some suggestions:
