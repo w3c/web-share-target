@@ -39,9 +39,9 @@ partial dictionary Manifest {
 
 The share_url_template member will contain placeholders for each field of the form {field}. Each placeholder with be replaced with the value of the corresponding field, that has been shared by the source app. If a given field was not shared, it’s placeholder will be replaced with an empty string. An example url template is here:
 
-```WebIDL
+`
 "share_url_template": "/share?title={title}&text={text}&url={url}"
-```
+`
 
 The share_url_template member also allows the target web app to specify which attributes of the shared data it cares about. e.g. for Web Share, the passed data includes title, text, and URL, but the receiving web app may only care about message and URL.
 
@@ -73,15 +73,15 @@ request registration).
 
 Recall the URL template from “App manifest, Approach 1”:
 
-```WebIDL
+`
 /share?title={title}&text={text}&url={url}
-```
+`
 
 This will be filled with the share data, and opened by the browser, when the user selects the target app.
 
 For example, if a source app shares the data:
 
-```WebIDL
+```JSON
 {
   "title": "Google",
   "text": "Search the web",
@@ -91,14 +91,14 @@ For example, if a source app shares the data:
 
 The browser will then launch the picker UI, and the user picks some target app. If the target app is www.example.com, the browser will launch the following URL in a new window or tab:
 
-```WebIDL
+`
 https://www.example.com/share
 ?title=Google
 &text=Search%20the%20web
 &url=https://www.google.com
+`
 
 Thus, the receiving web app should handle the shared data as desired, at that URL.
-```
 
 ### Approach 2
 
