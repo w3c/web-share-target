@@ -7,11 +7,12 @@ Web Share Target API. This API allows websites to register to receive shared
 content from either the [Web Share API](https://github.com/mgiuca/web-share), or
 system events (e.g., shares from native apps).
 
-This API has 2 proposed designs: the first requires the user agent to support
-[web app manifests](https://www.w3.org/TR/appmanifest/), while the second
-requires both web app manifests and [service workers](https://www.w3.org/TR
-/service-workers/). The [Web Share API](https://github.com/mgiuca/web- share)
-is not required, but recommended.
+This API has 2 proposed designs: both require the user agent to support [web
+app manifests](https://www.w3.org/TR/appmanifest/), while the second requires
+support for [service workers](https://www.w3.org/TR/service-workers/). We are
+planning to explore both approaches to determine which is more acceptable. The
+[Web Share API](https://github.com/mgiuca/web-share) is not required, but
+recommended.
 
 Examples of using the Share Target API for sharing can be seen in the
 [explainer document](explainer.md).
@@ -40,16 +41,16 @@ partial dictionary Manifest {
 ```
 
 The share_url_template member will contain placeholders for each field of the
-form {field}. Each placeholder with be replaced with the value of the
+form "{field}". Each placeholder with be replaced with the value of the
 corresponding field, that has been shared by the source app. If a given field
-was not shared, it’s placeholder will be replaced with an empty string. An
+was not shared, it's placeholder will be replaced with an empty string. An
 example url template is here:
 
-`
+```json
 "share_url_template": "/share?title={title}&text={text}&url={url}"
-`
+```
 
-The share_url_template member also allows the target web app to specify which
+The `share_url_template` member also allows the target web app to specify which
 attributes of the shared data it cares about. e.g. for Web Share, the passed
 data includes title, text, and URL, but the receiving web app may only care
 about message and URL.
@@ -76,11 +77,17 @@ Flow](explainer.md#user-flow), but will ultimately be at the discretion of the
 user agent (the user may be automatically prompted, or may have to explicitly
 request registration).
 
+**For consideration**: We may wish to provide a method for websites to
+explicitly request to prompt the user for handler registration. There would
+still be a requirement to declare `supports_share` in the manifest. For now,
+we have omitted such a method from the design to keep control in the hands of
+user agents. It is easier to add such a method later than remove it.
+
 ## Handling incoming shares
 
 ### Approach 1
 
-Recall the URL template from “App manifest, Approach 1”:
+Recall the URL template from "Approach 1":
 
 `
 /share?title={title}&text={text}&url={url}
@@ -93,9 +100,9 @@ For example, if a source app shares the data:
 
 ```JSON
 {
-  "title": "Google",
-  "text": "Search the web",
-  "url": "https://www.google.com"
+  "title": "Example",
+  "text": "I'm an example",
+  "url": "https://www.example.com"
 }
 ```
 
@@ -104,10 +111,7 @@ app. If the target app is www.example.com, the browser will launch the
 following URL in a new window or tab:
 
 `
-https://www.example.com/share
-?title=Google
-&text=Search%20the%20web
-&url=https://www.google.com
+https://www.example.com/share?title=Google&text=Search%20the%20web&url=https://www.google.com
 `
 
 Thus, the receiving web app should handle the shared data as desired, at that
@@ -175,7 +179,7 @@ The Share Target API is defined entirely within the service worker. If the
 handler needs to provide UI (which should be the common case), the service
 worker must create a foreground page and send the appropriate data between the
 worker and foreground page, out of band. The `share` event handler is [allowed
-to show a 
+to show a
 popup](https://html.spec.whatwg.org/multipage/browsers.html#allowed-to-show-a-popup),
 which means it can call the
 [`clients.openWindow`](https://www.w3.org/TR/service-workers/#clients-openwindow-method)
