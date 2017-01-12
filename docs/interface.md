@@ -71,9 +71,11 @@ request registration).
 
 ### Approach 1
 
-Recall the URL template from “App manifest, Approach 1”.
+Recall the URL template from “App manifest, Approach 1”:
 
+```WebIDL
 /share?title={title}&text={text}&url={url}
+```
 
 This will be filled with the share data, and opened by the browser, when the user selects the target app.
 
