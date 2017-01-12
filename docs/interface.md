@@ -1,16 +1,19 @@
 # Web Share Target API Interface
 
-**Date**: 2016-05-30
+**Date**: 2017-01-12
 
 This document is a rough spec (i.e., *not* a formal web standard draft) of the
 Web Share Target API. This API allows websites to register to receive shared
 content from either the [Web Share API](https://github.com/mgiuca/web-share), or
 system events (e.g., shares from native apps).
 
+<!-- `supports_share`  Site needs to support just manifest in second approach
+-->
 This API requires the user agent to support both [service
 workers](https://www.w3.org/TR/service-workers/) and [web app
 manifests](https://www.w3.org/TR/appmanifest/). The [Web Share
 API](https://github.com/mgiuca/web-share) is not required, but recommended.
+<!-- end -->
 
 Examples of using the Share Target API for sharing can be seen in the
 [explainer document](explainer.md).
@@ -24,31 +27,63 @@ website-to-website and website-to-native interoperability.
 The first thing a handler needs to do is declare its share handling capabilities
 in its [web app manifest](https://www.w3.org/TR/appmanifest/):
 
+# Approach 1:
+<!-- TODO: add new approach here -->
+
+# Approach 2:
+
 ```WebIDL
 partial dictionary Manifest {
   boolean supports_share;
 };
 ```
-
 The `"supports_share"` member of the manifest, if `true`, indicates that the app
-can receive share events from requesters, or the system. The declarative nature
-of the manifest allows search services to index and present web applications
-that handle shares.
+can receive share events from requesters, or the system.
 
-Handlers declaring `supports_share` in their manifest will **not** be
-automatically registered; the user must explicitly authorize the registration.
-How this takes place is still under consideration (see [User
+<!-- Denote end of approaches -->
+
+The declarative nature of the manifest allows search services to index and
+present web applications that handle shares.
+
+Handlers declaring `supports_share` or `share_url_template` in their manifest
+will **not** be automatically registered; the user must explicitly authorize
+the registration. How this takes place is still under consideration (see [User
 Flow](explainer.md#user-flow), but will ultimately be at the discretion of the
 user agent (the user may be automatically prompted, or may have to explicitly
 request registration).
 
-**For consideration**: We may wish to provide a method for websites to
-explicitly request to prompt the user for handler registration. There would
-still be a requirement to declare `supports_share` in the manifest. For now, we
-have omitted such a method from the design to keep control in the hands of user
-agents. It is easier to add such a method later than remove it.
+## Handling incoming shares
 
-## Event handlers
+# Approach 1
+
+Recall the URL template from “Declaring ability to handle shares, Approach 1”.
+
+/share?title={title}&text={text}&url={url}
+
+This will be filled with the share data, and opened by the browser, when the user selects the target app.
+
+For example, if a source app shares the data:
+
+```WebIDL
+{
+  "title": "Google",
+  "text": "Search the web",
+  "url": "https://www.google.com"
+}
+```
+
+The browser will then launch the picker UI, and the user picks some target app. If the target app is www.example.com, the browser will launch the following URL in a new window or tab:
+
+```WebIDL
+https://www.example.com/share
+?title=Google
+&text=Search%20the%20web
+&url=https://www.google.com
+
+Thus, the receiving web app should handle the shared data as desired, at that URL.
+```
+
+# Approach 2
 
 Handlers **must** have a registered [service
 worker](https://www.w3.org/TR/service-workers/).
@@ -116,6 +151,7 @@ which means it can call the
 [`clients.openWindow`](https://www.w3.org/TR/service-workers/#clients-openwindow-method)
 method.
 
+<!-- Done from here, and below -->
 ## Where do shares come from?
 
 Share events can be sent from a variety of places:

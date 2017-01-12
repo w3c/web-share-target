@@ -1,6 +1,6 @@
 # Web Share Target API Explained
 
-**Date**: 2016-06-01
+**Date**: 2017-01-12
 
 **Web Share Target** is a proposed web API to enable a web site to receive
 shared data from other sites or apps. Many modern operating systems have a
