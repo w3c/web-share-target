@@ -43,7 +43,7 @@ partial dictionary Manifest {
 The share_url_template member will contain placeholders for each field of the
 form "{field}". Each placeholder with be replaced with the value of the
 corresponding field, that has been shared by the source app. If a given field
-was not shared, it's placeholder will be replaced with an empty string. An
+was not shared, its placeholder will be replaced with an empty string. An
 example url template is here:
 
 ```json
@@ -100,9 +100,9 @@ For example, if a source app shares the data:
 
 ```JSON
 {
-  "title": "Example",
-  "text": "I'm an example",
-  "url": "https://www.example.com"
+  "title": "Web Share Target API",
+  "text": "An API that allows web apps to receive shared data",
+  "url": "https://github.com/WICG/web-share-target"
 }
 ```
 
@@ -111,7 +111,7 @@ app. If the target app is www.example.com, the browser will launch the
 following URL in a new window or tab:
 
 `
-https://www.example.com/share?title=Google&text=Search%20the%20web&url=https://www.google.com
+https://www.example.com/share?title=Web%20Share%20Target%20API&text=An%20API%20that%20allows%20web%20apps%20to%20receive%20shared%20data&url=https://github.com/WICG/web-share-target
 `
 
 Thus, the receiving web app should handle the shared data as desired, at that
