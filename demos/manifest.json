@@ -2,7 +2,7 @@
   "name": "Web Share Target Test App",
   "short_name": "Share Target Test",
   "display": "browser",
-  "share_url": {
+  "share_target": {
     "url_template": "demos/sharetarget.html?title={title}&text={text}&url={url}"
   },
   "background_color": "#ffffff"
