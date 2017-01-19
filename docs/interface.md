@@ -35,10 +35,12 @@ include (in the manifest) a template URL (relative to the domain) that the
 shared data can be inserted into.
 
 ```WebIDL
+dictionary ShareTarget {
+  DOMString url_template
+}
+
 partial dictionary Manifest {
-  partial dictionary share_target {
-    string url_template
-  };
+  ShareTarget share_target
 };
 ```
 
