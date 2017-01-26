@@ -123,6 +123,10 @@ https://www.example.com/share?title=Web%20Share%20Target%20API&text=An%20API%20t
 Thus, the receiving web app should handle the shared data as desired, at that
 URL.
 
+Note: the url_template should be relative to the manifest URL, since the
+template is appended to the manifest URL (excluding the filename of the
+manifest).
+
 ### Approach 2
 
 Handlers **must** have a registered [service
