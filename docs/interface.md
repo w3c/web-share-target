@@ -35,22 +35,28 @@ include (in the manifest) a template URL (relative to the domain) that the
 shared data can be inserted into.
 
 ```WebIDL
+dictionary ShareTarget {
+  DOMString url_template
+}
+
 partial dictionary Manifest {
-  string share_url_template;
+  ShareTarget share_target
 };
 ```
 
-The share_url_template member will contain placeholders for each field of the
+The url_template member will contain placeholders for each field of the
 form "{field}". Each placeholder with be replaced with the value of the
 corresponding field, that has been shared by the source app. If a given field
 was not shared, its placeholder will be replaced with an empty string. An
 example url template is here:
 
 ```json
-"share_url_template": "/share?title={title}&text={text}&url={url}"
+"share_target": {
+  "url_template": "/share?title={title}&text={text}&url={url}"
+}
 ```
 
-The `share_url_template` member also allows the target web app to specify which
+The `url_template` member also allows the target web app to specify which
 attributes of the shared data it cares about. e.g. for Web Share, the passed
 data includes title, text, and URL, but the receiving web app may only care
 about message and URL.
@@ -70,7 +76,7 @@ can receive share events from requesters, or the system.
 The declarative nature of the manifest allows search services to index and
 present web applications that handle shares.
 
-Handlers declaring `supports_share` or `share_url_template` in their manifest
+Handlers declaring `supports_share` or `url_template` in their manifest
 will **not** be automatically registered; the user must explicitly authorize
 the registration. How this takes place is still under consideration (see [User
 Flow](explainer.md#user-flow), but will ultimately be at the discretion of the
