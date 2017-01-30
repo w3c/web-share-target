@@ -44,8 +44,9 @@ partial dictionary Manifest {
 };
 ```
 
-The url_template member will contain placeholders for each field of the
-form "{field}". Each placeholder with be replaced with the value of the
+The url_template member will contain placeholders for each field of the form
+"{field}". In addition, the template is relative to the manifest URL. Each
+placeholder in the template will be replaced with the value of the
 corresponding field, that has been shared by the source app. If a given field
 was not shared, its placeholder will be replaced with an empty string. An
 example url template is here:
