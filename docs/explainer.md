@@ -119,13 +119,40 @@ browser of your ability to handle a share.
 }
 ```
 
-#### sharereader.js
+Note: the url_template should be relative to the manifest URL, since the
+-template is appended to the manifest URL (excluding the filename of the
+-manifest).
 
-```js
-var parsedUrl = new URL(window.location.toString());
-var title = parsedUrl.searchParams.get("title"));
-var text = parsedUrl.searchParams.get("text"));
-var url = parsedUrl.searchParams.get("url"));
+#### target.html
+
+```html
+<html>
+<head>
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Share Target</title>
+</head>
+<body>
+  <div id="output"></div>
+  <script>
+    'use strict';
+
+    function logText(message) {
+      var p = document.createElement('p');
+      document.querySelector('#output').appendChild(p);
+      p.appendChild(document.createTextNode(message));
+    }
+
+    function onLoad() {
+      var parsedUrl = new URL(window.location.toString());
+      logText("Title shared: " + parsedUrl.searchParams.get("title"));
+      logText("Text shared: " + parsedUrl.searchParams.get("text"));
+      logText("URL shared: " + parsedUrl.searchParams.get("url"));
+    }
+
+    window.addEventListener('load', onLoad);
+  </script>
+</body>
+</html>
 ```
 
 ### Approach 2
