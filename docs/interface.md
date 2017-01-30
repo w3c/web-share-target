@@ -31,7 +31,7 @@ in its [web app manifest](https://www.w3.org/TR/appmanifest/):
 We expect apps that are sharing data to share one or more fields, including
 title, text, and URL. These fields can be passed to the target app as query
 parameters, and each is optional. If a web app can handle a share, they should
-include (in the manifest) a template URL (relative to the domain) that the
+include (in the manifest) a template URL (relative to the manifest URL) that the
 shared data can be inserted into.
 
 ```WebIDL
@@ -45,11 +45,10 @@ partial dictionary Manifest {
 ```
 
 The url_template member will contain placeholders for each field of the form
-"{field}". In addition, the template is relative to the manifest URL. Each
-placeholder in the template will be replaced with the value of the
-corresponding field, that has been shared by the source app. If a given field
-was not shared, its placeholder will be replaced with an empty string. An
-example url template is here:
+"{field}". Each placeholder in the template will be replaced with the value of
+the corresponding field, that has been shared by the source app. If a given
+field was not shared, its placeholder will be replaced with an empty string.
+An example url template is here:
 
 ```json
 "share_target": {
