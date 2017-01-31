@@ -3,7 +3,7 @@
   "short_name": "Share Target Test",
   "display": "browser",
   "share_target": {
-    "url_template": "demos/sharetarget.html?title={title}&text={text}&url={url}"
+    "url_template": "sharetarget.html?title={title}&text={text}&url={url}"
   },
   "background_color": "#ffffff"
 }
