@@ -167,11 +167,8 @@ any tabs.
 #### serviceworker.js
 
 ```js
-navigator.actions.addEventListener('share', event => {
-  if (event.data.url === undefined)
-    throw new Error('Did not contain URL.');
-
-  includinate(event.data.url);
+addEventListener('share', event => {
+  includinate(event.url);
 });
 ```
 
