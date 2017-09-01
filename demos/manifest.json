@@ -1,6 +1,6 @@
 {
   "name": "Web Share Target Test App",
-  "short_name": "Share Target Test",
+  "short_name": "Target Test",
   "start_url": "sharetarget.html",
   "display": "standalone",
   "share_target": {
