@@ -1,10 +1,13 @@
 <!-- This work is licensed under the W3C Software and Document License
      (http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
   -->
-<html>
+<html lang="en">
 <head>
   <link rel="manifest" href="manifest.json">
   <title>Web Share Target Test App</title>
+  <link rel="shortcut icon" type="image/png" href="images/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#111111" />
   <style>
     .error {
       color: #d22;
@@ -33,6 +36,15 @@
   </ul>
   <script>
     'use strict';
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(registration => {
+        console.log('ServiceWorker registration successful with scope:',
+                    registration.scope);
+      }).catch(err => {
+        console.error('ServiceWorker registration failed:', err);
+      });
+    }
 
     function logText(message, isError) {
       if (isError)
