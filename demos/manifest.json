@@ -5,5 +5,27 @@
   "share_target": {
     "url_template": "sharetarget.html?title={title}&text={text}&url={url}"
   },
+  "icons": [{
+    "src": "images/icon-16.png",
+    "sizes": "16x16"
+  }, {
+    "src": "images/icon-32.png",
+    "sizes": "32x32"
+  }, {
+    "src": "images/icon-48.png",
+    "sizes": "48x48"
+  }, {
+    "src": "images/icon-128.png",
+    "sizes": "128x128"
+  }, {
+    "src": "images/icon-180.png",
+    "sizes": "180x180"
+  }, {
+    "src": "images/icon-256.png",
+    "sizes": "256x256"
+  }, {
+    "src": "images/icon-512.png",
+    "sizes": "512x512"
+  }],
   "background_color": "#ffffff"
 }
