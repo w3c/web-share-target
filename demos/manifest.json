@@ -1,7 +1,8 @@
 {
   "name": "Web Share Target Test App",
   "short_name": "Share Target Test",
-  "display": "browser",
+  "start_url": "sharetarget.html",
+  "display": "standalone",
   "share_target": {
     "url_template": "sharetarget.html?title={title}&text={text}&url={url}"
   },
@@ -27,5 +28,6 @@
     "src": "images/icon-512.png",
     "sizes": "512x512"
   }],
+  "theme_color": "#111111",
   "background_color": "#ffffff"
 }
