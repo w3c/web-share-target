@@ -91,7 +91,7 @@
       </h2>
       <section>
         <h3>
-          App manifest
+          Extension to the Web App Manifest
         </h3>
         <p>
           The first thing a handler needs to do is declare its share handling
@@ -125,6 +125,10 @@ partial dictionary WebAppManifest {
           "https://github.com/w3c/manifest/issues/613">manifest#613</a>.
         </div>
         <p>
+          TODO: Define the extension point as it would appear in the Web App
+          Manifest.
+        </p>
+        <p>
           The <code>url_template</code> member will contain placeholders for
           each field of the form "{field}". Each placeholder in the template
           will be replaced with the value of the corresponding field, that has
@@ -142,6 +146,15 @@ partial dictionary WebAppManifest {
           to specify which attributes of the shared data it cares about. e.g.
           for Web Share, the passed data includes title, text, and URL, but the
           receiving web app may only care about message and URL.
+        </p>
+      </section>
+      <section>
+        <h3>
+          <code>share_target</code> member
+        </h3>
+        <p>
+          TODO: Define the <code>share_target</code> member as it would be
+          written in the Manifest spec.
         </p>
       </section>
       <section>
