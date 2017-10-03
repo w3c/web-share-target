@@ -52,6 +52,29 @@
       <p>
         TODO: Usage Examples
       </p>
+      <p>
+        How the handler deals with the data object is at the handler's
+        discretion, and will generally depend on the type of app. Here are some
+        suggestions:
+      </p>
+      <ul>
+        <li>An email client might draft a new email, using <code>title</code>
+        as the subject of an email, with <code>text</code> and <code>url</code>
+        concatenated together as the body.
+        </li>
+        <li>A social networking app might draft a new post, ignoring
+        <code>title</code>, using <code>text</code> as the body of the message
+        and adding <code>url</code> as a link. If <code>text</code> is missing,
+        it might use <code>url</code> in the body as well. If <code>url</code>
+        is missing, it might scan <code>text</code> looking for a URL and add
+        that as a link.
+        </li>
+        <li>A text messaging app might draft a new message, ignoring
+        <code>title</code> and using <code>text</code> and <code>url</code>
+        concatenated together. It might truncate the text or replace
+        <code>url</code> with a short link to fit into the message size.
+        </li>
+      </ul>
     </section>
     <section>
       <h2>
@@ -97,13 +120,10 @@
         events (e.g., shares from native apps).
       </p>
       <p>
-        This API has 2 proposed designs: both require the user agent to support
-        <a href="https://www.w3.org/TR/appmanifest/">web app manifests</a>,
-        while the second requires support for <a href=
-        "https://www.w3.org/TR/service-workers/">service workers</a>. We are
-        planning to explore both approaches to determine which is more
-        acceptable. The <a href="https://github.com/mgiuca/web-share">Web Share
-        API</a> is not required, but recommended.
+        This API requires the user agent to support <a href=
+        "https://www.w3.org/TR/appmanifest/">web app manifests</a>. The
+        <a href="https://github.com/mgiuca/web-share">Web Share API</a> is not
+        required, but recommended.
       </p>
       <p>
         Examples of using the Share Target API for sharing can be seen in the
@@ -123,9 +143,6 @@
         capabilities in its <a href="https://www.w3.org/TR/appmanifest/">web
         app manifest</a>:
       </p>
-      <h3>
-        Approach 1:
-      </h3>
       <p>
         We expect apps that are sharing data to share one or more fields,
         including title, text, and URL. These fields can be passed to the
@@ -163,19 +180,6 @@ partial dictionary Manifest {
         receiving web app may only care about message and URL.
       </p>
       <h3>
-        Approach 2:
-      </h3>
-      <pre class="idl">
-partial dictionary Manifest {
-  boolean supports_share;
-};
-      </pre>
-      <p>
-        The <code>"supports_share"</code> member of the manifest, if
-        <code>true</code>, indicates that the app can receive share events from
-        requesters, or the system.
-      </p>
-      <h3>
         Things to note
       </h3>
       <p>
@@ -183,16 +187,15 @@ partial dictionary Manifest {
         and present web applications that handle shares.
       </p>
       <p>
-        Handlers declaring <code>supports_share</code> or
-        <code>url_template</code> in their manifest will <strong>not</strong>
-        be automatically registered; the user must explicitly authorize the
-        registration. How this takes place is still under consideration (see
-        <a href="docs/explainer.md#user-flow">User Flow</a>, but will
-        ultimately be at the discretion of the user agent (the user may be
-        automatically prompted, or may have to explicitly request
-        registration).
+        Handlers declaring <code>share_target</code> in their manifest will
+        <strong>not</strong> be automatically registered; the user must
+        explicitly authorize the registration. How this takes place is still
+        under consideration (see <a href="docs/explainer.md#user-flow">User
+        Flow</a>, but will ultimately be at the discretion of the user agent
+        (the user may be automatically prompted, or may have to explicitly
+        request registration).
       </p>
-      <p>
+      <p class="note">
         <strong>For consideration</strong>: We may wish to provide a method for
         websites to explicitly request to prompt the user for handler
         registration. There would still be a requirement to declare
@@ -203,11 +206,8 @@ partial dictionary Manifest {
       <h2>
         Handling incoming shares
       </h2>
-      <h3>
-        Approach 1
-      </h3>
       <p>
-        Recall the URL template from "Approach 1":
+        Recall the URL template from Example 1:
       </p>
       <pre>
 /share?title={title}&amp;text={text}&amp;url={url}
@@ -237,99 +237,6 @@ https://www.example.com/share?title=Web%20Share%20Target%20API&amp;text=An%20API
       <p>
         Thus, the receiving web app should handle the shared data as desired,
         at that URL.
-      </p>
-      <h3>
-        Approach 2
-      </h3>
-      <p>
-        Handlers <strong>must</strong> have a registered <a href=
-        "https://www.w3.org/TR/service-workers/">service worker</a>.
-      </p>
-      <p>
-        When the user picks a registered web app as the target of a share, the
-        handler's service worker starts up (if it is not already running), and
-        a <code>"share"</code> event is fired at the global object.
-      </p>
-      <pre class="idl">
-partial interface WorkerGlobalScope {
-  attribute EventHandler onshare;
-};
-
-interface ShareEvent : ExtendableEvent {
-  readonly attribute ShareData data;
-
-void reject(DOMException error);
-};
-
-dictionary ShareData {
-  DOMString? title;
-  DOMString? text;
-  DOMString? url;
-};
-</pre>
-      <p>
-        The <code>onshare</code> handler (with corresponding event type
-        <code>"share"</code>) takes a <code>ShareEvent</code>. The
-        <code>data</code> field provides data from the sending application.
-      </p>
-      <p>
-        How the handler deals with the data object is at the handler's
-        discretion, and will generally depend on the type of app. Here are some
-        suggestions:
-      </p>
-      <ul>
-        <li>An email client might draft a new email, using <code>title</code>
-        as the subject of an email, with <code>text</code> and <code>url</code>
-        concatenated together as the body.
-        </li>
-        <li>A social networking app might draft a new post, ignoring
-        <code>title</code>, using <code>text</code> as the body of the message
-        and adding <code>url</code> as a link. If <code>text</code> is missing,
-        it might use <code>url</code> in the body as well. If <code>url</code>
-        is missing, it might scan <code>text</code> looking for a URL and add
-        that as a link.
-        </li>
-        <li>A text messaging app might draft a new message, ignoring
-        <code>title</code> and using <code>text</code> and <code>url</code>
-        concatenated together. It might truncate the text or replace
-        <code>url</code> with a short link to fit into the message size.
-        </li>
-      </ul>
-      <p>
-        A share fails if:
-      </p>
-      <ul>
-        <li>The handler had no registered service worker.
-        </li>
-        <li>There was an error during service worker initialization.
-        </li>
-        <li>There is no event handler for <code>share</code> events.
-        </li>
-        <li>The event handler explicitly calls the event's <code>reject</code>
-        method (either in the event handler, or in the promise passed to the
-        event's <a href=
-        "https://www.w3.org/TR/service-workers/#wait-until-method"><code>waitUntil</code></a>
-        method).
-        </li>
-        <li>The promise passed to <code>waitUntil</code> is rejected.
-        </li>
-      </ul>
-      <p>
-        Once the event completes without failing, the share automatically
-        succeeds, and the requester's promise is resolved. The end of the
-        event's lifetime marks the end of the share, and there is no further
-        communication in either direction.
-      </p>
-      <p>
-        The Share Target API is defined entirely within the service worker. If
-        the handler needs to provide UI (which should be the common case), the
-        service worker must create a foreground page and send the appropriate
-        data between the worker and foreground page, out of band. The
-        <code>share</code> event handler is <a href=
-        "https://html.spec.whatwg.org/multipage/browsers.html#allowed-to-show-a-popup">
-        allowed to show a popup</a>, which means it can call the <a href=
-        "https://www.w3.org/TR/service-workers/#clients-openwindow-method"><code>
-        clients.openWindow</code></a> method.
       </p>
       <h2>
         Where do shares come from?
