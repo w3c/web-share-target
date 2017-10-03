@@ -36,15 +36,15 @@ shared data can be inserted into.
 
 ```WebIDL
 dictionary ShareTarget {
-  DOMString url_template
-}
+  DOMString url_template;
+};
 
 partial dictionary Manifest {
-  ShareTarget share_target
+  ShareTarget share_target;
 };
 ```
 
-The url_template member will contain placeholders for each field of the form
+The `url_template` member will contain placeholders for each field of the form
 "{field}". Each placeholder in the template will be replaced with the value of
 the corresponding field, that has been shared by the source app. If a given
 field was not shared, its placeholder will be replaced with an empty string.
