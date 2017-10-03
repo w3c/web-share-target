@@ -116,10 +116,10 @@ partial dictionary WebAppManifest {
 };
 </pre>
         <div class="note">
-          The above IDL extends the <a><code>WebAppManifest</code></a>
-          dictionary from the Web App Manifest spec. Currently, the manifest is
-          defined as a set of algorithms, not an IDL dictionary, but this is
-          being discussed in <a href=
+          The above IDL extends the <dfn>WebAppManifest</dfn> dictionary from
+          the Web App Manifest spec. Currently, the manifest is defined as a
+          set of algorithms, not an IDL dictionary, but this is being discussed
+          in <a href=
           "https://github.com/w3c/manifest/issues/611">manifest#611</a>. Assume
           <code>WebAppManifest</code> is defined as in the PR <a href=
           "https://github.com/w3c/manifest/issues/613">manifest#613</a>.
@@ -129,10 +129,14 @@ partial dictionary WebAppManifest {
           Manifest.
         </p>
         <p>
-          The <code>url_template</code> member will contain placeholders for
-          each field of the form "{field}". Each placeholder in the template
-          will be replaced with the value of the corresponding field, that has
-          been shared by the source app. If a given field was not shared, its
+          The <dfn>ShareTarget</dfn> dictionary defines the members of the
+          <dfn for="WebAppManifest">share_target</dfn> member of the manifest.
+        </p>
+        <p data-dfn-for="ShareTarget">
+          The <dfn>url_template</dfn> member will contain placeholders for each
+          field of the form "{field}". Each placeholder in the template will be
+          replaced with the value of the corresponding field, that has been
+          shared by the source app. If a given field was not shared, its
           placeholder will be replaced with an empty string. An example url
           template is here:
         </p>
@@ -142,10 +146,11 @@ partial dictionary WebAppManifest {
 }
 </pre>
         <p>
-          The <code>url_template</code> member also allows the target web app
-          to specify which attributes of the shared data it cares about. e.g.
-          for Web Share, the passed data includes title, text, and URL, but the
-          receiving web app may only care about message and URL.
+          The <a for="ShareTarget">url_template</a> member also allows the
+          target web app to specify which attributes of the shared data it
+          cares about. e.g. for Web Share, the passed data includes title,
+          text, and URL, but the receiving web app may only care about message
+          and URL.
         </p>
       </section>
       <section>
