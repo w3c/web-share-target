@@ -37,7 +37,16 @@
   <body>
     <section id="abstract">
       <p>
-        TODO: Abstract.
+        This specification defines an API that allows websites to receive
+        shared content from either the <a href=
+        "https://github.com/WICG/web-share">Web Share API</a>, or system events
+        (e.g., shares from native apps).
+      </p>
+      <p>
+        This API requires the user agent to support <a href=
+        "https://www.w3.org/TR/appmanifest/">web app manifests</a>. The
+        <a href="https://github.com/WICG/web-share">Web Share API</a> is not
+        required, but recommended.
       </p>
     </section>
     <section id="sotd">
@@ -80,78 +89,24 @@
       <h2>
         API definition
       </h2>
-      <p>
-        TODO: Extend the Manifest spec.
-      </p>
-    </section>
-    <section class="informative">
-      <h2>
-        Security and privacy considerations
-      </h2>
-      <p>
-        TODO: Security and privacy considerations.
-      </p>
-    </section>
-    <section class="appendix">
-      <h2>
-        Acknowledgments
-      </h2>
-      <p>
-        Thanks to the <a href="https://www.w3.org/TR/web-intents">Web
-        Intents</a> team, who laid the groundwork for the web app
-        interoperability use cases. In particular, <a href=
-        "https://paul.kinlan.me/">Paul Kinlan</a>, who did a lot of early
-        advocacy for Web Share and Web Share Target.
-      </p>
-    </section>
-    <section class="appendix">
-      <h2>
-        Informal Interface Document
-      </h2>
-      <div class="note">
-        This is pasted from the informal interface doc. TODO: Clean up and
-        integrate into the above headings.
-      </div>
-      <p>
-        This document is a rough spec (i.e., <em>not</em> a formal web standard
-        draft) of the Web Share Target API. This API allows websites to
-        register to receive shared content from either the <a href=
-        "https://github.com/mgiuca/web-share">Web Share API</a>, or system
-        events (e.g., shares from native apps).
-      </p>
-      <p>
-        This API requires the user agent to support <a href=
-        "https://www.w3.org/TR/appmanifest/">web app manifests</a>. The
-        <a href="https://github.com/mgiuca/web-share">Web Share API</a> is not
-        required, but recommended.
-      </p>
-      <p>
-        Examples of using the Share Target API for sharing can be seen in the
-        <a href="docs/explainer.md">explainer document</a>.
-      </p>
-      <p>
-        <strong>Note</strong>: The Web Share Target API is a proposal of the
-        <a href="https://github.com/chromium/ballista">Ballista project</a>,
-        which aims to explore website-to-website and website-to-native
-        interoperability.
-      </p>
-      <h2>
-        App manifest
-      </h2>
-      <p>
-        The first thing a handler needs to do is declare its share handling
-        capabilities in its <a href="https://www.w3.org/TR/appmanifest/">web
-        app manifest</a>:
-      </p>
-      <p>
-        We expect apps that are sharing data to share one or more fields,
-        including title, text, and URL. These fields can be passed to the
-        target app as query parameters, and each is optional. If a web app can
-        handle a share, they should include (in the manifest) a template URL
-        (relative to the manifest URL) that the shared data can be inserted
-        into.
-      </p>
-      <pre class="idl">
+      <section>
+        <h3>
+          App manifest
+        </h3>
+        <p>
+          The first thing a handler needs to do is declare its share handling
+          capabilities in its <a href="https://www.w3.org/TR/appmanifest/">web
+          app manifest</a>:
+        </p>
+        <p>
+          We expect apps that are sharing data to share one or more fields,
+          including title, text, and URL. These fields can be passed to the
+          target app as query parameters, and each is optional. If a web app
+          can handle a share, they should include (in the manifest) a template
+          URL (relative to the manifest URL) that the shared data can be
+          inserted into.
+        </p>
+        <pre class="idl">
 dictionary ShareTarget {
   DOMString url_template;
 };
@@ -160,84 +115,91 @@ partial dictionary Manifest {
   ShareTarget share_target;
 };
 </pre>
-      <p>
-        The <code>url_template</code> member will contain placeholders for each
-        field of the form "{field}". Each placeholder in the template will be
-        replaced with the value of the corresponding field, that has been
-        shared by the source app. If a given field was not shared, its
-        placeholder will be replaced with an empty string. An example url
-        template is here:
-      </p>
-      <pre class="example json">
+        <p>
+          The <code>url_template</code> member will contain placeholders for
+          each field of the form "{field}". Each placeholder in the template
+          will be replaced with the value of the corresponding field, that has
+          been shared by the source app. If a given field was not shared, its
+          placeholder will be replaced with an empty string. An example url
+          template is here:
+        </p>
+        <pre class="example json">
 "share_target": {
   "url_template": "/share?title={title}&amp;text={text}&amp;url={url}"
 }
 </pre>
-      <p>
-        The <code>url_template</code> member also allows the target web app to
-        specify which attributes of the shared data it cares about. e.g. for
-        Web Share, the passed data includes title, text, and URL, but the
-        receiving web app may only care about message and URL.
-      </p>
-      <h3>
-        Things to note
-      </h3>
-      <p>
-        The declarative nature of the manifest allows search services to index
-        and present web applications that handle shares.
-      </p>
-      <p>
-        Handlers declaring <code>share_target</code> in their manifest will
-        <strong>not</strong> be automatically registered; the user must
-        explicitly authorize the registration. How this takes place is still
-        under consideration (see <a href="docs/explainer.md#user-flow">User
-        Flow</a>, but will ultimately be at the discretion of the user agent
-        (the user may be automatically prompted, or may have to explicitly
-        request registration).
-      </p>
-      <p class="note">
-        <strong>For consideration</strong>: We may wish to provide a method for
-        websites to explicitly request to prompt the user for handler
-        registration. There would still be a requirement to declare
-        <code>supports_share</code> in the manifest. For now, we have omitted
-        such a method from the design to keep control in the hands of user
-        agents. It is easier to add such a method later than remove it.
-      </p>
-      <h2>
-        Handling incoming shares
-      </h2>
-      <p>
-        Recall the URL template from Example 1:
-      </p>
-      <pre>
+        <p>
+          The <code>url_template</code> member also allows the target web app
+          to specify which attributes of the shared data it cares about. e.g.
+          for Web Share, the passed data includes title, text, and URL, but the
+          receiving web app may only care about message and URL.
+        </p>
+      </section>
+      <section>
+        <h3>
+          Things to note
+        </h3>
+        <p>
+          The declarative nature of the manifest allows search services to
+          index and present web applications that handle shares.
+        </p>
+        <p>
+          Handlers declaring <code>share_target</code> in their manifest will
+          <strong>not</strong> be automatically registered; the user must
+          explicitly authorize the registration. How this takes place is still
+          under consideration (see <a href="docs/explainer.md#user-flow">User
+          Flow</a>, but will ultimately be at the discretion of the user agent
+          (the user may be automatically prompted, or may have to explicitly
+          request registration).
+        </p>
+        <p class="note">
+          <strong>For consideration</strong>: We may wish to provide a method
+          for websites to explicitly request to prompt the user for handler
+          registration. There would still be a requirement to declare
+          <code>supports_share</code> in the manifest. For now, we have omitted
+          such a method from the design to keep control in the hands of user
+          agents. It is easier to add such a method later than remove it.
+        </p>
+      </section>
+      <section>
+        <h3>
+          Handling incoming shares
+        </h3>
+        <p>
+          Recall the URL template from Example 1:
+        </p>
+        <pre>
 /share?title={title}&amp;text={text}&amp;url={url}
 </pre>
-      <p>
-        This will be filled with the share data, and opened by the browser,
-        when the user selects the target app.
-      </p>
-      <p>
-        For example, if a source app shares the data:
-      </p>
-      <pre class="example json">
+        <p>
+          This will be filled with the share data, and opened by the browser,
+          when the user selects the target app.
+        </p>
+        <p>
+          For example, if a source app shares the data:
+        </p>
+        <pre class="example json">
 {
   "title": "Web Share Target API",
   "text": "An API that allows web apps to receive shared data",
   "url": "https://github.com/WICG/web-share-target"
 }
 </pre>
-      <p>
-        The browser will then launch the picker UI, and the user picks some
-        target app. If the target app is www.example.com, the browser will
-        launch the following URL in a new window or tab:
-      </p>
-      <pre>
+        <p>
+          The browser will then launch the picker UI, and the user picks some
+          target app. If the target app is www.example.com, the browser will
+          launch the following URL in a new window or tab:
+        </p>
+        <pre>
 https://www.example.com/share?title=Web%20Share%20Target%20API&amp;text=An%20API%20that%20allows%20web%20apps%20to%20receive%20shared%20data&amp;url=https://github.com/WICG/web-share-target
 </pre>
-      <p>
-        Thus, the receiving web app should handle the shared data as desired,
-        at that URL.
-      </p>
+        <p>
+          Thus, the receiving web app should handle the shared data as desired,
+          at that URL.
+        </p>
+      </section>
+    </section>
+    <section>
       <h2>
         Where do shares come from?
       </h2>
@@ -266,6 +228,26 @@ https://www.example.com/share?title=Web%20Share%20Target%20API&amp;text=An%20API
         <code>navigator.share</code>. If the event comes from some other
         source, the user agent may construct the <code>data</code> object as
         appropriate.
+      </p>
+    </section>
+    <section class="informative">
+      <h2>
+        Security and privacy considerations
+      </h2>
+      <p>
+        TODO: Security and privacy considerations.
+      </p>
+    </section>
+    <section class="appendix">
+      <h2>
+        Acknowledgments
+      </h2>
+      <p>
+        Thanks to the <a href="https://www.w3.org/TR/web-intents">Web
+        Intents</a> team, who laid the groundwork for the web app
+        interoperability use cases. In particular, <a href=
+        "https://paul.kinlan.me/">Paul Kinlan</a>, who did a lot of early
+        advocacy for Web Share and Web Share Target.
       </p>
     </section>
   </body>
