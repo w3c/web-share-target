@@ -111,10 +111,19 @@ dictionary ShareTarget {
   DOMString url_template;
 };
 
-partial dictionary Manifest {
+partial dictionary WebAppManifest {
   ShareTarget share_target;
 };
 </pre>
+        <div class="note">
+          The above IDL extends the <a><code>WebAppManifest</code></a>
+          dictionary from the Web App Manifest spec. Currently, the manifest is
+          defined as a set of algorithms, not an IDL dictionary, but this is
+          being discussed in <a href=
+          "https://github.com/w3c/manifest/issues/611">manifest#611</a>. Assume
+          <code>WebAppManifest</code> is defined as in the PR <a href=
+          "https://github.com/w3c/manifest/issues/613">manifest#613</a>.
+        </div>
         <p>
           The <code>url_template</code> member will contain placeholders for
           each field of the form "{field}". Each placeholder in the template
