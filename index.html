@@ -81,5 +81,285 @@
         advocacy for Web Share and Web Share Target.
       </p>
     </section>
+    <section class="appendix">
+      <h2>
+        Informal Interface Document
+      </h2>
+      <div class="note">
+        This is pasted from the informal interface doc. TODO: Clean up and
+        integrate into the above headings.
+      </div>
+      <p>
+        This document is a rough spec (i.e., <em>not</em> a formal web standard
+        draft) of the Web Share Target API. This API allows websites to
+        register to receive shared content from either the <a href=
+        "https://github.com/mgiuca/web-share">Web Share API</a>, or system
+        events (e.g., shares from native apps).
+      </p>
+      <p>
+        This API has 2 proposed designs: both require the user agent to support
+        <a href="https://www.w3.org/TR/appmanifest/">web app manifests</a>,
+        while the second requires support for <a href=
+        "https://www.w3.org/TR/service-workers/">service workers</a>. We are
+        planning to explore both approaches to determine which is more
+        acceptable. The <a href="https://github.com/mgiuca/web-share">Web Share
+        API</a> is not required, but recommended.
+      </p>
+      <p>
+        Examples of using the Share Target API for sharing can be seen in the
+        <a href="docs/explainer.md">explainer document</a>.
+      </p>
+      <p>
+        <strong>Note</strong>: The Web Share Target API is a proposal of the
+        <a href="https://github.com/chromium/ballista">Ballista project</a>,
+        which aims to explore website-to-website and website-to-native
+        interoperability.
+      </p>
+      <h2>
+        App manifest
+      </h2>
+      <p>
+        The first thing a handler needs to do is declare its share handling
+        capabilities in its <a href="https://www.w3.org/TR/appmanifest/">web
+        app manifest</a>:
+      </p>
+      <h3>
+        Approach 1:
+      </h3>
+      <p>
+        We expect apps that are sharing data to share one or more fields,
+        including title, text, and URL. These fields can be passed to the
+        target app as query parameters, and each is optional. If a web app can
+        handle a share, they should include (in the manifest) a template URL
+        (relative to the manifest URL) that the shared data can be inserted
+        into.
+      </p>
+      <pre class="idl">
+dictionary ShareTarget {
+  DOMString url_template;
+};
+
+partial dictionary Manifest {
+  ShareTarget share_target;
+};
+</pre>
+      <p>
+        The <code>url_template</code> member will contain placeholders for each
+        field of the form "{field}". Each placeholder in the template will be
+        replaced with the value of the corresponding field, that has been
+        shared by the source app. If a given field was not shared, its
+        placeholder will be replaced with an empty string. An example url
+        template is here:
+      </p>
+      <pre class="example json">
+"share_target": {
+  "url_template": "/share?title={title}&amp;text={text}&amp;url={url}"
+}
+</pre>
+      <p>
+        The <code>url_template</code> member also allows the target web app to
+        specify which attributes of the shared data it cares about. e.g. for
+        Web Share, the passed data includes title, text, and URL, but the
+        receiving web app may only care about message and URL.
+      </p>
+      <h3>
+        Approach 2:
+      </h3>
+      <pre class="idl">
+partial dictionary Manifest {
+  boolean supports_share;
+};
+      </pre>
+      <p>
+        The <code>"supports_share"</code> member of the manifest, if
+        <code>true</code>, indicates that the app can receive share events from
+        requesters, or the system.
+      </p>
+      <h3>
+        Things to note
+      </h3>
+      <p>
+        The declarative nature of the manifest allows search services to index
+        and present web applications that handle shares.
+      </p>
+      <p>
+        Handlers declaring <code>supports_share</code> or
+        <code>url_template</code> in their manifest will <strong>not</strong>
+        be automatically registered; the user must explicitly authorize the
+        registration. How this takes place is still under consideration (see
+        <a href="docs/explainer.md#user-flow">User Flow</a>, but will
+        ultimately be at the discretion of the user agent (the user may be
+        automatically prompted, or may have to explicitly request
+        registration).
+      </p>
+      <p>
+        <strong>For consideration</strong>: We may wish to provide a method for
+        websites to explicitly request to prompt the user for handler
+        registration. There would still be a requirement to declare
+        <code>supports_share</code> in the manifest. For now, we have omitted
+        such a method from the design to keep control in the hands of user
+        agents. It is easier to add such a method later than remove it.
+      </p>
+      <h2>
+        Handling incoming shares
+      </h2>
+      <h3>
+        Approach 1
+      </h3>
+      <p>
+        Recall the URL template from "Approach 1":
+      </p>
+      <pre>
+/share?title={title}&amp;text={text}&amp;url={url}
+</pre>
+      <p>
+        This will be filled with the share data, and opened by the browser,
+        when the user selects the target app.
+      </p>
+      <p>
+        For example, if a source app shares the data:
+      </p>
+      <pre class="example json">
+{
+  "title": "Web Share Target API",
+  "text": "An API that allows web apps to receive shared data",
+  "url": "https://github.com/WICG/web-share-target"
+}
+</pre>
+      <p>
+        The browser will then launch the picker UI, and the user picks some
+        target app. If the target app is www.example.com, the browser will
+        launch the following URL in a new window or tab:
+      </p>
+      <pre>
+https://www.example.com/share?title=Web%20Share%20Target%20API&amp;text=An%20API%20that%20allows%20web%20apps%20to%20receive%20shared%20data&amp;url=https://github.com/WICG/web-share-target
+</pre>
+      <p>
+        Thus, the receiving web app should handle the shared data as desired,
+        at that URL.
+      </p>
+      <h3>
+        Approach 2
+      </h3>
+      <p>
+        Handlers <strong>must</strong> have a registered <a href=
+        "https://www.w3.org/TR/service-workers/">service worker</a>.
+      </p>
+      <p>
+        When the user picks a registered web app as the target of a share, the
+        handler's service worker starts up (if it is not already running), and
+        a <code>"share"</code> event is fired at the global object.
+      </p>
+      <pre class="idl">
+partial interface WorkerGlobalScope {
+  attribute EventHandler onshare;
+};
+
+interface ShareEvent : ExtendableEvent {
+  readonly attribute ShareData data;
+
+void reject(DOMException error);
+};
+
+dictionary ShareData {
+  DOMString? title;
+  DOMString? text;
+  DOMString? url;
+};
+</pre>
+      <p>
+        The <code>onshare</code> handler (with corresponding event type
+        <code>"share"</code>) takes a <code>ShareEvent</code>. The
+        <code>data</code> field provides data from the sending application.
+      </p>
+      <p>
+        How the handler deals with the data object is at the handler's
+        discretion, and will generally depend on the type of app. Here are some
+        suggestions:
+      </p>
+      <ul>
+        <li>An email client might draft a new email, using <code>title</code>
+        as the subject of an email, with <code>text</code> and <code>url</code>
+        concatenated together as the body.
+        </li>
+        <li>A social networking app might draft a new post, ignoring
+        <code>title</code>, using <code>text</code> as the body of the message
+        and adding <code>url</code> as a link. If <code>text</code> is missing,
+        it might use <code>url</code> in the body as well. If <code>url</code>
+        is missing, it might scan <code>text</code> looking for a URL and add
+        that as a link.
+        </li>
+        <li>A text messaging app might draft a new message, ignoring
+        <code>title</code> and using <code>text</code> and <code>url</code>
+        concatenated together. It might truncate the text or replace
+        <code>url</code> with a short link to fit into the message size.
+        </li>
+      </ul>
+      <p>
+        A share fails if:
+      </p>
+      <ul>
+        <li>The handler had no registered service worker.
+        </li>
+        <li>There was an error during service worker initialization.
+        </li>
+        <li>There is no event handler for <code>share</code> events.
+        </li>
+        <li>The event handler explicitly calls the event's <code>reject</code>
+        method (either in the event handler, or in the promise passed to the
+        event's <a href=
+        "https://www.w3.org/TR/service-workers/#wait-until-method"><code>waitUntil</code></a>
+        method).
+        </li>
+        <li>The promise passed to <code>waitUntil</code> is rejected.
+        </li>
+      </ul>
+      <p>
+        Once the event completes without failing, the share automatically
+        succeeds, and the requester's promise is resolved. The end of the
+        event's lifetime marks the end of the share, and there is no further
+        communication in either direction.
+      </p>
+      <p>
+        The Share Target API is defined entirely within the service worker. If
+        the handler needs to provide UI (which should be the common case), the
+        service worker must create a foreground page and send the appropriate
+        data between the worker and foreground page, out of band. The
+        <code>share</code> event handler is <a href=
+        "https://html.spec.whatwg.org/multipage/browsers.html#allowed-to-show-a-popup">
+        allowed to show a popup</a>, which means it can call the <a href=
+        "https://www.w3.org/TR/service-workers/#clients-openwindow-method"><code>
+        clients.openWindow</code></a> method.
+      </p>
+      <h2>
+        Where do shares come from?
+      </h2>
+      <p>
+        Share events can be sent from a variety of places:
+      </p>
+      <ul>
+        <li>Built-in trigger (e.g., user picks "Share" from a browser's menu,
+        to share the URL in the address bar).
+        </li>
+        <li>A native application.
+        </li>
+        <li>A web application using the <a href=
+        "https://github.com/mgiuca/web-share">Web Share API</a>.
+        </li>
+      </ul>
+      <p>
+        There will usually be a picker that lets the user select a target app.
+        This could be the native system app picker, or a user-agent-supplied
+        picker. The apps could include other system apps and actions alongside
+        the web app handlers.
+      </p>
+      <p>
+        If an event comes from a web app, the <code>data</code> field of the
+        event should be a clone of the <code>data</code> parameter to
+        <code>navigator.share</code>. If the event comes from some other
+        source, the user agent may construct the <code>data</code> object as
+        appropriate.
+      </p>
+    </section>
   </body>
 </html>
