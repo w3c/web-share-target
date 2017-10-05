@@ -212,7 +212,8 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           A <dfn data-lt="web share targets">web share target</dfn> is a web
-          site with a valid manifest containing a <a for=
+          site in a <a data-cite="SECURE-CONTEXTS#secure-context">secure
+          context</a> with a valid manifest containing a <a for=
           "WebAppManifest">share_target</a> member. A web share target is a
           type of <a data-cite="!WebShare#dfn-share-target">share target</a>.
         </p>
@@ -339,8 +340,32 @@ partial dictionary WebAppManifest {
       <h2>
         Security and privacy considerations
       </h2>
+      <div class="issue" title="Normative security issues">
+        <ul>
+          <li>Can the share target URL be outside of the manifest scope? Is
+          this enforced statically (before template substitution) or
+          dynamically (after)?
+          </li>
+          <li>Need to precisely define the secure context requirement. Note
+          that the <a data-cite="SECURE-CONTEXTS#secure-context">secure
+          context</a> algorithm is defined over an environment settings object,
+          not a URL. We need to block share targets that are specified from a
+          non-secure manifest OR those final URL is non-secure.
+          </li>
+        </ul>
+      </div>
+      <ul>
+        <li>Spoofing concerns.
+        </li>
+        <li>Ensuring that the user is aware of which target they are sharing
+        to, as private data may be sent to a third-party site.
+        </li>
+        <li>HTTPS-only requirement.
+        </li>
+      </ul>
       <p>
-        TODO: Security and privacy considerations.
+        TODO: Additional security and privacy considerations. Also tidy up the
+        above language.
       </p>
     </section>
     <section class="appendix informative">
