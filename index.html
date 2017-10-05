@@ -169,17 +169,28 @@ https://example.org/includinator/share.html?title=My%20News&amp;text=&amp;url=ht
         Extension to the Web App Manifest
       </h2>
       <p>
-        The first thing a handler needs to do is declare its share handling
-        capabilities in its <a data-cite="!appmanifest">web app manifest</a>:
+        The following IDL extends the <a data-cite="!appmanifest">Web App
+        Manifest</a> JSON object.
       </p>
-      <p>
-        We expect apps that are sharing data to share one or more fields,
-        including title, text, and URL. These fields can be passed to the
-        target app as query parameters, and each is optional. If a web app can
-        handle a share, they should include (in the manifest) a template URL
-        (relative to the manifest URL) that the shared data can be inserted
-        into.
-      </p>
+      <div class="issue" title="Manifest spec rework">
+        <p>
+          This section is written against a proposed future version of the
+          Manifest spec currently shown in the preview at <a href=
+          "https://github.com/w3c/manifest/issues/613">manifest#613</a>.
+        </p>
+        <p>
+          In this re-work of the spec, a <dfn>WebAppManifest</dfn> dictionary
+          defines the manifest in IDL, which we extend here.
+        </p>
+        <p>
+          The current version of the spec defines the manifest as a set of
+          algorithms, not an IDL dictionary. If we were writing against the
+          current Manifest spec, we would need to hook into the <a data-cite=
+          "!appmanifest#dfn-extension-point">extension point</a> in the
+          <a data-cite="!appmanifest#dfn-steps-for-processing-a-manifest">steps
+          for processing a manifest</a>.
+        </p>
+      </div>
       <pre class="idl">
 dictionary ShareTarget {
   DOMString url_template;
@@ -189,40 +200,32 @@ partial dictionary WebAppManifest {
   ShareTarget share_target;
 };
 </pre>
-      <div class="note">
-        The above IDL extends the <dfn>WebAppManifest</dfn> dictionary from the
-        Web App Manifest spec. Currently, the manifest is defined as a set of
-        algorithms, not an IDL dictionary, but this is being discussed in
-        <a href="https://github.com/w3c/manifest/issues/611">manifest#611</a>.
-        Assume <code>WebAppManifest</code> is defined as in the PR <a href=
-        "https://github.com/w3c/manifest/issues/613">manifest#613</a>.
-      </div>
-      <p>
-        TODO: Define the extension point as it would appear in the Web App
-        Manifest.
-      </p>
       <p>
         The <dfn>ShareTarget</dfn> dictionary defines the members of the
         <dfn for="WebAppManifest">share_target</dfn> member of the manifest.
       </p>
       <p data-dfn-for="ShareTarget">
-        The <dfn>url_template</dfn> member will contain placeholders for each
-        field of the form "{field}". Each placeholder in the template will be
-        replaced with the value of the corresponding field, that has been
-        shared by the source app. If a given field was not shared, its
-        placeholder will be replaced with an empty string. An example url
-        template is here:
+        The <dfn>url_template</dfn> member contains zero or more placeholders
+        of the form "<code>{<em>field</em>}</code>". Each <em>field</em> MUST
+        be a valid <a data-cite="!WebIDL#prod-identifier">WebIDL
+        identifier</a>, and SHOULD be a key of the <a data-cite=
+        "!WebShare#dom-sharedata"><code>ShareData</code></a> dictionary. After
+        these placeholders are removed, it MUST form a <a data-cite=
+        "!URL#valid-url-string">valid URL string</a>.
       </p>
-      <pre class="example json">
-"share_target": {
-  "url_template": "/share?title={title}&amp;text={text}&amp;url={url}"
-}
-</pre>
+      <div class="note">
+        The <code>{</code> and <code>}</code> characters are illegal in a
+        <a data-cite="URL#valid-url-string">valid URL string</a>, so they
+        always represent a placeholder in the <a for=
+        "ShareTarget">url_template</a> string, and do not need to be escaped.
+      </div>
       <p>
-        The <a for="ShareTarget">url_template</a> member also allows the target
-        web app to specify which attributes of the shared data it cares about.
-        e.g. for Web Share, the passed data includes title, text, and URL, but
-        the receiving web app may only care about message and URL.
+        Any fields that are not present in the <a for=
+        "ShareTarget">url_template</a> will be silently dropped from the share
+        payload when sharing to this app. The <a for=
+        "ShareTarget">url_template</a> MAY contain fields that are not
+        <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a> keys,
+        for forwards compatibility.
       </p>
       <section>
         <h3>
