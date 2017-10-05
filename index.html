@@ -30,7 +30,19 @@
             value: "Chromium",
             href: "https://www.chromestatus.com/features/5662315307335680"
           }]
-        }]
+        }],
+        localBiblio: {
+          "WebShare": {
+            id: "WebShare",
+            title: "Web Share API",
+            href: "https://wicg.github.io/web-share",
+            authors: [
+              "Matt Giuca",
+            ],
+            status: "Draft Report",
+            publisher: "WICG"
+          }
+        }
       };
     </script>
   </head>
@@ -38,15 +50,13 @@
     <section id="abstract">
       <p>
         This specification defines an API that allows websites to receive
-        shared content from either the <a href=
-        "https://github.com/WICG/web-share">Web Share API</a>, or system events
-        (e.g., shares from native apps).
+        shared content from either the <a data-cite="!WebShare">Web Share
+        API</a>, or system events (e.g., shares from native apps).
       </p>
       <p>
         This API requires the user agent to support <a data-cite=
-        "!appmanifest">web app manifests</a>. The <a href=
-        "https://github.com/WICG/web-share">Web Share API</a> is not required,
-        but recommended.
+        "!appmanifest">web app manifests</a>. The <a data-cite="!WebShare">Web
+        Share API</a> is not required, but recommended.
       </p>
     </section>
     <section id="sotd">
@@ -194,8 +204,8 @@ partial dictionary WebAppManifest {
         </li>
         <li>A native application.
         </li>
-        <li>A web application using the <a href=
-        "https://github.com/mgiuca/web-share">Web Share API</a>.
+        <li>A web application using the <a data-cite="!WebShare">Web Share
+        API</a>.
         </li>
       </ul>
       <p>
