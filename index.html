@@ -236,32 +236,59 @@ partial dictionary WebAppManifest {
           written in the Manifest spec.
         </p>
       </section>
-      <section>
-        <h3>
-          Things to note
-        </h3>
+    </section>
+    <section>
+      <h2>
+        Registration of share targets
+      </h2>
+      <p>
+        How and when share target apps are "registered" is at the discretion of
+        the user agent and/or the end user. In fact, "registration" is a
+        user-agent-specific concept that is not formally defined here; user
+        agents are NOT REQUIRED to "register" share targets at all; they are
+        only REQUIRED to provide some mechanism to convey shared data to a
+        share target of the end user's choosing. User agents MAY consider a
+        share target "registered" even if it is not <a data-cite=
+        "!appmanifest#dfn-install">installed</a>.
+      </p>
+      <p>
+        The user agent MAY automatically register all sites with a <a for=
+        "WebAppManifest">share_target</a> as the user visits the site, but it
+        is RECOMMENDED that more discretion is applied, to avoid overwhelming
+        the user with the choice of a large number of targets.
+      </p>
+      <div class="note">
         <p>
-          The declarative nature of the manifest allows search services to
-          index and present web applications that handle shares.
+          Examples of registration strategies that user agents can employ are:
         </p>
-        <p>
-          Handlers declaring <code>share_target</code> in their manifest will
-          <strong>not</strong> be automatically registered; the user must
-          explicitly authorize the registration. How this takes place is still
-          under consideration (see <a href="docs/explainer.md#user-flow">User
-          Flow</a>, but will ultimately be at the discretion of the user agent
-          (the user may be automatically prompted, or may have to explicitly
-          request registration).
-        </p>
-        <p class="note">
-          <strong>For consideration</strong>: We may wish to provide a method
-          for websites to explicitly request to prompt the user for handler
-          registration. There would still be a requirement to declare
-          <code>supports_share</code> in the manifest. For now, we have omitted
-          such a method from the design to keep control in the hands of user
-          agents. It is easier to add such a method later than remove it.
-        </p>
-      </section>
+        <ul>
+          <li>Only register a share target once it is <a data-cite=
+          "appmanifest#dfn-install">installed</a>.
+          </li>
+          <li>Only register a share target once the end user has used the site
+          for some period of time.
+          </li>
+          <li>Explicitly prompt the user to register a share target (perhaps
+          using the same UI as <a data-cite=
+          "HTML#dom-navigator-registerprotocolhandler"><code>navigator.registerProtocolHandler</code></a>).
+          </li>
+        </ul>
+      </div>
+      <p>
+        When presenting the end user with a list of share targets, the user
+        agent MAY use an online service which has pre-indexed manifests, and
+        therefore show the user targets that they have never visited or
+        explicitly registered.
+      </p>
+      <p class="issue" title="Explicitly registering share targets">
+        We may wish to provide a method for websites to explicitly request to
+        prompt the user for handler registration. This would be limited to
+        prompting to register the <a for="WebAppManifest">share_target</a>
+        already declared in the manifest (not dynamically creating share
+        targets). For now, we have omitted such a method from the design to
+        keep control in the hands of user agents. It is easier to add such a
+        method later than remove it.
+      </p>
     </section>
     <section>
       <h2>
