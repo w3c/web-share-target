@@ -193,47 +193,55 @@ https://example.org/includinator/share.html?title=My%20News&amp;text=&amp;url=ht
       </div>
       <pre class="idl">
 dictionary ShareTarget {
-  DOMString url_template;
+  required DOMString url_template;
 };
 
 partial dictionary WebAppManifest {
   ShareTarget share_target;
 };
 </pre>
-      <p>
-        The <dfn>ShareTarget</dfn> dictionary defines the members of the
-        <dfn for="WebAppManifest">share_target</dfn> member of the manifest.
-      </p>
-      <p data-dfn-for="ShareTarget">
-        The <dfn>url_template</dfn> member contains zero or more placeholders
-        of the form "<code>{<em>field</em>}</code>". Each <em>field</em> MUST
-        be a valid <a data-cite="!WebIDL#prod-identifier">WebIDL
-        identifier</a>, and SHOULD be a key of the <a data-cite=
-        "!WebShare#dom-sharedata"><code>ShareData</code></a> dictionary. After
-        these placeholders are removed, it MUST form a <a data-cite=
-        "!URL#valid-url-string">valid URL string</a>.
-      </p>
-      <div class="note">
-        The <code>{</code> and <code>}</code> characters are illegal in a
-        <a data-cite="URL#valid-url-string">valid URL string</a>, so they
-        always represent a placeholder in the <a for=
-        "ShareTarget">url_template</a> string, and do not need to be escaped.
-      </div>
-      <p>
-        Any fields that are not present in the <a for=
-        "ShareTarget">url_template</a> will be silently dropped from the share
-        payload when sharing to this app. The <a for=
-        "ShareTarget">url_template</a> MAY contain fields that are not
-        <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a> keys,
-        for forwards compatibility.
-      </p>
       <section>
         <h3>
           <code>share_target</code> member
         </h3>
         <p>
-          TODO: Define the <code>share_target</code> member as it would be
-          written in the Manifest spec.
+          The <dfn for="WebAppManifest">share_target</dfn> member of the
+          manifest is a <a>ShareTarget</a> dictionary that declares this
+          application to be a <dfn>share target</dfn>, and describes how the
+          application receives share data.
+        </p>
+      </section>
+      <section data-dfn-for="ShareTarget">
+        <h3>
+          <code>ShareTarget</code> and its members
+        </h3>
+        <p>
+          The <dfn>ShareTarget</dfn> dictionary contains the following members.
+        </p>
+        <p>
+          The <dfn>url_template</dfn> member describes which share data fields
+          are passed to the share target, and in what format. It contains zero
+          or more placeholders of the form "<code>{<em>field</em>}</code>".
+          Each <em>field</em> MUST be a valid <a data-cite=
+          "!WebIDL#prod-identifier">WebIDL identifier</a>, and SHOULD be a key
+          of the <a data-cite=
+          "!WebShare#dom-sharedata"><code>ShareData</code></a> dictionary.
+          After these placeholders are removed, it MUST form a <a data-cite=
+          "!URL#valid-url-string">valid URL string</a>.
+        </p>
+        <div class="note">
+          The <code>{</code> and <code>}</code> characters are illegal in a
+          <a data-cite="URL#valid-url-string">valid URL string</a>, so they
+          always represent a placeholder in the <a for=
+          "ShareTarget">url_template</a> string, and do not need to be escaped.
+        </div>
+        <p>
+          Any fields that are not present in the <a for=
+          "ShareTarget">url_template</a> will be silently dropped from the
+          share payload when sharing to this app. The <a for=
+          "ShareTarget">url_template</a> MAY contain fields that are not
+          <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a>
+          keys, for forwards compatibility.
         </p>
       </section>
     </section>
