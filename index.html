@@ -231,7 +231,7 @@ partial dictionary WebAppManifest {
           are passed to the web share target, and in what format. It contains
           zero or more placeholders of the form
           "<code>{<em>field</em>}</code>". Each <em>field</em> MUST be a valid
-          <a data-cite="!WebIDL#prod-identifier">WebIDL identifier</a>, and
+          <a data-cite="!WEBIDL#prod-identifier">WebIDL identifier</a>, and
           SHOULD be a key of the <a data-cite=
           "!WebShare#dom-sharedata"><code>ShareData</code></a> dictionary.
           After these placeholders are removed, it MUST form a <a data-cite=
@@ -407,10 +407,10 @@ partial dictionary WebAppManifest {
       </ol>
       <p>
         The <dfn>replace placeholders</dfn> algorithm takes a <a data-cite=
-        "!WebIDL#idl-USVString">USVString</a> <var>template</var> and
+        "!WEBIDL#idl-USVString">USVString</a> <var>template</var> and
         <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a>
         <var>data</var>, and returns either a <a data-cite=
-        "!WebIDL#idl-USVString">USVString</a> or failure:
+        "!WEBIDL#idl-USVString">USVString</a> or failure:
       </p>
       <ol>
         <li>While <var>template</var> contains U+007B (<code>{</code>):
@@ -431,7 +431,7 @@ partial dictionary WebAppManifest {
             between indices <var>start</var> and <var>end</var>, exclusive.
             </li>
             <li>Let <var>value</var> be <var>data</var>[<var>key</var>] (this
-            is always a <a data-cite="!WebIDL#idl-USVString">USVString</a>). If
+            is always a <a data-cite="!WEBIDL#idl-USVString">USVString</a>). If
             it is undefined, let <var>value</var> be the empty string.
             </li>
             <li>Replace each character of <var>value</var>, <var>c</var>, with
@@ -455,7 +455,7 @@ partial dictionary WebAppManifest {
         <p>
           The above algorithm assumes that all values of <a data-cite=
           "!WebShare#dom-sharedata"><code>ShareData</code></a> are of type
-          <a data-cite="!WebIDL#idl-USVString">USVString</a>, which is
+          <a data-cite="!WEBIDL#idl-USVString">USVString</a>, which is
           currently the case. If new members are added in the future that are
           <em>not</em> strings, the above algorithm will need to specify
           conversion to a string.
