@@ -207,8 +207,14 @@ partial dictionary WebAppManifest {
         <p>
           The <dfn for="WebAppManifest">share_target</dfn> member of the
           manifest is a <a>ShareTarget</a> dictionary that declares this
-          application to be a <dfn>share target</dfn>, and describes how the
+          application to be a <a>web share target</a>, and describes how the
           application receives share data.
+        </p>
+        <p>
+          A <dfn data-lt="web share targets">web share target</dfn> is a web
+          site with a valid manifest containing a <a for=
+          "WebAppManifest">share_target</a> member. A web share target is a
+          type of <a data-cite="!WebShare#dfn-share-target">share target</a>.
         </p>
       </section>
       <section data-dfn-for="ShareTarget">
@@ -220,11 +226,11 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           The <dfn>url_template</dfn> member describes which share data fields
-          are passed to the share target, and in what format. It contains zero
-          or more placeholders of the form "<code>{<em>field</em>}</code>".
-          Each <em>field</em> MUST be a valid <a data-cite=
-          "!WebIDL#prod-identifier">WebIDL identifier</a>, and SHOULD be a key
-          of the <a data-cite=
+          are passed to the web share target, and in what format. It contains
+          zero or more placeholders of the form
+          "<code>{<em>field</em>}</code>". Each <em>field</em> MUST be a valid
+          <a data-cite="!WebIDL#prod-identifier">WebIDL identifier</a>, and
+          SHOULD be a key of the <a data-cite=
           "!WebShare#dom-sharedata"><code>ShareData</code></a> dictionary.
           After these placeholders are removed, it MUST form a <a data-cite=
           "!URL#valid-url-string">valid URL string</a>.
@@ -247,46 +253,46 @@ partial dictionary WebAppManifest {
     </section>
     <section>
       <h2>
-        Registration of share targets
+        Registration of web share targets
       </h2>
       <p>
-        How and when share target apps are "registered" is at the discretion of
-        the user agent and/or the end user. In fact, "registration" is a
-        user-agent-specific concept that is not formally defined here; user
-        agents are NOT REQUIRED to "register" share targets at all; they are
-        only REQUIRED to provide some mechanism to convey shared data to a
-        share target of the end user's choosing. User agents MAY consider a
-        share target "registered" even if it is not <a data-cite=
-        "!appmanifest#dfn-install">installed</a>.
+        How and when <a>web share targets</a> are "registered" is at the
+        discretion of the user agent and/or the end user. In fact,
+        "registration" is a user-agent-specific concept that is not formally
+        defined here; user agents are NOT REQUIRED to "register" web share
+        targets at all; they are only REQUIRED to provide some mechanism to
+        convey shared data to a web share target of the end user's choosing.
+        User agents MAY consider a web share target "registered" even if it is
+        not <a data-cite="!appmanifest#dfn-install">installed</a>.
       </p>
       <p>
-        The user agent MAY automatically register all sites with a <a for=
-        "WebAppManifest">share_target</a> as the user visits the site, but it
-        is RECOMMENDED that more discretion is applied, to avoid overwhelming
-        the user with the choice of a large number of targets.
+        The user agent MAY automatically register all <a>web share targets</a>
+        as the user visits the site, but it is RECOMMENDED that more discretion
+        is applied, to avoid overwhelming the user with the choice of a large
+        number of targets.
       </p>
       <div class="note">
         <p>
           Examples of registration strategies that user agents can employ are:
         </p>
         <ul>
-          <li>Only register a share target once it is <a data-cite=
+          <li>Only register a web share target once it is <a data-cite=
           "appmanifest#dfn-install">installed</a>.
           </li>
-          <li>Only register a share target once the end user has used the site
-          for some period of time.
+          <li>Only register a web share target once the end user has used the
+          site for some period of time.
           </li>
-          <li>Explicitly prompt the user to register a share target (perhaps
-          using the same UI as <a data-cite=
+          <li>Explicitly prompt the user to register a web share target
+          (perhaps using the same UI as <a data-cite=
           "HTML#dom-navigator-registerprotocolhandler"><code>navigator.registerProtocolHandler</code></a>).
           </li>
         </ul>
       </div>
       <p>
-        When presenting the end user with a list of share targets, the user
-        agent MAY use an online service which has pre-indexed manifests, and
-        therefore show the user targets that they have never visited or
-        explicitly registered.
+        When presenting the end user with a list of <a>web share targets</a>,
+        the user agent MAY use an online service which has pre-indexed
+        manifests, and therefore show the user targets that they have never
+        visited or explicitly registered.
       </p>
       <p class="issue" title="Explicitly registering share targets">
         We may wish to provide a method for websites to explicitly request to
