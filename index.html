@@ -54,6 +54,19 @@
         API</a>, or system events (e.g., shares from native apps).
       </p>
       <p>
+        This is a similar mechanism to <a data-cite=
+        "HTML#dom-navigator-registerprotocolhandler"><code>navigator.registerProtocolHandler</code></a>,
+        in that it works by registering the website with the user agent, to
+        later be invoked from another site or native application via the user
+        agent (possibly at the discretion of the user). The difference is that
+        <a data-cite=
+        "HTML#dom-navigator-registerprotocolhandler"><code>registerProtocolHandler</code></a>
+        registers the handler via a programmatic API, whereas a Web Share
+        Target is is declared in the <a data-cite="!appmanifest">Web App
+        Manifest</a>, to be registered at a time of the user agent or user's
+        choosing.
+      </p>
+      <p>
         This API requires the user agent to support <a data-cite=
         "!appmanifest">web app manifests</a>. The <a data-cite="!WebShare">Web
         Share API</a> is not required, but recommended.
