@@ -311,10 +311,10 @@ partial dictionary WebAppManifest {
         Handling incoming shares
       </h2>
       <p>
-        A <a>web share target</a> is <dfn data-lt="invoke">invoked</dfn> when
-        the end user is sharing some data intended for a generic application,
-        and indicates that specific web share target as the receiver of the
-        data.
+        A <a>web share target</a> is <dfn data-lt=
+        "invoke|invocation">invoked</dfn> when the end user is sharing some
+        data intended for a generic application, and indicates that specific
+        web share target as the receiver of the data.
       </p>
       <p>
         It is not specified where the data comes from, or how the end user
@@ -500,18 +500,25 @@ partial dictionary WebAppManifest {
         </ul>
       </div>
       <ul>
-        <li>Spoofing concerns.
+        <li>Invoking a <a>web share target</a> means potentially sending
+        private user data to a third-party website. Implementors are to take
+        every precaution that the user understands which party the data is
+        being sent to (<i>e.g.</i>, communicating the web share target's
+        origin), before running the <a>invocation</a> algorithm.
         </li>
-        <li>Ensuring that the user is aware of which target they are sharing
-        to, as private data may be sent to a third-party site.
+        <li>Of particular concern is spoofing: a web share target presenting
+        itself as a different party (by setting its name and icon accordingly).
         </li>
-        <li>HTTPS-only requirement.
+        <li>The spoofing risk is heightened if web share targets are chosen
+        from an online index, rather than a set of targets that the end user
+        has explicitly installed or registered.
+        </li>
+        <li>The requirement that the web share target be a <a data-cite=
+        "SECURE-CONTEXTS#secure-context">secure context</a> is to prevent
+        private user data from being transmitted to a party that does not
+        control the origin in question, or in clear text over the network.
         </li>
       </ul>
-      <p>
-        TODO: Additional security and privacy considerations. Also tidy up the
-        above language.
-      </p>
     </section>
     <section class="appendix informative">
       <h2>
