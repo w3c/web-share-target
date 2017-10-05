@@ -86,11 +86,12 @@
     </section>
     <section class="informative">
       <h2>
-        Usage Examples
+        Usage Example
       </h2>
       <p>
-        You need a <a data-cite="appmanifest">Web App Manifest</a>, to notify
-        the browser of your ability to handle a share.
+        To register a site as a share target, a <a for=
+        "WebAppManifest">share_target</a> entry is added to the <a data-cite=
+        "appmanifest">Web App Manifest</a>, as shown:
       </p>
       <pre class="example json" title="manifest.webmanifest">
 {
@@ -101,9 +102,14 @@
 }
 </pre>
       <p>
-        Note: the <a for="ShareTarget">url_template</a> should be relative to
-        the manifest URL, since the template is appended to the manifest URL
-        (excluding the filename of the manifest).
+        The <a for="ShareTarget">url_template</a> contains a number of
+        placeholder fields that will be replaced with the shared data when the
+        target is invoked. Once the fields are replaced, it should be a URL
+        that is relative to the directory containing the manifest URL.
+      </p>
+      <p>
+        For the purpose of this example, we assume the manifest is located at
+        <code>https://example.org/includinator/manifest.webmanifest</code>.
       </p>
       <pre class="example html" title="share.html">
 &lt;html&gt;
@@ -112,20 +118,30 @@
   &lt;/head&gt;
   &lt;body&gt;
     &lt;script&gt;
-      function onLoad() {
+      window.addEventListener('load', () =&gt; {
         var parsedUrl = new URL(window.location.toString());
         console.log("Title shared: " + parsedUrl.searchParams.get("title"));
         console.log("Text shared: " + parsedUrl.searchParams.get("text"));
         console.log("URL shared: " + parsedUrl.searchParams.get("url"));
-      }
-
-      window.addEventListener('load', onLoad);
+      });
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </pre>
       <p>
-        How the handler deals with the data object is at the handler's
+        When a share takes place, if the user selects this app as the share
+        target, the user agent populates the fields of the URL template, then
+        opens a new browsing context at that URL. Any missing fields are left
+        empty (but note that the query parameters are not removed). For
+        example, if an incoming share contains the title "My News" and the URL
+        <code>http://example.com/news</code>, the user agent will open a new
+        window or tab and navigate to:
+      </p>
+      <pre>
+https://example.org/includinator/share.html?title=My%20News&amp;text=&amp;url=http%3A//example.com/news
+</pre>
+      <p>
+        How the handler deals with the shared data is at the handler's
         discretion, and will generally depend on the type of app. Here are some
         suggestions:
       </p>
@@ -273,38 +289,6 @@ partial dictionary WebAppManifest {
         <code>navigator.share</code>. If the event comes from some other
         source, the user agent may construct the <code>data</code> object as
         appropriate.
-      </p>
-      <p>
-        Recall the URL template from Example 1:
-      </p>
-      <pre>
-/share?title={title}&amp;text={text}&amp;url={url}
-</pre>
-      <p>
-        This will be filled with the share data, and opened by the browser,
-        when the user selects the target app.
-      </p>
-      <p>
-        For example, if a source app shares the data:
-      </p>
-      <pre class="example json">
-{
-  "title": "Web Share Target API",
-  "text": "An API that allows web apps to receive shared data",
-  "url": "https://github.com/WICG/web-share-target"
-}
-</pre>
-      <p>
-        The browser will then launch the picker UI, and the user picks some
-        target app. If the target app is www.example.com, the browser will
-        launch the following URL in a new window or tab:
-      </p>
-      <pre>
-https://www.example.com/share?title=Web%20Share%20Target%20API&amp;text=An%20API%20that%20allows%20web%20apps%20to%20receive%20shared%20data&amp;url=https://github.com/WICG/web-share-target
-</pre>
-      <p>
-        Thus, the receiving web app should handle the shared data as desired,
-        at that URL.
       </p>
     </section>
     <section class="informative">
