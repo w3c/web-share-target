@@ -89,8 +89,41 @@
         Usage Examples
       </h2>
       <p>
-        TODO: Usage Examples
+        You need a <a data-cite="appmanifest">Web App Manifest</a>, to notify
+        the browser of your ability to handle a share.
       </p>
+      <pre class="example json" title="manifest.webmanifest">
+{
+  "name": "Includinator",
+  "share_target": {
+    "url_template": "share.html?title={title}&amp;text={text}&amp;url={url}"
+  }
+}
+</pre>
+      <p>
+        Note: the <a for="ShareTarget">url_template</a> should be relative to
+        the manifest URL, since the template is appended to the manifest URL
+        (excluding the filename of the manifest).
+      </p>
+      <pre class="example html" title="share.html">
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;link rel="manifest" href="manifest.webmanifest"&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;script&gt;
+      function onLoad() {
+        var parsedUrl = new URL(window.location.toString());
+        console.log("Title shared: " + parsedUrl.searchParams.get("title"));
+        console.log("Text shared: " + parsedUrl.searchParams.get("text"));
+        console.log("URL shared: " + parsedUrl.searchParams.get("url"));
+      }
+
+      window.addEventListener('load', onLoad);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
       <p>
         How the handler deals with the data object is at the handler's
         discretion, and will generally depend on the type of app. Here are some
