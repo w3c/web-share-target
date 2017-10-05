@@ -49,17 +49,18 @@
   <body>
     <section id="abstract">
       <p>
-        This specification defines an API that allows websites to receive
-        shared content from either the <a data-cite="!WebShare">Web Share
-        API</a>, or system events (e.g., shares from native apps).
+        This specification defines an API that allows websites to declare
+        themselves as <a>web share targets</a>, which can receive shared
+        content from either the <a data-cite="!WebShare">Web Share API</a>, or
+        system events (e.g., shares from native apps).
       </p>
       <p>
         This is a similar mechanism to <a data-cite=
         "HTML#dom-navigator-registerprotocolhandler"><code>navigator.registerProtocolHandler</code></a>,
         in that it works by registering the website with the user agent, to
-        later be invoked from another site or native application via the user
-        agent (possibly at the discretion of the user). The difference is that
-        <a data-cite=
+        later be <a>invoked</a> from another site or native application via the
+        user agent (possibly at the discretion of the user). The difference is
+        that <a data-cite=
         "HTML#dom-navigator-registerprotocolhandler"><code>registerProtocolHandler</code></a>
         registers the handler via a programmatic API, whereas a Web Share
         Target is is declared in the <a data-cite="!appmanifest">Web App
@@ -104,8 +105,8 @@
       <p>
         The <a for="ShareTarget">url_template</a> contains a number of
         placeholder fields that will be replaced with the shared data when the
-        target is invoked. Once the fields are replaced, it should be a URL
-        that is relative to the directory containing the manifest URL.
+        target is <a>invoked</a>. Once the fields are replaced, it should be a
+        URL that is relative to the directory containing the manifest URL.
       </p>
       <p>
         For the purpose of this example, we assume the manifest is located at
@@ -310,31 +311,175 @@ partial dictionary WebAppManifest {
         Handling incoming shares
       </h2>
       <p>
-        Share events can be sent from a variety of places:
-      </p>
-      <ul>
-        <li>Built-in trigger (e.g., user picks "Share" from a browser's menu,
-        to share the URL in the address bar).
-        </li>
-        <li>A native application.
-        </li>
-        <li>A web application using the <a data-cite="!WebShare">Web Share
-        API</a>.
-        </li>
-      </ul>
-      <p>
-        There will usually be a picker that lets the user select a target app.
-        This could be the native system app picker, or a user-agent-supplied
-        picker. The apps could include other system apps and actions alongside
-        the web app handlers.
+        A <a>web share target</a> is <dfn data-lt="invoke">invoked</dfn> when
+        the end user is sharing some data intended for a generic application,
+        and indicates that specific web share target as the receiver of the
+        data.
       </p>
       <p>
-        If an event comes from a web app, the <code>data</code> field of the
-        event should be a clone of the <code>data</code> parameter to
-        <code>navigator.share</code>. If the event comes from some other
-        source, the user agent may construct the <code>data</code> object as
-        appropriate.
+        It is not specified where the data comes from, or how the end user
+        indicates the web share target as the receiver. However, one possible
+        source is a call to <a data-cite=
+        "!WebShare#dom-navigator-share"><code>navigator.share</code></a> in the
+        same user agent.
       </p>
+      <div class="note">
+        <p>
+          Examples of other possible sources of a <a>web share target</a>
+          invocation are:
+        </p>
+        <ul>
+          <li>From the built-in UI of the user agent (<i>e.g.</i>, the end user
+          picks "Share" from a browser's menu, to share the current page title
+          as "<code>title</code>" and the current page URL as
+          "<code>url</code>").
+          </li>
+          <li>A share action triggered from a native application (via a
+          proprietary share system), followed by the end user choosing a web
+          share target as the receiver.
+          </li>
+        </ul>
+      </div>
+      <section>
+        <h3>
+          Obtaining a <code>ShareData</code>
+        </h3>
+        <p>
+          When a <a>web share target</a> is <a>invoked</a>, the data MAY be in
+          an unspecified format. The user agent MUST first convert the data
+          into a <a data-cite=
+          "!WebShare#dom-sharedata"><code>ShareData</code></a> dictionary, if
+          it is not already, by mapping to the fields of <code>ShareData</code>
+          from equivalent concepts in the host system. If the source was a call
+          to <a data-cite=
+          "!WebShare#dom-navigator-share"><code>navigator.share</code></a>, the
+          user agent SHOULD use the <a data-cite=
+          "!WebShare#dom-sharedata"><code>ShareData</code></a> argument
+          unmodified (but this is not always possible, as it might have to
+          round-trip through some other format in a lossy manner). The user
+          agent MAY employ heuristics to map the data onto the
+          <code>ShareData</code> fields as well as possible.
+        </p>
+        <p class="note">
+          For example, the host share system may not have a dedicated URL
+          field, but a convention that both plain text and URLs are sometimes
+          transmitted in a "text" field. This is the case on Android. The user
+          agent can check whether all or part of the "text" field is a
+          <a data-cite="URL#valid-url-string">valid URL string</a>, and if so,
+          move that part of the "text" field to the <a data-cite=
+          "!WebShare#dom-sharedata"><code>ShareData</code></a>'s <a data-cite=
+          "!WebShare#dom-sharedata-url"><code>url</code></a> field.
+        </p>
+      </section>
+      <section>
+        <h3>
+          Launching the web share target
+        </h3>
+      </section>
+      <p>
+        When <a>web share target</a> having <a>WebAppManifest</a>
+        <var>manifest</var> at <a data-cite="!URL#concept-url">URL</a>
+        <var>manifest URL</var> is <a>invoked</a> with <a data-cite=
+        "!WebShare#dom-sharedata"><code>ShareData</code></a> <var>data</var>,
+        run the following steps:
+      </p>
+      <ol>
+        <li>Let <var>relative URL</var> be the result of running the <a>replace
+        placeholders</a> algorithm on
+        <var>manifest["<code>share_target</code>"]["<code>url_template</code>"]</var>
+        with <var>data</var>. If the result is failure, abort these steps.
+        </li>
+        <li>Let <var>final URL</var> be the result of running the
+          <a data-cite="!URL#concept-url-parser">URL parser</a> on
+          <var>relative URL</var>, with <var>manifest URL</var> as the
+          <var>base</var>, and no <var>encoding override</var>.
+        </li>
+        <li>If <var>final URL</var> is failure, abort these steps.
+        </li>
+        <li>If <var>final URL</var> is not <a data-cite=
+        "!appmanifest#dfn-within-scope">within scope</a> of
+        <var>manifest</var>'s scope URL, abort these steps.
+        </li>
+        <li>Run the <a data-cite="!HTML#window-open-steps">window open
+        steps</a> on <var>final URL</var>, with empty <var>target</var> and
+        empty <var>features</var>.
+        </li>
+      </ol>
+      <p>
+        The <dfn>replace placeholders</dfn> algorithm takes a <a data-cite=
+        "!WebIDL#idl-USVString">USVString</a> <var>template</var> and
+        <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a>
+        <var>data</var>, and returns either a <a data-cite=
+        "!WebIDL#idl-USVString">USVString</a> or failure:
+      </p>
+      <ol>
+        <li>While <var>template</var> contains U+007B (<code>{</code>):
+          <ol>
+            <li>If <var>template</var> does not contain U+007D
+            (<code>}</code>), return failure (unmatched opening brace).
+            </li>
+            <li>Let <var>start</var> be the index of the first occurrence of
+            U+007B (<code>{</code>) in <var>template</var>.
+            </li>
+            <li>Let <var>end</var> be the index of the first occurrence of
+            U+007D (<code>}</code>) in <var>template</var>.
+            </li>
+            <li>If <var>end</var> &lt; <var>start</var>, return failure
+            (unmatched closing brace).
+            </li>
+            <li>Let <var>key</var> be the characters in <var>template</var> in
+            between indices <var>start</var> and <var>end</var>, exclusive.
+            </li>
+            <li>Let <var>value</var> be <var>data</var>[<var>key</var>] (this
+            is always a <a data-cite="!WebIDL#idl-USVString">USVString</a>). If
+            it is undefined, let <var>value</var> be the empty string.
+            </li>
+            <li>Replace each character of <var>value</var>, <var>c</var>, with
+            the result of <a data-cite="!URL#utf-8-percent-encode">UTF-8
+            percent encoding</a> <var>c</var> using the <a data-cite=
+            "!URL#userinfo-percent-encode-set">userinfo percent-encode set</a>.
+            </li>
+            <li>Replace the characters in <var>template</var> from indices
+            <var>start</var> to <var>end</var>, inclusive, with
+            <var>value</var>.
+            </li>
+          </ol>
+        </li>
+        <li>If <var>template</var> contains U+007D (<code>}</code>), return
+        failure (unmatched closing brace).
+        </li>
+        <li>Return <var>template</var>.
+        </li>
+      </ol>
+      <div class="note">
+        <p>
+          The above algorithm assumes that all values of <a data-cite=
+          "!WebShare#dom-sharedata"><code>ShareData</code></a> are of type
+          <a data-cite="!WebIDL#idl-USVString">USVString</a>, which is
+          currently the case. If new members are added in the future that are
+          <em>not</em> strings, the above algorithm will need to specify
+          conversion to a string.
+        </p>
+        <p>
+          For example, if an <a href=
+          "https://github.com/WICG/web-share/issues/12">image</a> member is
+          added, this would likely be an <a data-cite=
+          "HTML#imagebitmapsource"><code>ImageBitmapSource</code></a>, which
+          would be converted into a <a data-cite=
+          "FileAPI#DefinitionOfScheme">Blob URL</a> before being inserted into
+          the URL template.
+        </p>
+      </div>
+      <div class="issue">
+        There are a number of cases where the launching algorithm can fail, due
+        to an invalid <a for="ShareTarget">url_template</a>, with no
+        satisfactory way to give feedback to the user or developer. Instead of
+        failing these checks silently at launch time, we should specify checks
+        at manifest parse time, and if the template is invalid, specify that it
+        be ignored (<i>i.e.</i>, not registered) and that a <a data-cite=
+        "appmanifest#dfn-issue-a-developer-warning">developer warning be
+        issued</a>.
+      </div>
     </section>
     <section class="informative">
       <h2>
