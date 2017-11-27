@@ -349,103 +349,106 @@ partial dictionary WebAppManifest {
         <h3>
           Launching the web share target
         </h3>
-      </section>
-      <p>
-        When <a>web share target</a> having <a>WebAppManifest</a>
-        <var>manifest</var> at <a data-cite="!URL#concept-url">URL</a>
-        <var>manifest URL</var> is <a>invoked</a> with <a data-cite=
-        "!WebShare#dom-sharedata"><code>ShareData</code></a> <var>data</var>,
-        run the following steps:
-      </p>
-      <ol>
-        <li>Let <var>relative URL</var> be the result of running the <a>replace
-        placeholders</a> algorithm on <var>manifest["<a data-link-for=
-        "WebAppManifest">share_target</a>"]["<a data-link-for=
-        "ShareTarget">url_template</a>"]</var> with <var>data</var>. If the
-        result is failure, abort these steps.
-        </li>
-        <li>Let <var>final URL</var> be the result of running the
+        <p>
+          When <a>web share target</a> having <a>WebAppManifest</a>
+          <var>manifest</var> at <a data-cite="!URL#concept-url">URL</a>
+          <var>manifest URL</var> is <a>invoked</a> with <a data-cite=
+          "!WebShare#dom-sharedata"><code>ShareData</code></a> <var>data</var>,
+          run the following steps:
+        </p>
+        <ol>
+          <li>Let <var>relative URL</var> be the result of running the
+          <a>replace placeholders</a> algorithm on
+          <var>manifest["<a data-link-for=
+          "WebAppManifest">share_target</a>"]["<a data-link-for=
+          "ShareTarget">url_template</a>"]</var> with <var>data</var>. If the
+          result is failure, abort these steps.
+          </li>
+          <li>Let <var>final URL</var> be the result of running the
           <a data-cite="!URL#concept-url-parser">URL parser</a> on
           <var>relative URL</var>, with <var>manifest URL</var> as the
           <var>base</var>, and no <var>encoding override</var>.
-        </li>
-        <li>If <var>final URL</var> is failure, abort these steps.
-        </li>
-        <li>If <var>final URL</var> is not <a data-cite=
-        "!appmanifest#dfn-within-scope">within scope</a> of
-        <var>manifest</var>'s scope URL, abort these steps.
-        </li>
-        <li>Run the <a data-cite="!HTML#window-open-steps">window open
-        steps</a> on <var>final URL</var>, with empty <var>target</var> and
-        empty <var>features</var>.
-        </li>
-      </ol>
-      <p>
-        The <dfn>replace placeholders</dfn> algorithm takes a <a data-cite=
-        "!WEBIDL#idl-USVString">USVString</a> <var>template</var> and
-        <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a>
-        <var>data</var>, and returns either a <a data-cite=
-        "!WEBIDL#idl-USVString">USVString</a> or failure:
-      </p>
-      <ol>
-        <li>While <var>template</var> contains U+007B (<code>{</code>):
-          <ol>
-            <li>If <var>template</var> does not contain U+007D
-            (<code>}</code>), return failure (unmatched opening brace).
-            </li>
-            <li>Let <var>start</var> be the index of the first occurrence of
-            U+007B (<code>{</code>) in <var>template</var>.
-            </li>
-            <li>Let <var>end</var> be the index of the first occurrence of
-            U+007D (<code>}</code>) in <var>template</var>.
-            </li>
-            <li>If <var>end</var> &lt; <var>start</var>, return failure
-            (unmatched closing brace).
-            </li>
-            <li>Let <var>key</var> be the characters in <var>template</var> in
-            between indices <var>start</var> and <var>end</var>, exclusive.
-            </li>
-            <li>Let <var>value</var> be <var>data</var>[<var>key</var>] (this
-            is always a <a data-cite="!WEBIDL#idl-USVString">USVString</a>). If
-            it is undefined, let <var>value</var> be the empty string.
-            </li>
-            <li>Replace each character of <var>value</var>, <var>c</var>, with
-            the result of <a data-cite="!URL#utf-8-percent-encode">UTF-8
-            percent encoding</a> <var>c</var> using the <a data-cite=
-            "!URL#userinfo-percent-encode-set">userinfo percent-encode set</a>.
-            </li>
-            <li>Replace the characters in <var>template</var> from indices
-            <var>start</var> to <var>end</var>, inclusive, with
-            <var>value</var>.
-            </li>
-          </ol>
-        </li>
-        <li>If <var>template</var> contains U+007D (<code>}</code>), return
-        failure (unmatched closing brace).
-        </li>
-        <li>Return <var>template</var>.
-        </li>
-      </ol>
-      <div class="note">
+          </li>
+          <li>If <var>final URL</var> is failure, abort these steps.
+          </li>
+          <li>If <var>final URL</var> is not <a data-cite=
+          "!appmanifest#dfn-within-scope">within scope</a> of
+          <var>manifest</var>'s scope URL, abort these steps.
+          </li>
+          <li>Run the <a data-cite="!HTML#window-open-steps">window open
+          steps</a> on <var>final URL</var>, with empty <var>target</var> and
+          empty <var>features</var>.
+          </li>
+        </ol>
         <p>
-          The above algorithm assumes that all values of <a data-cite=
-          "!WebShare#dom-sharedata"><code>ShareData</code></a> are of type
-          <a data-cite="!WEBIDL#idl-USVString">USVString</a>, which is
-          currently the case. If new members are added in the future that are
-          <em>not</em> strings, the above algorithm will need to specify
-          conversion to a string.
+          The <dfn>replace placeholders</dfn> algorithm takes a <a data-cite=
+          "!WEBIDL#idl-USVString">USVString</a> <var>template</var> and
+          <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a>
+          <var>data</var>, and returns either a <a data-cite=
+          "!WEBIDL#idl-USVString">USVString</a> or failure:
         </p>
-        <p>
-          For example, if an <a href=
-          "https://github.com/WICG/web-share/issues/12">image</a> member is
-          added, this would likely be an <a data-cite=
-          "HTML#imagebitmapsource"><code>ImageBitmapSource</code></a>, which
-          would be converted into a <a data-cite=
-          "FileAPI#DefinitionOfScheme">Blob URL</a> before being inserted into
-          the URL template.
-        </p>
-      </div>
-      <div class="issue" data-number="25"></div>
+        <ol>
+          <li>While <var>template</var> contains U+007B (<code>{</code>):
+            <ol>
+              <li>If <var>template</var> does not contain U+007D
+              (<code>}</code>), return failure (unmatched opening brace).
+              </li>
+              <li>Let <var>start</var> be the index of the first occurrence of
+              U+007B (<code>{</code>) in <var>template</var>.
+              </li>
+              <li>Let <var>end</var> be the index of the first occurrence of
+              U+007D (<code>}</code>) in <var>template</var>.
+              </li>
+              <li>If <var>end</var> &lt; <var>start</var>, return failure
+              (unmatched closing brace).
+              </li>
+              <li>Let <var>key</var> be the characters in <var>template</var>
+              in between indices <var>start</var> and <var>end</var>,
+              exclusive.
+              </li>
+              <li>Let <var>value</var> be <var>data</var>[<var>key</var>] (this
+              is always a <a data-cite="!WEBIDL#idl-USVString">USVString</a>).
+              If it is undefined, let <var>value</var> be the empty string.
+              </li>
+              <li>Replace each character of <var>value</var>, <var>c</var>,
+              with the result of <a data-cite="!URL#utf-8-percent-encode">UTF-8
+              percent encoding</a> <var>c</var> using the <a data-cite=
+              "!URL#userinfo-percent-encode-set">userinfo percent-encode
+              set</a>.
+              </li>
+              <li>Replace the characters in <var>template</var> from indices
+              <var>start</var> to <var>end</var>, inclusive, with
+              <var>value</var>.
+              </li>
+            </ol>
+          </li>
+          <li>If <var>template</var> contains U+007D (<code>}</code>), return
+          failure (unmatched closing brace).
+          </li>
+          <li>Return <var>template</var>.
+          </li>
+        </ol>
+        <div class="note">
+          <p>
+            The above algorithm assumes that all values of <a data-cite=
+            "!WebShare#dom-sharedata"><code>ShareData</code></a> are of type
+            <a data-cite="!WEBIDL#idl-USVString">USVString</a>, which is
+            currently the case. If new members are added in the future that are
+            <em>not</em> strings, the above algorithm will need to specify
+            conversion to a string.
+          </p>
+          <p>
+            For example, if an <a href=
+            "https://github.com/WICG/web-share/issues/12">image</a> member is
+            added, this would likely be an <a data-cite=
+            "HTML#imagebitmapsource"><code>ImageBitmapSource</code></a>, which
+            would be converted into a <a data-cite=
+            "FileAPI#DefinitionOfScheme">Blob URL</a> before being inserted
+            into the URL template.
+          </p>
+        </div>
+        <div class="issue" data-number="25"></div>
+      </section>
     </section>
     <section class="informative">
       <h2>
