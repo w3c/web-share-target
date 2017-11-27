@@ -199,6 +199,7 @@ partial dictionary WebAppManifest {
           "WebAppManifest">share_target</a> member. A web share target is a
           type of <a data-cite="!WebShare#dfn-share-target">share target</a>.
         </p>
+        <div class="issue" data-number="27"></div>
       </section>
       <section data-dfn-for="ShareTarget">
         <h3>
@@ -277,15 +278,7 @@ partial dictionary WebAppManifest {
         manifests, and therefore show the user targets that they have never
         visited or explicitly registered.
       </p>
-      <p class="issue" title="Explicitly registering share targets">
-        We may wish to provide a method for websites to explicitly request to
-        prompt the user for handler registration. This would be limited to
-        prompting to register the <a data-link-for=
-        "WebAppManifest">share_target</a> already declared in the manifest (not
-        dynamically creating share targets). For now, we have omitted such a
-        method from the design to keep control in the hands of user agents. It
-        is easier to add such a method later than remove it.
-      </p>
+      <div class="issue" data-number="26"></div>
     </section>
     <section>
       <h2>
@@ -451,35 +444,12 @@ partial dictionary WebAppManifest {
           the URL template.
         </p>
       </div>
-      <div class="issue">
-        There are a number of cases where the launching algorithm can fail, due
-        to an invalid <a data-link-for="ShareTarget">url_template</a>, with no
-        satisfactory way to give feedback to the user or developer. Instead of
-        failing these checks silently at launch time, we should specify checks
-        at manifest parse time, and if the template is invalid, specify that it
-        be ignored (<i>i.e.</i>, not registered) and that a <a data-cite=
-        "appmanifest#dfn-issue-a-developer-warning">developer warning be
-        issued</a>.
-      </div>
+      <div class="issue" data-number="25"></div>
     </section>
     <section class="informative">
       <h2>
         Security and privacy considerations
       </h2>
-      <div class="issue" title="Normative security issues">
-        <ul>
-          <li>Can the share target URL be outside of the manifest scope? Is
-          this enforced statically (before template substitution) or
-          dynamically (after)?
-          </li>
-          <li>Need to precisely define the secure context requirement. Note
-          that the <a data-cite="SECURE-CONTEXTS#secure-context">secure
-          context</a> algorithm is defined over an environment settings object,
-          not a URL. We need to block share targets that are specified from a
-          non-secure manifest OR those final URL is non-secure.
-          </li>
-        </ul>
-      </div>
       <ul>
         <li>Invoking a <a>web share target</a> means potentially sending
         private user data to a third-party website. Implementors are to take
