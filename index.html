@@ -85,14 +85,13 @@
         implement this one (but it is RECOMMENDED).
       </p>
     </section>
-    <section class="informative">
+    <section class="informative" data-link-for="WebAppManifest">
       <h2>
         Usage Example
       </h2>
       <p>
-        To register a site as a share target, a <a data-link-for=
-        "WebAppManifest">share_target</a> entry is added to the <a data-cite=
-        "appmanifest">Web App Manifest</a>, as shown:
+        To register a site as a share target, a <a>share_target</a> entry is
+        added to the <a data-cite="appmanifest">Web App Manifest</a>, as shown:
       </p>
       <pre class="example json" title="manifest.webmanifest">
 {
@@ -182,26 +181,26 @@ partial dictionary WebAppManifest {
   ShareTarget share_target;
 };
 </pre>
-      <section>
+      <section data-dfn-for="WebAppManifest" data-link-for="WebAppManifest">
         <h3>
           <code>share_target</code> member
         </h3>
         <p>
-          The <dfn data-dfn-for="WebAppManifest">share_target</dfn> member of
-          the manifest is a <a>ShareTarget</a> dictionary that declares this
-          application to be a <a>web share target</a>, and describes how the
-          application receives share data.
+          The <dfn>share_target</dfn> member of the manifest is a
+          <a>ShareTarget</a> dictionary that declares this application to be a
+          <a>web share target</a>, and describes how the application receives
+          share data.
         </p>
         <p>
           A <dfn data-lt="web share targets">web share target</dfn> is a web
           site in a <a data-cite="!SECURE-CONTEXTS#secure-context">secure
-          context</a> with a valid manifest containing a <a data-link-for=
-          "WebAppManifest">share_target</a> member. A web share target is a
-          type of <a data-cite="!WebShare#dfn-share-target">share target</a>.
+          context</a> with a valid manifest containing a <a>share_target</a>
+          member. A web share target is a type of <a data-cite=
+          "!WebShare#dfn-share-target">share target</a>.
         </p>
         <div class="issue" data-number="27"></div>
       </section>
-      <section data-dfn-for="ShareTarget">
+      <section data-dfn-for="ShareTarget" data-link-for="ShareTarget">
         <h3>
           <code>ShareTarget</code> and its members
         </h3>
@@ -209,9 +208,9 @@ partial dictionary WebAppManifest {
           The <dfn>ShareTarget</dfn> dictionary contains the following members.
         </p>
         <p>
-          The <dfn data-dfn-for="ShareTarget">url_template</dfn> member
-          describes which share data fields are passed to the web share target,
-          and in what format. It contains zero or more placeholders of the form
+          The <dfn>url_template</dfn> member describes which share data fields
+          are passed to the web share target, and in what format. It contains
+          zero or more placeholders of the form
           "<code>{<em>field</em>}</code>". Each <em>field</em> MUST be a valid
           <a data-cite="!WEBIDL#prod-identifier">WebIDL identifier</a>, and
           SHOULD be a key of the <a data-cite=
@@ -222,16 +221,15 @@ partial dictionary WebAppManifest {
         <div class="note">
           The <code>{</code> and <code>}</code> characters are illegal in a
           <a data-cite="URL#valid-url-string">valid URL string</a>, so they
-          always represent a placeholder in the <a data-link-for=
-          "ShareTarget">url_template</a> string, and do not need to be escaped.
+          always represent a placeholder in the <a>url_template</a> string, and
+          do not need to be escaped.
         </div>
         <p>
-          Any fields that are not present in the <a data-link-for=
-          "ShareTarget">url_template</a> will be silently dropped from the
-          share payload when sharing to this app. The <a data-link-for=
-          "ShareTarget">url_template</a> MAY contain fields that are not
-          <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a>
-          keys, for forwards compatibility.
+          Any fields that are not present in the <a>url_template</a> will be
+          silently dropped from the share payload when sharing to this app. The
+          <a>url_template</a> MAY contain fields that are not <a data-cite=
+          "!WebShare#dom-sharedata"><code>ShareData</code></a> keys, for
+          forwards compatibility.
         </p>
       </section>
     </section>
@@ -345,7 +343,7 @@ partial dictionary WebAppManifest {
           "!WebShare#dom-sharedata-url"><code>url</code></a> field.
         </p>
       </section>
-      <section>
+      <section data-link-for="WebAppManifest">
         <h3>
           Launching the web share target
         </h3>
@@ -359,8 +357,7 @@ partial dictionary WebAppManifest {
         <ol>
           <li>Let <var>relative URL</var> be the result of running the
           <a>replace placeholders</a> algorithm on
-          <var>manifest["<a data-link-for=
-          "WebAppManifest">share_target</a>"]["<a data-link-for=
+          <var>manifest["<a>share_target</a>"]["<a data-link-for=
           "ShareTarget">url_template</a>"]</var> with <var>data</var>. If the
           result is failure, abort these steps.
           </li>
