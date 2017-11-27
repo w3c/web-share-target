@@ -164,9 +164,9 @@ https://example.org/includinator/share.html?title=My%20News&amp;text=&amp;url=ht
         </li>
       </ul>
     </section>
-    <section>
+    <section data-link-for="WebAppManifest">
       <h2>
-        Extension to the <code>WebAppManifest</code> dictionary
+        Extension to the Web App Manifest
       </h2>
       <p>
         The following IDL extends the <dfn data-cite=
@@ -181,7 +181,27 @@ partial dictionary WebAppManifest {
   ShareTarget share_target;
 };
 </pre>
-      <section data-dfn-for="WebAppManifest" data-link-for="WebAppManifest">
+      <p>
+        The following steps are added to the <a data-cite=
+        "!appmanifest#dfn-extension-point">extension point</a> in the steps for
+        <a data-cite="!appmanifest#dfn-processing-a-manifest">processing a
+        manifest</a>:
+      </p>
+      <ol>
+        <li>Set <var>manifest</var>["<a>share_target</a>"] to the result of
+        running <a>post-processing the <code>share_target</code> member</a>
+        given <var>manifest</var>["<a>share_target</a>"],
+        <var>manifest</var>["<a data-cite=
+        "!appmanifest#dom-webappmanifest-scope"><code>scope</code></a>"], and
+        <var>manifest URL</var>.
+        </li>
+      </ol>
+      <div class="issue">
+        The extension point actually needs to come after the other fields are
+        post-processed. Otherwise, we will be using a potentially invalid or
+        relative scope URL.
+      </div>
+      <section data-dfn-for="WebAppManifest">
         <h3>
           <code>share_target</code> member
         </h3>
@@ -199,6 +219,67 @@ partial dictionary WebAppManifest {
           "!WebShare#dfn-share-target">share target</a>.
         </p>
         <div class="issue" data-number="27"></div>
+        <p>
+          The steps for <dfn>post-processing the <code>share_target</code>
+          member</dfn> is given by the following algorithm. The algorithm takes
+          a <a>ShareTarget</a> <var>share target</var>, a <a data-cite=
+          "!URL#concept-url">URL</a> <var>scope URL</var>, and a <a data-cite=
+          "!URL#concept-url">URL</a> <var>manifest URL</var>. This algorithm
+          returns a <a>ShareTarget</a> or <code>undefined</code>.
+        </p>
+        <ol>
+          <li>If <var>share target</var> is <code>undefined</code>, then return
+          <code>undefined</code>.
+          </li>
+          <li>Let <var>URL template</var> be <var>share
+          target["<a data-link-for="ShareTarget">url_template</a>"]</var>.
+          </li>
+          <li>If <var>URL template</var> is <code>undefined</code>, then return
+          <code>undefined</code>.
+          </li>
+          <li>Let <var>test relative URL</var> be the result of running the <a>
+            replace placeholders</a> algorithm on <var>URL template</var> with
+            <code>{}</code> (the empty <a data-cite=
+            "!WebShare#dom-sharedata"><code>ShareData</code></a>). If the
+            result is failure, <a data-cite=
+            "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+            warning</a> that the URL template is invalid, and return
+            <code>undefined</code>.
+          </li>
+          <li>Let <var>test absolute URL</var> be the result of running the
+          <a data-cite="!URL#concept-url-parser">URL parser</a> on <var>test
+          relative URL</var>, with <var>manifest URL</var> as the
+          <var>base</var>, and no <var>encoding override</var>. If <var>test
+          absolute URL</var> is failure, <a data-cite=
+          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+          warning</a> that the URL template is invalid, and return
+          <code>undefined</code>.
+          </li>
+          <li>If <var>test absolute URL</var> is not <a data-cite=
+          "!appmanifest#dfn-within-scope">within scope</a> of <var>scope
+          URL</var>, <a data-cite="!appmanifest#dfn-issue-a-developer-warning">
+            issue a developer warning</a> that the URL template is outside of
+            the manifest scope, and return <code>undefined</code>.
+          </li>
+          <li>Return <var>share target</var>.
+          </li>
+        </ol>
+        <div class="note">
+          <p>
+            Unlike the other post-processing steps for URL members of the
+            manifest, this algorithm does not update the manifest object with
+            the absolute URL for <a data-link-for=
+            "ShareTarget">url_template</a>. This is because the <a data-cite=
+            "!URL#concept-url-parser">URL parser</a> won't work on the URL
+            template; it can only be run after the placeholders are replaced at
+            launch time.
+          </p>
+          <p>
+            Therefore, the above steps just validate the URL template, and if
+            it is invalid, ignore the share target. The launch algorithm below
+            repeats these same steps using the actual share data.
+          </p>
+        </div>
       </section>
       <section data-dfn-for="ShareTarget" data-link-for="ShareTarget">
         <h3>
@@ -377,6 +458,12 @@ partial dictionary WebAppManifest {
           empty <var>features</var>.
           </li>
         </ol>
+        <p class="note">
+          This algorithm never aborts if <var>manifest</var> has had the
+          <a>post-processing the <code>share_target</code> member</a> algorithm
+          run on it. That algorithm deletes any <a>share_target</a> member that
+          would fail these checks.
+        </p>
         <p>
           The <dfn>replace placeholders</dfn> algorithm takes a <a data-cite=
           "!WEBIDL#idl-USVString">USVString</a> <var>template</var> and
@@ -444,7 +531,6 @@ partial dictionary WebAppManifest {
             into the URL template.
           </p>
         </div>
-        <div class="issue" data-number="25"></div>
       </section>
     </section>
     <section class="informative">
