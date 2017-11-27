@@ -359,9 +359,10 @@ partial dictionary WebAppManifest {
       </p>
       <ol>
         <li>Let <var>relative URL</var> be the result of running the <a>replace
-        placeholders</a> algorithm on
-        <var>manifest["<code>share_target</code>"]["<code>url_template</code>"]</var>
-        with <var>data</var>. If the result is failure, abort these steps.
+        placeholders</a> algorithm on <var>manifest["<a data-link-for=
+        "WebAppManifest">share_target</a>"]["<a data-link-for=
+        "ShareTarget">url_template</a>"]</var> with <var>data</var>. If the
+        result is failure, abort these steps.
         </li>
         <li>Let <var>final URL</var> be the result of running the
           <a data-cite="!URL#concept-url-parser">URL parser</a> on
