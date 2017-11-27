@@ -173,25 +173,6 @@ https://example.org/includinator/share.html?title=My%20News&amp;text=&amp;url=ht
         The following IDL extends the <a data-cite="!appmanifest">Web App
         Manifest</a> JSON object.
       </p>
-      <div class="issue" title="Manifest spec rework">
-        <p>
-          This section is written against a proposed future version of the
-          Manifest spec currently shown in the preview at <a href=
-          "https://github.com/w3c/manifest/issues/613">manifest#613</a>.
-        </p>
-        <p>
-          In this re-work of the spec, a <dfn>WebAppManifest</dfn> dictionary
-          defines the manifest in IDL, which we extend here.
-        </p>
-        <p>
-          The current version of the spec defines the manifest as a set of
-          algorithms, not an IDL dictionary. If we were writing against the
-          current Manifest spec, we would need to hook into the <a data-cite=
-          "!appmanifest#dfn-extension-point">extension point</a> in the
-          <a data-cite="!appmanifest#dfn-steps-for-processing-a-manifest">steps
-          for processing a manifest</a>.
-        </p>
-      </div>
       <pre class="idl">
 dictionary ShareTarget {
   required DOMString url_template;
