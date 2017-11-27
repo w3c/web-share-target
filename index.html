@@ -90,7 +90,7 @@
         Usage Example
       </h2>
       <p>
-        To register a site as a share target, a <a for=
+        To register a site as a share target, a <a data-link-for=
         "WebAppManifest">share_target</a> entry is added to the <a data-cite=
         "appmanifest">Web App Manifest</a>, as shown:
       </p>
@@ -103,10 +103,10 @@
 }
 </pre>
       <p>
-        The <a for="ShareTarget">url_template</a> contains a number of
-        placeholder fields that will be replaced with the shared data when the
-        target is <a>invoked</a>. Once the fields are replaced, it should be a
-        URL that is relative to the directory containing the manifest URL.
+        The <a data-link-for="ShareTarget">url_template</a> contains a number
+        of placeholder fields that will be replaced with the shared data when
+        the target is <a>invoked</a>. Once the fields are replaced, it should
+        be a URL that is relative to the directory containing the manifest URL.
       </p>
       <p>
         For the purpose of this example, we assume the manifest is located at
@@ -187,15 +187,15 @@ partial dictionary WebAppManifest {
           <code>share_target</code> member
         </h3>
         <p>
-          The <dfn for="WebAppManifest">share_target</dfn> member of the
-          manifest is a <a>ShareTarget</a> dictionary that declares this
+          The <dfn data-dfn-for="WebAppManifest">share_target</dfn> member of
+          the manifest is a <a>ShareTarget</a> dictionary that declares this
           application to be a <a>web share target</a>, and describes how the
           application receives share data.
         </p>
         <p>
           A <dfn data-lt="web share targets">web share target</dfn> is a web
           site in a <a data-cite="!SECURE-CONTEXTS#secure-context">secure
-          context</a> with a valid manifest containing a <a for=
+          context</a> with a valid manifest containing a <a data-link-for=
           "WebAppManifest">share_target</a> member. A web share target is a
           type of <a data-cite="!WebShare#dfn-share-target">share target</a>.
         </p>
@@ -208,9 +208,9 @@ partial dictionary WebAppManifest {
           The <dfn>ShareTarget</dfn> dictionary contains the following members.
         </p>
         <p>
-          The <dfn>url_template</dfn> member describes which share data fields
-          are passed to the web share target, and in what format. It contains
-          zero or more placeholders of the form
+          The <dfn data-dfn-for="ShareTarget">url_template</dfn> member
+          describes which share data fields are passed to the web share target,
+          and in what format. It contains zero or more placeholders of the form
           "<code>{<em>field</em>}</code>". Each <em>field</em> MUST be a valid
           <a data-cite="!WEBIDL#prod-identifier">WebIDL identifier</a>, and
           SHOULD be a key of the <a data-cite=
@@ -221,13 +221,13 @@ partial dictionary WebAppManifest {
         <div class="note">
           The <code>{</code> and <code>}</code> characters are illegal in a
           <a data-cite="URL#valid-url-string">valid URL string</a>, so they
-          always represent a placeholder in the <a for=
+          always represent a placeholder in the <a data-link-for=
           "ShareTarget">url_template</a> string, and do not need to be escaped.
         </div>
         <p>
-          Any fields that are not present in the <a for=
+          Any fields that are not present in the <a data-link-for=
           "ShareTarget">url_template</a> will be silently dropped from the
-          share payload when sharing to this app. The <a for=
+          share payload when sharing to this app. The <a data-link-for=
           "ShareTarget">url_template</a> MAY contain fields that are not
           <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a>
           keys, for forwards compatibility.
@@ -280,11 +280,11 @@ partial dictionary WebAppManifest {
       <p class="issue" title="Explicitly registering share targets">
         We may wish to provide a method for websites to explicitly request to
         prompt the user for handler registration. This would be limited to
-        prompting to register the <a for="WebAppManifest">share_target</a>
-        already declared in the manifest (not dynamically creating share
-        targets). For now, we have omitted such a method from the design to
-        keep control in the hands of user agents. It is easier to add such a
-        method later than remove it.
+        prompting to register the <a data-link-for=
+        "WebAppManifest">share_target</a> already declared in the manifest (not
+        dynamically creating share targets). For now, we have omitted such a
+        method from the design to keep control in the hands of user agents. It
+        is easier to add such a method later than remove it.
       </p>
     </section>
     <section>
@@ -453,7 +453,7 @@ partial dictionary WebAppManifest {
       </div>
       <div class="issue">
         There are a number of cases where the launching algorithm can fail, due
-        to an invalid <a for="ShareTarget">url_template</a>, with no
+        to an invalid <a data-link-for="ShareTarget">url_template</a>, with no
         satisfactory way to give feedback to the user or developer. Instead of
         failing these checks silently at launch time, we should specify checks
         at manifest parse time, and if the template is invalid, specify that it
