@@ -447,7 +447,9 @@ partial dictionary WebAppManifest {
         <ol>
           <li>Let <var>URL template</var> be
           <var>manifest["<a>share_target</a>"]["<a data-link-for=
-          "ShareTarget">url_template</a>"]</var>.
+          "ShareTarget">url_template</a>"]</var>. <b><a data-cite=
+          "!INFRA#assert">Assert</a></b>: <var>URL template</var> is not <code>
+            undefined</code>.
           </li>
           <li>Let <var>final URL</var> be a copy of <var>URL template</var>,
           with the following changes:
@@ -456,15 +458,15 @@ partial dictionary WebAppManifest {
               "!URL#concept-url-query">query</a> is not null, <var>final
               URL</var>'s query is the result of running the <a>replace
               placeholders</a> algorithm on <var>URL template</var>'s query
-              with <var>data</var>. If the result is failure, abort these
-              steps.
+              with <var>data</var>. <b><a data-cite=
+              "!INFRA#assert">Assert</a></b>: This did not return failure.
               </li>
               <li>If <var>URL template</var>'s <a data-cite=
               "!URL#concept-url-fragment">fragment</a> is not null, <var>final
               URL</var>'s fragment is the result of running the <a>replace
               placeholders</a> algorithm on <var>URL template</var>'s fragment
-              with <var>data</var>. If the result is failure, abort these
-              steps.
+              with <var>data</var>. <b><a data-cite=
+              "!INFRA#assert">Assert</a></b>: This did not return failure.
               </li>
             </ol>
           </li>
@@ -474,10 +476,11 @@ partial dictionary WebAppManifest {
           </li>
         </ol>
         <p class="note">
-          This algorithm never aborts if <var>manifest</var> has had the
-          <a>post-processing the <code>share_target</code> member</a> algorithm
-          run on it. That algorithm deletes any <a>share_target</a> member that
-          would fail these checks.
+          The assertions in this algorithm assume that <var>manifest</var> has
+          had the <a>post-processing the <code>share_target</code> member</a>
+          algorithm run on it and still has a <a>share_target</a> afterwards.
+          That algorithm deletes any <a>share_target</a> member that would
+          violate these assertions.
         </p>
         <div class="note">
           <p>
