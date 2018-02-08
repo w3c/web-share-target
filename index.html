@@ -241,11 +241,13 @@ partial dictionary WebAppManifest {
           <li>Let <var>URL template</var> be the result of running the
           <a data-cite="!URL#concept-url-parser">URL parser</a> on <var>URL
           template string</var>, with <var>manifest URL</var> as the
-          <var>base</var>, and no <var>encoding override</var>. If the result
-          is failure, <a data-cite=
-          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-          warning</a> that <a data-link-for="ShareTarget">url_template</a> is
-          invalid, and return <code>undefined</code>.
+          <var>base</var>, and no <var>encoding override</var>.
+            (<a data-cite="!URL#validation-error">Validation errors</a> are
+            expected due to <code>{</code> and <code>}</code>, and should be
+            ignored.) If the result is failure, <a data-cite=
+            "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+            warning</a> that <a data-link-for="ShareTarget">url_template</a> is
+            invalid, and return <code>undefined</code>.
           </li>
           <li>If <var>URL template</var> is not <a data-cite=
           "!appmanifest#dfn-within-scope">within scope</a> of <var>scope
