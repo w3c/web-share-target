@@ -445,24 +445,24 @@ partial dictionary WebAppManifest {
           run the following steps:
         </p>
         <ol>
-          <li>Let <var>template URL</var> be
+          <li>Let <var>URL template</var> be
           <var>manifest["<a>share_target</a>"]["<a data-link-for=
           "ShareTarget">url_template</a>"]</var>.
           </li>
-          <li>Let <var>final URL</var> be a copy of <var>template URL</var>,
+          <li>Let <var>final URL</var> be a copy of <var>URL template</var>,
           with the following changes:
             <ol>
-              <li>If <var>template URL</var>'s <a data-cite=
+              <li>If <var>URL template</var>'s <a data-cite=
               "!URL#concept-url-query">query</a> is not null, <var>final
               URL</var>'s query is the result of running the <a>replace
-              placeholders</a> algorithm on <var>template URL</var>'s query
+              placeholders</a> algorithm on <var>URL template</var>'s query
               with <var>data</var>. If the result is failure, abort these
               steps.
               </li>
-              <li>If <var>template URL</var>'s <a data-cite=
+              <li>If <var>URL template</var>'s <a data-cite=
               "!URL#concept-url-fragment">fragment</a> is not null, <var>final
               URL</var>'s fragment is the result of running the <a>replace
-              placeholders</a> algorithm on <var>template URL</var>'s fragment
+              placeholders</a> algorithm on <var>URL template</var>'s fragment
               with <var>data</var>. If the result is failure, abort these
               steps.
               </li>
