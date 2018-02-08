@@ -219,10 +219,13 @@ partial dictionary WebAppManifest {
           "!URL#valid-url-string">valid URL string</a>.
         </p>
         <div class="note">
-          The <code>{</code> and <code>}</code> characters are illegal in a
-          <a data-cite="URL#valid-url-string">valid URL string</a>, so they
-          always represent a placeholder in the <a>url_template</a> string, and
-          do not need to be escaped.
+          The characters U+007B (<code>{</code>) and U+007D (<code>}</code>)
+          are invalid in a <a data-cite="URL#valid-url-string">valid URL
+          string</a> (although they parse without being percent-encoded, they
+          trigger a validation error). Thus, they unambiguously represent
+          placeholders in the <a>url_template</a> string. Literal curly bracket
+          characters can be represented via percent-encoding, as
+          <code>%7B</code> and <code>%7D</code>.
         </div>
         <p>
           Any fields that are not present in the <a>url_template</a> will be
