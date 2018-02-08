@@ -413,9 +413,8 @@ partial dictionary WebAppManifest {
               </li>
               <li>Replace each character of <var>value</var>, <var>c</var>,
               with the result of <a data-cite="!URL#utf-8-percent-encode">UTF-8
-              percent encoding</a> <var>c</var> using the <a data-cite=
-              "!URL#userinfo-percent-encode-set">userinfo percent-encode
-              set</a>.
+              percent encoding</a> <var>c</var> using the <a>reserved
+              percent-encode set</a>.
               </li>
               <li>Replace the characters in <var>template</var> from indices
               <var>start</var> to <var>end</var>, inclusive, with
@@ -449,6 +448,24 @@ partial dictionary WebAppManifest {
           </p>
         </div>
         <div class="issue" data-number="25"></div>
+        <p>
+          The <dfn>reserved percent-encode set</dfn> is the <a data-cite=
+          "!URL#userinfo-percent-encode-set">userinfo percent-encode set</a>
+          and U+0021 (!), U+0024 ($), U+0025 (%), U+0026 (&amp;), U+0027 ('),
+          U+0028 LEFT PARENTHESIS, U+0029 RIGHT PARENTHESIS, U+002A (*), U+002B
+          (+), and U+002C (,).
+        </p>
+        <p class="note">
+          The <a>reserved percent-encode set</a> is the complement of the
+          "unreserved" set in [[rfc2396]], the same set used by <a data-cite=
+          "ECMAScript#sec-encodeuricomponent-uricomponent">encodeURIComponent</a>
+          from [[ECMAScript]].
+        </p>
+        <p class="issue">
+          The <a>reserved percent-encode set</a> should be defined in [[!URL]],
+          not here. See <a href=
+          "https://github.com/whatwg/url/issues/369">whatwg/url#369</a>.
+        </p>
       </section>
     </section>
     <section class="informative">
