@@ -104,8 +104,11 @@
       <p>
         The <a data-link-for="ShareTarget">url_template</a> contains a number
         of placeholder fields that will be replaced with the shared data when
-        the target is <a>invoked</a>. Once the fields are replaced, it should
-        be a URL that is relative to the directory containing the manifest URL.
+        the target is <a>invoked</a>. Placeholders are only replaced in the
+        <a data-cite="!URL#concept-url-query">query</a> and <a data-cite=
+        "!URL#concept-url-fragment">fragment</a> parts of the URL template.
+        Once the fields are replaced, it should be a URL that is relative to
+        the directory containing the manifest URL.
       </p>
       <p>
         For the purpose of this example, we assume the manifest is located at
@@ -219,10 +222,13 @@ partial dictionary WebAppManifest {
           "!URL#valid-url-string">valid URL string</a>.
         </p>
         <div class="note">
-          The <code>{</code> and <code>}</code> characters are illegal in a
-          <a data-cite="URL#valid-url-string">valid URL string</a>, so they
-          always represent a placeholder in the <a>url_template</a> string, and
-          do not need to be escaped.
+          The characters U+007B (<code>{</code>) and U+007D (<code>}</code>)
+          are invalid in a <a data-cite="URL#valid-url-string">valid URL
+          string</a> (although they parse without being percent-encoded, they
+          trigger a validation error). Thus, they unambiguously represent
+          placeholders in the <a>url_template</a> string. Literal curly bracket
+          characters can be represented via percent-encoding, as
+          <code>%7B</code> and <code>%7D</code>.
         </div>
         <p>
           Any fields that are not present in the <a>url_template</a> will be
@@ -355,28 +361,51 @@ partial dictionary WebAppManifest {
           run the following steps:
         </p>
         <ol>
-          <li>Let <var>relative URL</var> be the result of running the
-          <a>replace placeholders</a> algorithm on
+          <li>Let <var>template URL</var> be the result of running the
+          <a data-cite="!URL#concept-url-parser">URL parser</a> on
           <var>manifest["<a>share_target</a>"]["<a data-link-for=
-          "ShareTarget">url_template</a>"]</var> with <var>data</var>. If the
+          "ShareTarget">url_template</a>"]</var>, with <var>manifest URL</var>
+          as the <var>base</var>, and no <var>encoding override</var>. If the
           result is failure, abort these steps.
           </li>
-          <li>Let <var>final URL</var> be the result of running the
-          <a data-cite="!URL#concept-url-parser">URL parser</a> on
-          <var>relative URL</var>, with <var>manifest URL</var> as the
-          <var>base</var>, and no <var>encoding override</var>.
-          </li>
-          <li>If <var>final URL</var> is failure, abort these steps.
-          </li>
-          <li>If <var>final URL</var> is not <a data-cite=
+          <li>If <var>template URL</var> is not <a data-cite=
           "!appmanifest#dfn-within-scope">within scope</a> of
           <var>manifest</var>'s scope URL, abort these steps.
+          </li>
+          <li>Let <var>final URL</var> be a copy of <var>template URL</var>,
+          with the following changes:
+            <ol>
+              <li>If <var>template URL</var>'s <a data-cite=
+              "!URL#concept-url-query">query</a> is not null, <var>final
+              URL</var>'s query is the result of running the <a>replace
+              placeholders</a> algorithm on <var>template URL</var>'s query
+              with <var>data</var>. If the result is failure, abort these
+              steps.
+              </li>
+              <li>If <var>template URL</var>'s <a data-cite=
+              "!URL#concept-url-fragment">fragment</a> is not null, <var>final
+              URL</var>'s fragment is the result of running the <a>replace
+              placeholders</a> algorithm on <var>template URL</var>'s fragment
+              with <var>data</var>. If the result is failure, abort these
+              steps.
+              </li>
+            </ol>
           </li>
           <li>Run the <a data-cite="!HTML#window-open-steps">window open
           steps</a> on <var>final URL</var>, with empty <var>target</var> and
           empty <var>features</var>.
           </li>
         </ol>
+        <div class="note">
+          <p>
+            Only the query and fragment parts of the URL have placeholders
+            replaced. Placeholders cannot be replaced in the path, because
+            otherwise it would allow a path escape. For example, a template of
+            <code>"app/create/%(text)"</code> would allow the sharer to supply
+            a text of <code>".."</code>, resulting in a final URL of
+            <code>"app"</code>.
+          </p>
+        </div>
         <p>
           The <dfn>replace placeholders</dfn> algorithm takes a <a data-cite=
           "!WEBIDL#idl-USVString">USVString</a> <var>template</var> and
