@@ -166,20 +166,8 @@ will generally depend on the type of app. Here are some suggestions:
   `text` and `url` concatenated together. It might truncate the text or replace
   `url` with a short link to fit into the message size.
 
-A share fails if:
-
-* The handler had no registered service worker.
-* There was an error during service worker initialization.
-* There is no event handler for `share` events.
-* The event handler explicitly calls the event's `reject` method (either in the
-  event handler, or in the promise passed to the event's
-  [`waitUntil`](https://www.w3.org/TR/service-workers/#wait-until-method)
-  method).
-* The promise passed to `waitUntil` is rejected.
-
-Once the event completes without failing, the share automatically succeeds, and
-the requester's promise is resolved. The end of the event's lifetime marks the
-end of the share, and there is no further communication in either direction.
+The end of the event's lifetime marks the end of the share, and there is no
+further communication in either direction.
 
 The Share Target API is defined entirely within the service worker. If the
 handler needs to provide UI (which should be the common case), the service
