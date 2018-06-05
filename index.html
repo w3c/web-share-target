@@ -104,9 +104,9 @@
   "share_target": {
     "action": "share.html",
     "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
+      "title": "name",
+      "text": "description",
+      "url": "link"
     }
   }
 }
@@ -134,9 +134,9 @@
     &lt;script&gt;
       window.addEventListener('load', () =&gt; {
         var parsedUrl = new URL(window.location.toString());
-        console.log('Title shared: ' + parsedUrl.searchParams.get('title'));
-        console.log('Text shared: ' + parsedUrl.searchParams.get('text'));
-        console.log('URL shared: ' + parsedUrl.searchParams.get('url'));
+        console.log('Title shared: ' + parsedUrl.searchParams.get('name'));
+        console.log('Text shared: ' + parsedUrl.searchParams.get('description'));
+        console.log('URL shared: ' + parsedUrl.searchParams.get('link'));
       });
     &lt;/script&gt;
   &lt;/body&gt;
