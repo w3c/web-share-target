@@ -192,6 +192,7 @@ dictionary ShareTargetParams {
 
 dictionary ShareTarget {
   required USVString action;
+  DOMString method = "GET";
   required ShareTargetParams params;
 };
 
@@ -199,6 +200,21 @@ partial dictionary WebAppManifest {
   ShareTarget share_target;
 };
 </pre>
+      <p>
+        The following steps are added to the <a data-cite=
+        "!appmanifest#dfn-extension-point">extension point</a> in the steps for
+        <a data-cite="!appmanifest#dfn-processing-a-manifest">processing a
+        manifest</a>:
+      </p>
+      <ol>
+        <li>Set <var>manifest</var>["<a>share_target</a>"] to the result of
+        running <a>post-processing the <code>share_target</code> member</a>
+        given <var>manifest</var>["<a>share_target</a>"],
+        <var>manifest</var>["<a data-cite=
+        "!appmanifest#dom-webappmanifest-scope"><code>scope</code></a>"], and
+        <var>manifest URL</var>.
+        </li>
+      </ol>
       <section data-dfn-for="WebAppManifest">
         <h3>
           <code>share_target</code> member
@@ -217,6 +233,46 @@ partial dictionary WebAppManifest {
           "!WebShare#dfn-share-target">share target</a>.
         </p>
         <div class="issue" data-number="27"></div>
+        <p>
+          The steps for <dfn>post-processing the <code>share_target</code>
+          member</dfn> is given by the following algorithm. The algorithm takes
+          a <a>ShareTarget</a> <var>share target</var>, a <a data-cite=
+          "!URL#concept-url">URL</a> <var>scope URL</var>, and a <a data-cite=
+          "!URL#concept-url">URL</a> <var>manifest URL</var>. This algorithm
+          returns a <a>ShareTarget</a> or <code>undefined</code>.
+        </p>
+        <ol>
+          <li>If <var>share target</var> is <code>undefined</code>, then return
+          <code>undefined</code>.
+          </li>
+          <li>If <var>share
+          target["<a href="#dom-sharetarget-method">method</a>"]</var> is not an
+          ASCII case-insensitive match for the string <code>"GET"</code>,
+          <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue a
+          developer warning</a> that the method is not supported, and return
+          <code>undefined</code>.
+          </li>
+          <li><a href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url">
+          Parse</a> the <a href="https://url.spec.whatwg.org/#concept-url">URL
+          </a> <var>manifest["<a>share_target</a>"]
+          ["<a href="#dom-sharetarget-action">action</a>"]</var>, relative to
+          the <var>manifest URL</var>. If this fails,
+          <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue a
+          developer warning</a> and return <code>undefined</code>.
+          </li>
+          <li>Let <var>parsed action</var> be the resulting URL record.
+          </li>
+          <li>If <var>parsed action</var> is not <a data-cite=
+          "!appmanifest#dfn-within-scope">within scope</a> of <var>scope
+          URL</var>, <a data-cite="!appmanifest#dfn-issue-a-developer-warning">
+            issue a developer warning</a> that <a
+            href="#dom-sharetarget-action">action</a> is outside of the
+            <a data-cite="!appmanifest#dfn-navigation-scope">navigation scope
+            </a>, and return <code>undefined</code>.
+          </li>
+          <li>Return <var>share target</var>.
+          </li>
+        </ol>
       </section>
       <section data-dfn-for="ShareTarget" data-link-for="ShareTarget">
         <h3>
@@ -230,6 +286,11 @@ partial dictionary WebAppManifest {
           target.
         </p>
         <p>
+          The <dfn>method</dfn> member specifies the HTTP request
+          <a href="https://tools.ietf.org/html/rfc7231#section-4">method</a> for
+          the web share target.
+        </p>
+        <p>
           The <dfn>params</dfn> member contains a <a>ShareTargetParams</a> dictionary.
         </p>
         <h3>
@@ -241,15 +302,22 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           The <dfn>title</dfn> member specifies the name of the form field
-          used to share the title.
+          used for the arbitrary text that forms the body of the message being
+          shared.
         </p>
         <p>
           The <dfn>text</dfn> member specifies the name of the form field
-          used to share the text.
+          used for the title of the document being shared.
         </p>
         <p>
           The <dfn>url</dfn> member specifies the name of the form field
-          used to share the url.
+          used for the URL string referring to a resource being shared.
+        </p>
+        <p>
+          The fields will be populated with information from the
+          <a href="https://wicg.github.io/web-share/#sharedata-dictionary">ShareData</a>
+          being shared. If the ShareData contains no information for a given
+          field, the form field will receive an empty string.
         </p>
       </section>
     </section>
@@ -361,6 +429,70 @@ partial dictionary WebAppManifest {
           move that part of the "text" field to the <a data-cite=
           "!WebShare#dom-sharedata"><code>ShareData</code></a>'s <a data-cite=
           "!WebShare#dom-sharedata-url"><code>url</code></a> field.
+        </p>
+      </section>
+      <section data-link-for="WebAppManifest">
+        <h3>
+          Launching the web share target
+        </h3>
+        <p>
+          When <a>web share target</a> having <a>WebAppManifest</a>
+          <var>manifest</var> at <a data-cite="!URL#concept-url">URL</a>
+          <var>manifest URL</var> is <a>invoked</a> with <a data-cite=
+          "!WebShare#dom-sharedata"><code>ShareData</code></a> <var>data</var>,
+          run the following steps:
+        </p>
+        <ol>
+          <li>
+            Parse the URL <var>manifest["<a>share_target</a>"]
+            ["<a href="#dom-sharetarget-action">action</a>"]</var>, relative to
+            the <var>manifest URL</var>.
+          </li>
+          <li>
+            Let <var>parsed action</var> be the resulting URL record.
+          </li>
+          <li>
+            Let entry list be a new empty list of <a href=
+            "https://xhr.spec.whatwg.org/#concept-formdata-entry">entries</a>.
+          </li>
+          <li>
+            For each <var>member<var> in the sequence<code>"title", "text",
+            "url"</code>,
+            <ul>
+              <li>
+                Let <var>name</var> be the value of <var>manifest["
+                <a>share_target</a>"]["<a href="#dom-sharetarget-params">
+                params</a>"][member]</var>.
+              </li>
+              <li>
+                Let <var>value</var> be the value of <var>data[member]</var>.
+              </li>
+              <li>
+                <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#append-an-entry">
+                Append an entry</a> to <var>entry list</var> with
+                <var>name</var> and <var>value</var>.
+              </li>
+            </ul>
+          </li>
+          <li>
+            Let <var>query</var> be the result of running the <a
+            href="https://url.spec.whatwg.org/#concept-urlencoded-serializer">
+            <code>application/x-www-form-urlencoded</code> serializer</a> with
+            entry list and no encoding override.
+          </li>
+          <li>
+            Set <var>parsed action</var>'s query component to <var>query</var>.
+          </li>
+          <li>
+            Run the <a data-cite="!HTML#window-open-steps">window open steps</a>
+            on <var>parsed action</var>, with empty <var>target</var> and empty
+            <var>features</var>.
+          </li>
+        </ol>
+        <p class="note">
+          This algorithm assumes that <var>manifest</var> has
+          had the <a>post-processing the <code>share_target</code> member</a>
+          algorithm run on it and still has a <a>share_target</a> afterwards.
         </p>
       </section>
     </section>
