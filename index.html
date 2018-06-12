@@ -112,14 +112,15 @@
 }
 </pre>
       <p>
-        The <a data-link-for="params">params</a> contain the names for a number
-        of form fields that will be populated with the shared data when
-        the target is <a>invoked</a> with a GET request.
+        The <a href="#dom-sharetarget-params">params</a> keys correspond to the key
+        names in <a href="https://wicg.github.io/web-share/#sharedata-dictionary">ShareData</a>,
+        while the values are arbitrary names that will be used as query
+        parameters when the target is launched.
       </p>
       <p>
         When a share takes place, if the user selects this app as the share
-        target, the user agent creates a form submission, and
-        opens a new browsing context at the action URL.
+        target, the user agent creates a GET request like a form submission, and
+        opens a new browsing context using the <code>action</code> URL.
       </p>
       <p>
         For the purpose of this example, we assume the manifest is located at
@@ -141,6 +142,14 @@
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
+</pre>
+      <p>
+        If an incoming share contains the title "My News" and the URL
+        <code>http://example.com/news</code>, the user agent will open a new
+        window or tab and navigate to:
+      </p>
+<pre>
+https://example.org/includinator/share.html?name=My%20News&amp;description=&amp;link=http%3A%2F%2Fexample.com%2Fnews
 </pre>
       <p>
         How the handler deals with the shared data is at the handler's
@@ -218,8 +227,7 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           The <dfn>action</dfn> member specifies the URL for the web share
-          target. It MUST be a <a data-cite=
-          "!URL#valid-url-string">valid URL string</a>.
+          target.
         </p>
         <p>
           The <dfn>params</dfn> member contains a <a>ShareTargetParams</a> dictionary.
