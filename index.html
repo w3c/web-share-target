@@ -360,6 +360,7 @@ partial dictionary WebAppManifest {
           (perhaps using the same UI as <a data-cite=
           "HTML#dom-navigator-registerprotocolhandler"><code>navigator.registerProtocolHandler</code></a>).
           </li>
+          <li>Only register a web share target if it has a service worker.</li>
         </ul>
       </div>
       <p>
@@ -605,9 +606,6 @@ partial dictionary WebAppManifest {
         "SECURE-CONTEXTS#secure-context">secure context</a> is to prevent
         private user data from being transmitted to a party that does not
         control the origin in question, or in clear text over the network.
-        </li>
-        <li>User agents are encouraged to require a service worker, to create a
-        reliable user experience.
         </li>
       </ul>
     </section>
