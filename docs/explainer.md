@@ -33,7 +33,7 @@ in mind.
 
 [[Image credits](mocks/README.md)]
 
-1. User visits a social networking website. The site has an `"actions"` section
+1. User visits a social networking website. The site has an `"share_target"` section
    in its [web manifest](https://w3c.github.io/manifest/), declaratively
    specifying that it can receive share actions (see [code](#sample-code)).
 2. User indicates to the browser that they wish to register the site. **For
@@ -110,20 +110,24 @@ browser of your ability to handle a share.
 
 ```JSON
 {
-  "name": "Includinator",
-  "short_name": "Includinator",
+  "name": "Example Social",
+  "short_name": "Example Social",
   "icons": [...],
   "share_target": {
-    "url_template": "share?title={title}&text={text}&url={url}"
+    "action": "share.html",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link"
+    }
   }
 }
 ```
 
-Note: the url_template should be relative to the manifest URL, since the
--template is appended to the manifest URL (excluding the filename of the
--manifest).
+Note: the action should be relative to the manifest URL, since the action is
+appended to the manifest URL (excluding the filename of the -manifest).
 
-#### target.html
+#### share.html
 
 ```html
 <html>
@@ -134,9 +138,9 @@ Note: the url_template should be relative to the manifest URL, since the
   <script>
     function onLoad() {
       var parsedUrl = new URL(window.location.toString());
-      console.log("Title shared: " + parsedUrl.searchParams.get("title"));
-      console.log("Text shared: " + parsedUrl.searchParams.get("text"));
-      console.log("URL shared: " + parsedUrl.searchParams.get("url"));
+      console.log('Title shared: ' + parsedUrl.searchParams.get('name'));
+      console.log('Text shared: ' + parsedUrl.searchParams.get('description'));
+      console.log('URL shared: ' + parsedUrl.searchParams.get('link'));
     }
 
     window.addEventListener('load', onLoad);
@@ -157,8 +161,8 @@ any tabs.
 
 ```JSON
 {
-  "name": "Includinator",
-  "short_name": "Includinator",
+  "name": "Example Social",
+  "short_name": "Example Social",
   "icons": [...],
   "supports_share": true
 }
