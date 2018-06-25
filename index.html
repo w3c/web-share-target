@@ -112,15 +112,16 @@
 }
 </pre>
       <p>
-        The <a href="#dom-sharetarget-params">params</a> keys correspond to the key
-        names in <a href="https://wicg.github.io/web-share/#sharedata-dictionary">ShareData</a>,
-        while the values are arbitrary names that will be used as query
-        parameters when the target is launched.
+        The <a data-link-for="ShareTarget">params</a> keys correspond to the key
+        names in <a data-cite="!WebShare#dom-sharedata">ShareData</a> from
+        [[!WebShare]], while the values are arbitrary names that will be used as
+        query parameters when the target is launched.
       </p>
       <p>
-        When a share takes place, if the user selects this app as the share
-        target, the user agent creates a GET request like a form submission, and
-        opens a new browsing context using the <code>action</code> URL.
+        When a share takes place, if the user selects this share target, the
+        user agent opens a new browsing context at the <code>action</code> URL,
+        with query parameter values containing the shared data, just like an
+        HTML form submission.
       </p>
       <p>
         For the purpose of this example, we assume the manifest is located at
@@ -246,30 +247,33 @@ partial dictionary WebAppManifest {
           <code>undefined</code>.
           </li>
           <li>If <var>share
-          target["<a href="#dom-sharetarget-method">method</a>"]</var> is not an
-          ASCII case-insensitive match for the string <code>"GET"</code>,
+          target["<a data-link-for="ShareTarget">method</a>"]</var> is not an
+          <a data-cite="!INFRA#ascii-case-insensitive">ASCII case-insensitive
+          </a> match for the string <code>"GET"</code>,
           <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue a
           developer warning</a> that the method is not supported, and return
           <code>undefined</code>.
           </li>
-          <li><a href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url">
-          Parse</a> the <a href="https://url.spec.whatwg.org/#concept-url">URL
-          </a> <var>manifest["<a>share_target</a>"]
-          ["<a href="#dom-sharetarget-action">action</a>"]</var>, relative to
-          the <var>manifest URL</var>. If this fails,
-          <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue a
-          developer warning</a> and return <code>undefined</code>.
+          <li>Let <var>action</var> be the result of
+          <a data-cite="!URL#concept-url-parser">parsing</a> the
+          <a data-cite="!URL#concept-url">URL</a> <var>share
+          target["<a data-link-for="ShareTarget">action</a>"]</var>, relative to
+          the <var>manifest URL</var> and with no encoding override. If the
+          result is failure,
+          <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue
+          a developer warning</a> and return <code>undefined</code>.
           </li>
-          <li>Let <var>parsed action</var> be the resulting URL record.
-          </li>
-          <li>If <var>parsed action</var> is not <a data-cite=
+          <li>If <var>action</var> is not <a data-cite=
           "!appmanifest#dfn-within-scope">within scope</a> of <var>scope
           URL</var>, <a data-cite="!appmanifest#dfn-issue-a-developer-warning">
-            issue a developer warning</a> that <a
-            href="#dom-sharetarget-action">action</a> is outside of the
+            issue a developer warning</a> that <a data-link-for="ShareTarget">
+            action</a> is outside of the
             <a data-cite="!appmanifest#dfn-navigation-scope">navigation scope
             </a>, and return <code>undefined</code>.
           </li>
+          <li>Set <var>share target
+          ["<a data-link-for="ShareTarget">action</a>"]</var> to
+          <var>action</var>.
           <li>Return <var>share target</var>.
           </li>
         </ol>
@@ -282,16 +286,18 @@ partial dictionary WebAppManifest {
           The <dfn>ShareTarget</dfn> dictionary contains the following members.
         </p>
         <p>
-          The <dfn>action</dfn> member specifies the URL for the web share
-          target.
+          The <dfn>action</dfn> member specifies the <a data-cite=
+          "!URL#concept-url">URL</a> for the
+          <a data-link-for="web share targets">web share target</a>.
         </p>
         <p>
           The <dfn>method</dfn> member specifies the HTTP request
           <a href="https://tools.ietf.org/html/rfc7231#section-4">method</a> for
-          the web share target.
+          the <a data-link-for="web share targets">web share target</a>.
         </p>
         <p>
-          The <dfn>params</dfn> member contains a <a>ShareTargetParams</a> dictionary.
+          The <dfn>params</dfn> member contains a <a>ShareTargetParams</a>
+          dictionary.
         </p>
         <h3>
           <code>ShareTargetParams</code> and its members
@@ -301,23 +307,23 @@ partial dictionary WebAppManifest {
           members.
         </p>
         <p>
-          The <dfn>title</dfn> member specifies the name of the form field
+          The <dfn>title</dfn> member specifies the name of the query parameter
           used for the arbitrary text that forms the body of the message being
           shared.
         </p>
         <p>
-          The <dfn>text</dfn> member specifies the name of the form field
+          The <dfn>text</dfn> member specifies the name of the query parameter
           used for the title of the document being shared.
         </p>
         <p>
-          The <dfn>url</dfn> member specifies the name of the form field
+          The <dfn>url</dfn> member specifies the name of the query parameter
           used for the URL string referring to a resource being shared.
         </p>
         <p>
-          The fields will be populated with information from the
-          <a href="https://wicg.github.io/web-share/#sharedata-dictionary">ShareData</a>
+          The query parameters will be populated with information from the
+          <a data-cite="!WebShare#dom-sharedata">ShareData</a>
           being shared. If the ShareData contains no information for a given
-          field, the form field will receive an empty string.
+          member, the query parameter will receive an empty string.
         </p>
       </section>
     </section>
@@ -444,48 +450,52 @@ partial dictionary WebAppManifest {
         </p>
         <ol>
           <li>
-            Parse the URL <var>manifest["<a>share_target</a>"]
-            ["<a href="#dom-sharetarget-action">action</a>"]</var>, relative to
-            the <var>manifest URL</var>.
+            Let <var>action</var> be <var>manifest["<a>share_target</a>"]["<a
+            data-link-for="ShareTarget">action</a>"]</var>.
           </li>
           <li>
-            Let <var>parsed action</var> be the resulting URL record.
+            Let <var>entry list</var> be a new empty list of name-value tuples.
           </li>
           <li>
-            Let entry list be a new empty list of <a href=
-            "https://xhr.spec.whatwg.org/#concept-formdata-entry">entries</a>.
-          </li>
-          <li>
-            For each <var>member<var> in the sequence<code>"title", "text",
-            "url"</code>,
+            For each <var>member</var> in the sequence « <code>"title"</code>,
+            <code>"text"</code>, <code>"url"</code> »,
             <ul>
               <li>
-                Let <var>name</var> be the value of <var>manifest["
-                <a>share_target</a>"]["<a href="#dom-sharetarget-params">
-                params</a>"][member]</var>.
+                Let <var>name</var> be the value of
+                <var>manifest["<a>share_target</a>"]["<a
+                data-link-for="ShareTarget">params</a>"][member]</var>.
+              </li>
+              <li>
+                If <var>name</var> is <code>undefined</code> or an empty string,
+                then continue.
               </li>
               <li>
                 Let <var>value</var> be the value of <var>data[member]</var>.
               </li>
               <li>
-                <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#append-an-entry">
-                Append an entry</a> to <var>entry list</var> with
-                <var>name</var> and <var>value</var>.
+                If <var>value</var> is <code>undefined</code>, set
+                <var>value</var> to an empty string.
+              </li>
+              <li>
+                <a data-cite="!INFRA#list-append">Append</a> to <var>entry
+                list</var> a tuple with <var>name</var> and <var>value</var>.
               </li>
             </ul>
           </li>
           <li>
-            Let <var>query</var> be the result of running the <a
-            href="https://url.spec.whatwg.org/#concept-urlencoded-serializer">
+            Let <var>query</var> be the result of running the
+            <a data-cite="!URL#concept-urlencoded-serializer">
             <code>application/x-www-form-urlencoded</code> serializer</a> with
             entry list and no encoding override.
           </li>
           <li>
-            Set <var>parsed action</var>'s query component to <var>query</var>.
+            Set <var>action</var>'s
+            <a data-cite="!URL#concept-url-query">query</a>
+            component to <var>query</var>.
           </li>
           <li>
             Run the <a data-cite="!HTML#window-open-steps">window open steps</a>
-            on <var>parsed action</var>, with empty <var>target</var> and empty
+            on <var>action</var>, with empty <var>target</var> and empty
             <var>features</var>.
           </li>
         </ol>
