@@ -98,7 +98,7 @@
         To register a site as a share target, a <a>share_target</a> entry is
         added to the <a data-cite="appmanifest">Web App Manifest</a>, as shown:
       </p>
-<pre class="example json" title="manifest.webmanifest">
+      <pre class="example json" title="manifest.webmanifest">
 {
   "name": "Includinator",
   "share_target": {
@@ -112,10 +112,10 @@
 }
 </pre>
       <p>
-        The <a data-link-for="ShareTarget">params</a> keys correspond to the key
-        names in <a data-cite="!WebShare#dom-sharedata">ShareData</a> from
-        [[!WebShare]], while the values are arbitrary names that will be used as
-        query parameters when the target is launched.
+        The <a data-link-for="ShareTarget">params</a> keys correspond to the
+        key names in <a data-cite="!WebShare#dom-sharedata">ShareData</a> from
+        [[!WebShare]], while the values are arbitrary names that will be used
+        as query parameters when the target is launched.
       </p>
       <p>
         When a share takes place, if the user selects this share target, the
@@ -149,7 +149,7 @@
         <code>http://example.com/news</code>, the user agent will open a new
         window or tab and navigate to:
       </p>
-<pre>
+      <pre>
 https://example.org/includinator/share.html?name=My%20News&amp;description=&amp;link=http%3A%2F%2Fexample.com%2Fnews
 </pre>
       <p>
@@ -246,33 +246,34 @@ partial dictionary WebAppManifest {
           <li>If <var>share target</var> is <code>undefined</code>, then return
           <code>undefined</code>.
           </li>
-          <li>If <var>share
-          target</var>["<a data-link-for="ShareTarget">method</a>"] is not an
-          <a data-cite="!INFRA#ascii-case-insensitive">ASCII case-insensitive
-          </a> match for the string <code>"GET"</code>,
-          <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue a
-          developer warning</a> that the method is not supported, and return
+          <li>If <var>share target</var>["<a data-link-for=
+          "ShareTarget">method</a>"] is not an <a data-cite=
+          "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
+          the string <code>"GET"</code>, <a data-cite=
+          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+          warning</a> that the method is not supported, and return
           <code>undefined</code>.
           </li>
-          <li>Let <var>action</var> be the result of
-          <a data-cite="!URL#concept-url-parser">parsing</a> the
-          <a data-cite="!URL#concept-url">URL</a> <var>share
-          target</var>["<a data-link-for="ShareTarget">action</a>"], relative to
-          the <var>manifest URL</var> and with no encoding override. If the
-          result is failure,
-          <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue
-          a developer warning</a> and return <code>undefined</code>.
+          <li>Let <var>action</var> be the result of <a data-cite=
+          "!URL#concept-url-parser">parsing</a> the <a data-cite=
+          "!URL#concept-url">URL</a> <var>share
+            target</var>["<a data-link-for="ShareTarget">action</a>"], relative
+            to the <var>manifest URL</var> and with no encoding override. If
+            the result is failure, <a data-cite=
+            "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+            warning</a> and return <code>undefined</code>.
           </li>
           <li>If <var>action</var> is not <a data-cite=
           "!appmanifest#dfn-within-scope">within scope</a> of <var>scope
           URL</var>, <a data-cite="!appmanifest#dfn-issue-a-developer-warning">
-            issue a developer warning</a> that <a data-link-for="ShareTarget">
-            action</a> is outside of the
-            <a data-cite="!appmanifest#dfn-navigation-scope">navigation scope
-            </a>, and return <code>undefined</code>.
+            issue a developer warning</a> that <a data-link-for=
+            "ShareTarget">action</a> is outside of the <a data-cite=
+            "!appmanifest#dfn-navigation-scope">navigation scope</a> , and
+            return <code>undefined</code>.
           </li>
-          <li>Set <var>share target</var>["<a
-          data-link-for="ShareTarget">action</a>"] to <var>action</var>.
+          <li>Set <var>share target</var>["<a data-link-for=
+          "ShareTarget">action</a>"] to <var>action</var>.
+          </li>
           <li>Return <var>share target</var>.
           </li>
         </ol>
@@ -286,13 +287,13 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           The <dfn>action</dfn> member specifies the <a data-cite=
-          "!URL#concept-url">URL</a> for the
-          <a data-link-for="web share targets">web share target</a>.
+          "!URL#concept-url">URL</a> for the <a data-link-for=
+          "web share targets">web share target</a>.
         </p>
         <p>
-          The <dfn>method</dfn> member specifies the HTTP request
-          <a href="https://tools.ietf.org/html/rfc7231#section-4">method</a> for
-          the <a data-link-for="web share targets">web share target</a>.
+          The <dfn>method</dfn> member specifies the HTTP request <a href=
+          "https://tools.ietf.org/html/rfc7231#section-4">method</a> for the
+          <a data-link-for="web share targets">web share target</a>.
         </p>
         <p>
           The <dfn>params</dfn> member contains a <a>ShareTargetParams</a>
@@ -320,9 +321,9 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           The query parameters will be populated with information from the
-          <a data-cite="!WebShare#dom-sharedata">ShareData</a>
-          being shared. If the ShareData contains no information for a given
-          member, the query parameter will receive an empty string.
+          <a data-cite="!WebShare#dom-sharedata">ShareData</a> being shared. If
+          the ShareData contains no information for a given member, the query
+          parameter will receive an empty string.
         </p>
       </section>
     </section>
@@ -361,7 +362,8 @@ partial dictionary WebAppManifest {
           (perhaps using the same UI as <a data-cite=
           "HTML#dom-navigator-registerprotocolhandler"><code>navigator.registerProtocolHandler</code></a>).
           </li>
-          <li>Only register a web share target if it has a service worker.</li>
+          <li>Only register a web share target if it has a service worker.
+          </li>
         </ul>
       </div>
       <p>
@@ -449,33 +451,28 @@ partial dictionary WebAppManifest {
           run the following steps:
         </p>
         <ol>
-          <li>
-            Let <var>action</var> be <var>manifest</var>["<a
-            >share_target</a>"]["<a data-link-for="ShareTarget">action</a>"].
+          <li>Let <var>action</var> be
+          <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
+          "ShareTarget">action</a>"].
           </li>
-          <li>
-            Let <var>entry list</var> be a new empty list of name-value tuples.
+          <li>Let <var>entry list</var> be a new empty list of name-value
+          tuples.
           </li>
-          <li>
-            For each <var>member</var> in the sequence « <code>"title"</code>,
-            <code>"text"</code>, <code>"url"</code> »,
+          <li>For each <var>member</var> in the sequence «
+          <code>"title"</code>, <code>"text"</code>, <code>"url"</code> »,
             <ul>
-              <li>
-                Let <var>name</var> be the value of
-                <var>manifest</var>["<a>share_target</a>"]["<a
-                data-link-for="ShareTarget">params</a>"][<var>member</var>].
+              <li>Let <var>name</var> be the value of
+              <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
+              "ShareTarget">params</a>"][<var>member</var>].
               </li>
-              <li>
-                If <var>name</var> is <code>undefined</code> or an empty string,
-                then continue.
+              <li>If <var>name</var> is <code>undefined</code> or an empty
+              string, then continue.
               </li>
-              <li>
-                Let <var>value</var> be the value of
-                <var>data</var>[<var>member</var>].
+              <li>Let <var>value</var> be the value of
+              <var>data</var>[<var>member</var>].
               </li>
-              <li>
-                If <var>value</var> is <code>undefined</code>, set
-                <var>value</var> to an empty string.
+              <li>If <var>value</var> is <code>undefined</code>, set
+              <var>value</var> to an empty string.
               </li>
               <li>
                 <a data-cite="!INFRA#list-append">Append</a> to <var>entry
@@ -483,27 +480,22 @@ partial dictionary WebAppManifest {
               </li>
             </ul>
           </li>
-          <li>
-            Let <var>query</var> be the result of running the
-            <a data-cite="!URL#concept-urlencoded-serializer">
-            <code>application/x-www-form-urlencoded</code> serializer</a> with
-            entry list and no encoding override.
+          <li>Let <var>query</var> be the result of running the <a data-cite=
+          "!URL#concept-urlencoded-serializer"><code>application/x-www-form-urlencoded</code>
+          serializer</a> with entry list and no encoding override.
           </li>
-          <li>
-            Set <var>action</var>'s
-            <a data-cite="!URL#concept-url-query">query</a>
-            component to <var>query</var>.
+          <li>Set <var>action</var>'s <a data-cite=
+          "!URL#concept-url-query">query</a> component to <var>query</var>.
           </li>
-          <li>
-            Run the <a data-cite="!HTML#window-open-steps">window open steps</a>
-            on <var>action</var>, with empty <var>target</var> and empty
-            <var>features</var>.
+          <li>Run the <a data-cite="!HTML#window-open-steps">window open
+          steps</a> on <var>action</var>, with empty <var>target</var> and
+          empty <var>features</var>.
           </li>
         </ol>
         <p class="note">
-          This algorithm assumes that <var>manifest</var> has
-          had the <a>post-processing the <code>share_target</code> member</a>
-          algorithm run on it and still has a <a>share_target</a> afterwards.
+          This algorithm assumes that <var>manifest</var> has had the
+          <a>post-processing the <code>share_target</code> member</a> algorithm
+          run on it and still has a <a>share_target</a> afterwards.
         </p>
       </section>
     </section>
