@@ -247,7 +247,7 @@ partial dictionary WebAppManifest {
           <code>undefined</code>.
           </li>
           <li>If <var>share
-          target["<a data-link-for="ShareTarget">method</a>"]</var> is not an
+          target</var>["<a data-link-for="ShareTarget">method</a>"] is not an
           <a data-cite="!INFRA#ascii-case-insensitive">ASCII case-insensitive
           </a> match for the string <code>"GET"</code>,
           <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue a
@@ -257,7 +257,7 @@ partial dictionary WebAppManifest {
           <li>Let <var>action</var> be the result of
           <a data-cite="!URL#concept-url-parser">parsing</a> the
           <a data-cite="!URL#concept-url">URL</a> <var>share
-          target["<a data-link-for="ShareTarget">action</a>"]</var>, relative to
+          target</var>["<a data-link-for="ShareTarget">action</a>"], relative to
           the <var>manifest URL</var> and with no encoding override. If the
           result is failure,
           <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue
@@ -271,9 +271,8 @@ partial dictionary WebAppManifest {
             <a data-cite="!appmanifest#dfn-navigation-scope">navigation scope
             </a>, and return <code>undefined</code>.
           </li>
-          <li>Set <var>share target
-          ["<a data-link-for="ShareTarget">action</a>"]</var> to
-          <var>action</var>.
+          <li>Set <var>share target</var>["<a
+          data-link-for="ShareTarget">action</a>"] to <var>action</var>.
           <li>Return <var>share target</var>.
           </li>
         </ol>
@@ -450,8 +449,8 @@ partial dictionary WebAppManifest {
         </p>
         <ol>
           <li>
-            Let <var>action</var> be <var>manifest["<a>share_target</a>"]["<a
-            data-link-for="ShareTarget">action</a>"]</var>.
+            Let <var>action</var> be <var>manifest</var>["<a
+            >share_target</a>"]["<a data-link-for="ShareTarget">action</a>"].
           </li>
           <li>
             Let <var>entry list</var> be a new empty list of name-value tuples.
@@ -462,15 +461,16 @@ partial dictionary WebAppManifest {
             <ul>
               <li>
                 Let <var>name</var> be the value of
-                <var>manifest["<a>share_target</a>"]["<a
-                data-link-for="ShareTarget">params</a>"][member]</var>.
+                <var>manifest</var>["<a>share_target</a>"]["<a
+                data-link-for="ShareTarget">params</a>"][<var>member</var>].
               </li>
               <li>
                 If <var>name</var> is <code>undefined</code> or an empty string,
                 then continue.
               </li>
               <li>
-                Let <var>value</var> be the value of <var>data[member]</var>.
+                Let <var>value</var> be the value of
+                <var>data</var>[<var>member</var>].
               </li>
               <li>
                 If <var>value</var> is <code>undefined</code>, set
