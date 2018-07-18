@@ -75,6 +75,13 @@
       logText("Title shared: " + parsedUrl.searchParams.get("title"));
       logText("Text shared: " + parsedUrl.searchParams.get("text"));
       logText("URL shared: " + parsedUrl.searchParams.get("url"));
+      // We still have the old "url_template" member in the manifest, which is
+      // how WST was previously specced and implemented in Chrome. If the user
+      // agent uses that method, the "oldapi" parameter will be set.
+      if (parsedUrl.searchParams.get("oldapi")) {
+        logText("Your browser is using the deprecated 'url_template' Web Share "
+                + "Target API.", true);
+      }
     }
 
     window.addEventListener('load', onLoad);
