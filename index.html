@@ -135,7 +135,7 @@
   &lt;body&gt;
     &lt;script&gt;
       window.addEventListener('load', () =&gt; {
-        var parsedUrl = new URL(window.location.toString());
+        var parsedUrl = new URL(window.location);
         console.log('Title shared: ' + parsedUrl.searchParams.get('name'));
         console.log('Text shared: ' + parsedUrl.searchParams.get('description'));
         console.log('URL shared: ' + parsedUrl.searchParams.get('link'));
