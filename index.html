@@ -150,8 +150,14 @@
         window or tab and navigate to:
       </p>
       <pre>
-https://example.org/includinator/share.html?name=My%20News&amp;description=&amp;link=http%3A%2F%2Fexample.com%2Fnews
+https://example.org/includinator/share.html?name=My%20News&amp;link=http%3A%2F%2Fexample.com%2Fnews
 </pre>
+      <p>
+        The query parameters are populated with information from the
+        <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a> being
+        shared. If the ShareData contains no information for a given member,
+        the query parameter is omitted.
+      </p>
       <p>
         How the handler deals with the shared data is at the handler's
         discretion, and will generally depend on the type of app. Here are some
@@ -321,12 +327,6 @@ partial dictionary WebAppManifest {
         <p>
           The <dfn>url</dfn> member specifies the name of the query parameter
           used for the URL string referring to a resource being shared.
-        </p>
-        <p>
-          The query parameters will be populated with information from the
-          <a data-cite="!WebShare#dom-sharedata"><code>ShareData</code></a>
-          being shared. If the ShareData contains no information for a given
-          member, the query parameter will receive an empty string.
         </p>
       </section>
     </section>
