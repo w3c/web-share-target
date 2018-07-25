@@ -200,6 +200,7 @@ dictionary ShareTargetParams {
 dictionary ShareTarget {
   required USVString action;
   DOMString method = "GET";
+  DOMString enctype = "application/x-www-form-urlencoded";
   required ShareTargetParams params;
 };
 
@@ -260,6 +261,19 @@ partial dictionary WebAppManifest {
             developer warning</a> that the method is not supported, and return
             <code>undefined</code>.
           </li>
+          <li>If <var>share target</var>["<a data-link-for=
+          "ShareTarget">method</a>"] is an <a data-cite=
+          "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
+          the string <code>"POST"</code> and <var>share
+          target</var>["<a data-link-for="ShareTarget">enctype</a>"] is neither
+          an <a data-cite="!INFRA#ascii-case-insensitive">ASCII
+          case-insensitive</a> match for the strings
+          <code>"application/x-www-form-urlencoded"</code> nor
+          <code>"multipart/form-data"</code>, <a data-cite=
+          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+          warning</a> that the enctype is not supported, and return
+          <code>undefined</code>.
+          </li>
           <li>Let <var>action</var> be the result of <a data-cite=
           "!URL#concept-url-parser">parsing</a> the <a data-cite=
           "!URL#concept-url">URL</a> <var>share
@@ -300,6 +314,10 @@ partial dictionary WebAppManifest {
           The <dfn>method</dfn> member specifies the HTTP request <a href=
           "https://tools.ietf.org/html/rfc7231#section-4">method</a> for the
           <a data-link-for="web share targets">web share target</a>.
+        </p>
+        <p>
+          The <dfn>enctype</dfn> member specifies how the share data is encoded
+          in a the body of POST request.
         </p>
         <p>
           The <dfn>params</dfn> member contains a <a>ShareTargetParams</a>
@@ -489,6 +507,10 @@ partial dictionary WebAppManifest {
           <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
           "ShareTarget">method</a>"].
           </li>
+          <li>Let <var>enctype</var> be
+          <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
+          "ShareTarget">enctype</a>"].
+          </li>
           <li>If <var>method</var> is <code>"GET"</code>:
             <ol>
               <li>Let <var>query</var> be the result of running the
@@ -504,7 +526,26 @@ partial dictionary WebAppManifest {
               </li>
             </ol>
           </li>
-          <li>Otherwise, if <var>method</var> is <code>"POST"</code>:
+          <li>Otherwise, if <var>method</var> is <code>"POST"</code> and <var>
+            enctype</var> is <code>"application/x-www-form-urlencoded"</code>:
+            <ol>
+              <li>Let <var>body</var> be the result of running the
+                <a data-cite="!URL#concept-urlencoded-serializer"><code>application/x-www-form-urlencoded</code>
+                serializer</a> with <var>entry list</var> and no encoding
+                override.
+              </li>
+              <li>Set <var>body</var> to the result of <a data-cite=
+              "!Encoding#utf-8-encode">encoding</a> <var>body</var>.
+              </li>
+              <li>
+                <a data-cite="!FETCH/#concept-header-list-append">Append</a>
+                <code>"Content-Type"</code>/<code>"application/x-www-form-urlencoded"</code>
+                to <var>header list</var>.
+              </li>
+            </ol>
+          </li>
+          <li>Otherwise, if <var>method</var> is <code>"POST"</code> and <var>
+            enctype</var> is <code>"multipart/form-data"</code>:
             <ol>
               <li>Let <var>body</var> be the result of running the
                 <a data-cite="!HTML#multipart/form-data-encoding-algorithm"><code>
@@ -522,7 +563,7 @@ partial dictionary WebAppManifest {
               </li>
               <li>
                 <a data-cite="!FETCH/#concept-header-list-append">Append</a>
-                <code>Content-Type</code>/<var>MIME type</var> to <var>header
+                <code>"Content-Type"</code>/<var>MIME type</var> to <var>header
                 list</var>.
               </li>
             </ol>
