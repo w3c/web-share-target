@@ -317,7 +317,8 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           The <dfn>enctype</dfn> member specifies how the share data is encoded
-          in a the body of POST request.
+          in the body of a <code>POST</code> request. It is ignored when
+          <a>method</a> is <code>"GET"</code>.
         </p>
         <p>
           The <dfn>params</dfn> member contains a <a>ShareTargetParams</a>
