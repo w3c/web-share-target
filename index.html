@@ -169,6 +169,40 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         the query parameter is omitted.
       </p>
       <p>
+        A share target might only be interested in a subset of the ShareData
+        members.
+      </p>
+      <pre class="example json" title="manifest.webmanifest">
+{
+  "name": "Bookmark",
+  "share_target": {
+    "action": "bookmark.html",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "url": "link"
+    }
+  }
+}
+</pre>
+      <p>
+        The shared information might be read by a service worker.
+      </p>
+      <pre class="example javascript" title="sw.js">
+self.addEventListener('fetch', event =&gt; {
+  if (event.request.method !== 'POST') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  event.respondWith((async () =&gt; {
+    const formData = await event.request.formData();
+    const link = formData.get('link') || '';
+    return new Response('Shared link: ' + link);
+  })());
+});
+</pre>
+      <p>
         How the handler deals with the shared data is at the handler's
         discretion, and will generally depend on the type of app. Here are some
         suggestions:
@@ -324,6 +358,12 @@ partial dictionary WebAppManifest {
           The <dfn>method</dfn> member specifies the HTTP request <a href=
           "https://tools.ietf.org/html/rfc7231#section-4">method</a> for the
           <a data-link-for="web share targets">web share target</a>.
+        </p>
+        <p class="note">
+          A use case for <code>GET</code> requests is when the share target
+          drafts a message for subsequent user approval. If the share target
+          performs a side-effect without any user interaction,
+          <code>POST</code> requests should be used.
         </p>
         <p>
           The <dfn>enctype</dfn> member specifies how the share data is encoded
