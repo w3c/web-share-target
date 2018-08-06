@@ -482,7 +482,7 @@ partial dictionary WebAppManifest {
           </li>
           <li>For each <var>member</var> in the sequence «
           <code>"title"</code>, <code>"text"</code>, <code>"url"</code> »,
-            <ul>
+            <ol>
               <li>Let <var>name</var> be the value of
               <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
               "ShareTarget">params</a>"][<var>member</var>].
@@ -499,7 +499,7 @@ partial dictionary WebAppManifest {
                 <a data-cite="!INFRA#list-append">Append</a> to <var>entry
                 list</var> a tuple with <var>name</var> and <var>value</var>.
               </li>
-            </ul>
+            </ol>
           </li>
           <li>Let <var>header list</var> be a new empty <a data-cite=
           "!FETCH/#concept-header-list">header list</a>.
