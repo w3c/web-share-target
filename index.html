@@ -169,8 +169,11 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         the query parameter is omitted.
       </p>
       <p>
-        A share target might only be interested in a subset of the ShareData
-        members.
+        A share target might only be interested in a subset of the
+        <a data-cite="!WebShare#dom-sharedata">ShareData</a> members. This
+        example also shows a share target that receives data as a
+        <code>POST</code> request, which should be the case if the request
+        causes an immediate side effect.
       </p>
       <pre class="example json" title="manifest.webmanifest">
 {
@@ -186,7 +189,9 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
 }
 </pre>
       <p>
-        The shared information might be read by a service worker.
+        The shared information might be read by a <a data-cite=
+        "!service-workers-1#service-worker-concept">service worker</a>, rather
+        than being sent over the network to the server.
       </p>
       <pre class="example javascript" title="sw.js">
 self.addEventListener('fetch', event =&gt; {
@@ -198,7 +203,8 @@ self.addEventListener('fetch', event =&gt; {
   event.respondWith((async () =&gt; {
     const formData = await event.request.formData();
     const link = formData.get('link') || '';
-    return new Response('Shared link: ' + link);
+    saveBookmark(link);
+    return new Response('Bookmark saved: ' + link);
   })());
 });
 </pre>
