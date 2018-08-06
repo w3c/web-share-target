@@ -152,6 +152,16 @@
       <pre>
 https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fexample.com%2Fnews
 </pre>
+      <p class="warning">
+        U+0020 (SPACE) characters are encoded as "<code>+</code>", due to the
+        use of <a data-cite=
+        "URL#application/x-www-form-urlencoded"><code>application/x-www-form-urlencoded</code></a>
+        encoding, not "<code>%20</code>" as might be expected. Processors must
+        take care to decode U+002B (+) characters as U+0020 (SPACE), which some
+        URL decoding libraries, including ECMAScript's <a data-cite=
+        "ECMASCRIPT#sec-decodeuricomponent-encodeduricomponent"><code>decodeURIComponent</code></a>
+        function, may not do automatically.
+      </p>
       <p>
         The query parameters are populated with information from the
         <a data-cite="WebShare#dom-sharedata"><code>ShareData</code></a> being
