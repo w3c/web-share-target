@@ -7,12 +7,12 @@ data from other sites and apps.
 
 * [Explainer document](docs/explainer.md), a high-level overview of the proposal.
 * [Specification](https://wicg.github.io/web-share-target/).
-* [Interface document](docs/interface.md), an informal spec.
 * [Native integration survey](docs/native.md), for platform-specific matters.
 
 This is a product of the [Ballista
 project](https://github.com/chromium/ballista), which aims to explore
 website-to-website and website-to-native interoperability.
+
 
 ## Licensing and contributions
 
