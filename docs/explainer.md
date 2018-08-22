@@ -101,8 +101,6 @@ Integration Story](native.md).
 Here's how to register a website to appear in the list of apps that can handle a
 "share" intent on Android, or a "share" action from another website.
 
-### Approach 1
-
 You need a [web app manifest](https://w3c.github.io/manifest/), to notify the
 browser of your ability to handle a share.
 
@@ -147,36 +145,6 @@ appended to the manifest URL (excluding the filename of the -manifest).
   </script>
 </body>
 </html>
-```
-
-### Approach 2
-
-You need both a [web app manifest](https://w3c.github.io/manifest/) and a
-[service
-worker](http://slightlyoff.github.io/ServiceWorker/spec/service_worker/),
-so that your site can be contacted even when the user does not have it open in
-any tabs.
-
-#### manifest.webmanifest
-
-```JSON
-{
-  "name": "Example Social",
-  "short_name": "Example Social",
-  "icons": [...],
-  "supports_share": true
-}
-```
-
-#### serviceworker.js
-
-```js
-navigator.actions.addEventListener('share', event => {
-  if (event.data.url === undefined)
-    throw new Error('Did not contain URL.');
-
-  includinate(event.data.url);
-});
 ```
 
 ## Frequently Asked Questions
