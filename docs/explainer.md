@@ -96,6 +96,10 @@ At least on Android, the web apps will be badged with the browser's icon.
 For more technical details on integrating with native apps, see [Native
 Integration Story](native.md).
 
+Users may wish to share photos and other files, not just links. We aim
+to support this in the future, with web share targets able to specify
+in their manifests which MIME types they accept.
+
 ## Sample code
 
 Here's how to register a website to appear in the list of apps that can handle a
@@ -168,4 +172,4 @@ and depends on the outcome of that decision. If we use a URI scheme for Share
 API to let websites receive shares.
 
 However, there are a number of downsides to this approach, discussed in the
-other document. This is an open question.
+other document.
