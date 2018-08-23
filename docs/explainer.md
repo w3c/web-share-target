@@ -165,9 +165,9 @@ native apps.
 ### Why not use registerProtocolHandler?
 
 This is discussed at length in the [Web Share
-Explainer](https://github.com/mgiuca/web-share/blob/master/docs/explainer.md),
-and depends on the outcome of that decision. If we use a URI scheme for Share
-(instead of an API), then it would make sense to use the existing
+Explainer](https://github.com/mgiuca/web-share/blob/master/docs/explainer.md#user-content-why-not-make-a-share-uri-scheme-like-mailto-instead-of-a-javascript-api).
+If we used a URI scheme for Share (instead of an API), then it would make sense
+to use the existing
 [registerProtocolHandler](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler)
 API to let websites receive shares.
 
