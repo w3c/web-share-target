@@ -8,7 +8,7 @@ shared data from other sites or apps. Many modern operating systems have a
 The goal is to allow web apps to appear in the UI for picking an app to share
 to.
 
-In combination with the [Web Share API](https://github.com/mgiuca/web-share)
+In combination with the [Web Share API](https://github.com/WICG/web-share)
 (being proposed in parallel), this would allow cross-sharing between websites on
 any platform (even those without a native sharing system).
 
@@ -56,7 +56,7 @@ underlying system, as explored in the next section.
 ### Sharing from web to web on mobile
 
 Here we see the interaction between the [Web Share
-API](https://github.com/mgiuca/web-share) and the Share Target API. You could
+API](https://github.com/WICG/web-share) and the Share Target API. You could
 also share from a native app (depending on the system).
 
 ![Share on mobile: web to web](mocks/share_mobile_web_web.png)
@@ -165,7 +165,7 @@ native apps.
 ### Why not use registerProtocolHandler?
 
 This is discussed at length in the [Web Share
-Explainer](https://github.com/mgiuca/web-share/blob/master/docs/explainer.md#user-content-why-not-make-a-share-uri-scheme-like-mailto-instead-of-a-javascript-api).
+Explainer](https://github.com/WICG/web-share/blob/master/docs/explainer.md#user-content-why-not-make-a-share-uri-scheme-like-mailto-instead-of-a-javascript-api).
 If we used a URI scheme for Share (instead of an API), then it would make sense
 to use the existing
 [registerProtocolHandler](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler)
