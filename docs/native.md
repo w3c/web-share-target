@@ -6,7 +6,7 @@ This document is an informal and incomplete survey of various operating systems'
 share systems, for exploring how a user agent might automatically map the [Share
 Target API](explainer.md) into the native system. See also: [Share API Native
 Integration
-Survey](https://github.com/mgiuca/web-share/blob/master/docs/native.md).
+Survey](https://github.com/WICG/web-share/blob/master/docs/native.md).
 
 *Note:* I (mgiuca@chromium.org) am not very familiar with these details. I
 gathered this information from reading the online documentation and
@@ -69,7 +69,7 @@ APIs. I would appreciate being informed of any errors.
 ## Summary
 
 Unlike the web-to-native sharing (in the [Share
-API](https://github.com/mgiuca/web-share), which is generally pretty
+API](https://github.com/WICG/web-share), which is generally pretty
 straightforward to route into a system share, native-to-web is usually hard or
 impossible for one reason: operating systems don't like letting one application
 dynamically register multiple handlers for things (with the notable exception of
@@ -81,4 +81,4 @@ On these platforms, implementations have two non-ideal options:
 1. Declare the browser itself as a system share target, then have users pick the
    browser, and display a sub-picker within the browser for web apps, or
 2. Only support web-to-web sharing (showing a picker within the browser when a
-   website uses the [Share API](https://github.com/mgiuca/web-share)).
+   website uses the [Share API](https://github.com/WICG/web-share)).
