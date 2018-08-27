@@ -303,6 +303,11 @@ partial dictionary WebAppManifest {
           <li>If <var>share target</var> is <code>undefined</code>, then return
           <code>undefined</code>.
           </li>
+          <li>If the <a data-cite="!URL#concept-url-origin">origin</a> of <var>
+            manifest URL</var> is not <a data-cite=
+            "!SECURE-CONTEXTS/#is-origin-trustworthy">potentially
+            trustworthy</a>, return <code>undefined</code>.
+          </li>
           <li>If <var>share target</var>["<a data-link-for=
           "ShareTarget">method</a>"] is neither an <a data-cite=
           "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
@@ -340,6 +345,13 @@ partial dictionary WebAppManifest {
             "ShareTarget">action</a> is outside of the <a data-cite=
             "!appmanifest#dfn-navigation-scope">navigation scope</a> , and
             return <code>undefined</code>.
+          </li>
+          <li>If the <a data-cite="!URL#concept-url-origin">origin</a> of <var>
+            action</var> is not <a data-cite=
+            "!SECURE-CONTEXTS/#is-origin-trustworthy">potentially
+            trustworthy</a>, <a data-cite=
+            "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+            warning</a> and return <code>undefined</code>.
           </li>
           <li>Set <var>share target</var>["<a data-link-for=
           "ShareTarget">action</a>"] to <var>action</var>.
