@@ -285,12 +285,10 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           A <dfn data-lt="web share targets">web share target</dfn> is a web
-          site in a <a data-cite="!SECURE-CONTEXTS#secure-context">secure
-          context</a> with a valid manifest containing a <a>share_target</a>
-          member. A web share target is a type of <a data-cite=
+          site with a valid manifest containing a <a>share_target</a> member. A
+          web share target is a type of <a data-cite=
           "!WebShare#dfn-share-target">share target</a>.
         </p>
-        <div class="issue" data-number="27"></div>
         <p>
           The steps for <dfn>post-processing the <code>share_target</code>
           member</dfn> is given by the following algorithm. The algorithm takes
@@ -340,6 +338,13 @@ partial dictionary WebAppManifest {
             "ShareTarget">action</a> is outside of the <a data-cite=
             "!appmanifest#dfn-navigation-scope">navigation scope</a> , and
             return <code>undefined</code>.
+          </li>
+          <li>If the <a data-cite="!URL#concept-url-origin">origin</a> of <var>
+            action</var> is not <a data-cite=
+            "!SECURE-CONTEXTS/#is-origin-trustworthy">potentially
+            trustworthy</a>, <a data-cite=
+            "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+            warning</a> and return <code>undefined</code>.
           </li>
           <li>Set <var>share target</var>["<a data-link-for=
           "ShareTarget">action</a>"] to <var>action</var>.
@@ -662,10 +667,11 @@ partial dictionary WebAppManifest {
         from an online index, rather than a set of targets that the end user
         has explicitly installed or registered.
         </li>
-        <li>The requirement that the web share target be a <a data-cite=
-        "SECURE-CONTEXTS#secure-context">secure context</a> is to prevent
-        private user data from being transmitted to a party that does not
-        control the origin in question, or in clear text over the network.
+        <li>The requirement that the web share target's origin be
+          <a data-cite="SECURE-CONTEXTS/#is-origin-trustworthy">potentially
+          trustworthy</a> is to prevent private user data from being
+          transmitted to a party that does not control the origin in question,
+          or in clear text over the network.
         </li>
       </ul>
     </section>
