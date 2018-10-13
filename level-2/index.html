@@ -209,9 +209,8 @@ self.addEventListener('fetch', event =&gt; {
 });
 </pre>
       <p>
-        If files are accepted by the share target, the method is set to 'POST'
-        and a <a data-link-for="ShareTargetParams">files</a> entry is added to
-        params, as shown:
+        A <a data-link-for="ShareTargetParams">files</a> entry in params is
+        used to declare that files are accepted by the share target:
       </p>
       <pre class="example json" title="manifest.webmanifest">
 {
@@ -227,7 +226,7 @@ self.addEventListener('fetch', event =&gt; {
       "files": [
         {
           "name": "records",
-          "accept": "text/csv"
+          "accept": ["text/csv", ".csv"]
         },
         {
           "name": "graphs",
@@ -242,7 +241,10 @@ self.addEventListener('fetch', event =&gt; {
         The target will be <a>invoked</a> with a
         <code>multipart/form-data</code> POST request, with field names as
         specified in params. Each shared file is assigned to the first files
-        entry that accepts its MIME type.
+        entry that accepts its MIME type. (The <code>"POST"</code>
+        <code>method</code> and <code>"multipart/form-data"</code>
+        <code>enctype</code> are necessary when file sharing, as with HTML
+        forms.)
       </p>
       <p>
         How the handler deals with the shared data is at the handler's
@@ -257,10 +259,11 @@ self.addEventListener('fetch', event =&gt; {
         </li>
         <li>A social networking app might draft a new post, ignoring
         <code>title</code>, using <code>text</code> as the body of the message
-        and adding <code>url</code> as a link. If <code>text</code> is missing,
-        it might use <code>url</code> in the body as well. If <code>url</code>
-        is missing, it might scan <code>text</code> looking for a URL and add
-        that as a link.
+        and adding <code>url</code> as a link. Image <code>files</code> would
+        be accepted by MIME type or file extension, and attached to the post.
+        If <code>text</code> is missing, it might use <code>url</code> in the
+        body as well. If <code>url</code> is missing, it might scan
+        <code>text</code> looking for a URL and add that as a link.
         </li>
         <li>A text messaging app might draft a new message, ignoring
         <code>title</code> and using <code>text</code> and <code>url</code>
@@ -367,6 +370,14 @@ partial dictionary WebAppManifest {
           </li>
           <li>If <var>share target</var>["<a data-link-for=
           "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"] is a <a>ShareTargetFiles</a>
+          dictionary, <var>bucket</var>, set <var>share
+          target</var>["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"] to [<var>bucket</var>].
+          </li>
+          <li>If <var>share target</var>["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
           "ShareTargetParams">files</a>"] contains one or more
           <a>ShareTargetFiles</a> dictionaries, and <var>share
           target</var>["<a data-link-for="ShareTarget">method</a>"] is not an
@@ -391,11 +402,10 @@ partial dictionary WebAppManifest {
               warning</a> and return <code>undefined</code>.
               </li>
               <li>If <var>bucket</var>["<a data-link-for=
-              "ShareTargetFiles">accept</a>"] contains any two entries that are
-              an <a data-cite="!INFRA#ascii-case-insensitive">ASCII
-              case-insensitive</a> match, <a data-cite=
-              "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-              warning</a> and return <code>undefined</code>.
+              "ShareTargetFiles">accept</a>"] is a <a data-cite=
+              "!WEBIDL#idl-USVString">USVString</a>, <var>accept</var>, set
+              <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">accept</a>"] to [<var>accept</var>].
               </li>
               <li>If <var>bucket</var>["<a data-link-for=
               "ShareTargetFiles">accept</a>"] contains a string that does not
@@ -528,7 +538,9 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           The <dfn>accept</dfn> member specifies a sequence of accepted MIME
-          type(s). An empty sequence indicates that all files are accepted.
+          type(s) or file extension(s), the latter expressed as strings
+          starting with U+002E FULL STOP (.). An empty sequence indicates that
+          all files are accepted.
         </p>
       </section>
     </section>
@@ -579,10 +591,10 @@ partial dictionary WebAppManifest {
       </p>
       <div class="issue" data-number="26"></div>
       <p>
-        If the user is sharing files, and a file being shared is not accepted
-        by any of a web share target's <a data-link-for=
-        "ShareTargetParams">files</a> entries, the user SHOULD NOT be presented
-        with that web share target as an option.
+        If the user is sharing files, and a file being shared that none of a
+        web share target's <a data-link-for="ShareTargetParams">files</a>
+        entries <a>accepts</a>, the user MUST NOT be presented with that web
+        share target as an option.
       </p>
     </section>
     <section>
@@ -666,7 +678,9 @@ partial dictionary WebAppManifest {
           "ShareTarget">action</a>"].
           </li>
           <li>Let <var>entry list</var> be a new empty list of name-value
-          tuples.
+          tuples. Each value can be either a <a data-cite=
+          "!WEBIDL#idl-USVString">USVString</a> or a <a data-cite=
+          "!FILE-API#file-section">File</a> list.
           </li>
           <li>For each <var>member</var> in the sequence «
           <code>"title"</code>, <code>"text"</code>, <code>"url"</code> »,
@@ -689,7 +703,9 @@ partial dictionary WebAppManifest {
               </li>
             </ol>
           </li>
-          <li>Let <var>accepted</var> be an empty map of name/list pairs.
+          <li>Let <var>accepted</var> be an empty map of
+          name/<code><a data-cite="!FILE-API#file-section">File</a></code> list
+          pairs.
           </li>
           <li>For each <var>bucket</var> in the sequence
           <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
@@ -698,8 +714,8 @@ partial dictionary WebAppManifest {
             <ol>
               <li>Set
                 <var>accepted</var>[<var>bucket</var>["<a data-link-for="ShareTargetFiles">name</a>"]]
-                to a new empty <code><dfn data-cite=
-                "!FILE-API#file-section">File</dfn></code> list.
+                to a new empty <code><a data-cite=
+                "!FILE-API#file-section">File</a></code> list.
               </li>
             </ol>
           </li>
@@ -728,7 +744,8 @@ partial dictionary WebAppManifest {
               "ShareTargetFiles">name</a>"].
               </li>
               <li>Let <var>value</var> be the value of
-              <var>accepted</var>[<var>name</var>].
+              <var>accepted</var>[<var>name</var>], a (possibly empty)
+              <code><a data-cite="!FILE-API#file-section">File</a></code> list.
               </li>
               <li>
                 <a data-cite="!INFRA#list-append">Append</a> to <var>entry
