@@ -859,19 +859,23 @@ partial dictionary WebAppManifest {
               <li>If the first character of <var>criterion</var> is a U+002E
               FULL STOP character (.) and <var>shared
               file</var>[<code>"name"</code>] ends with <var>criterion</var>,
-              return <code>true</code>.
+              and the implementation supports Web Share Target filtering on
+              file extensions, return <code>true</code>.
               </li>
               <li>If <var>criterion</var> is
               <var>type</var><code>/</code><var>subtype</var> (where
               <var>type</var> and <var>subtype</var> are <a data-cite=
               "!RFC7230#section-3.2.6">RFC7230 tokens</a>) and matches the MIME
-              type of <var>shared file</var>, return <code>true</code>.
+              type of <var>shared file</var>, and the implementation supports
+              Web Share Target filtering on MIME types, return
+              <code>true</code>.
               </li>
               <li>If <var>criterion</var> is <var>type</var><code>/*</code>
               (where <var>type</var> is a <a data-cite=
               "!RFC7230#section-3.2.6">RFC7230 token</a>) and the MIME type of
-              <var>shared file</var> is a subtype of <code>type</code>, return
-              <code>true</code>.
+              <var>shared file</var> is a subtype of <code>type</code>, and the
+              implementation supports Web Share Target filtering on MIME types,
+              return <code>true</code>.
               </li>
               <li>If <var>criterion</var> is <code>*/*</code>, return
               <code>true</code>.
