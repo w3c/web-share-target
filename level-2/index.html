@@ -114,8 +114,8 @@
       <p>
         The <a data-link-for="ShareTarget">params</a> keys correspond to the
         key names in <a data-cite="WebShare#dom-sharedata">ShareData</a> from
-        [[!WebShare]], while the values are arbitrary names that will be used
-        as query parameters when the target is launched.
+        [[WebShare]], while the values are arbitrary names that will be used as
+        query parameters when the target is launched.
       </p>
       <p>
         When a share takes place, if the user selects this share target, the
@@ -591,10 +591,23 @@ partial dictionary WebAppManifest {
       </p>
       <div class="issue" data-number="26"></div>
       <p>
-        If the user is sharing files, and a file being shared that none of a
-        web share target's <a data-link-for="ShareTargetParams">files</a>
-        entries <a>accepts</a>, the user MUST NOT be presented with that web
-        share target as an option.
+        An implementation supports <dfn>filtering on MIME types</dfn> if its
+        takes into account the MIME types of the files being shared when
+        presenting the user with a choice of share targets.
+      </p>
+      <p>
+        An implementation supports <dfn>filtering on file extensions</dfn> if
+        its takes into account the extensions in the names of the files being
+        shared when presenting the user with a choice of share targets.
+      </p>
+      <p>
+        An implementation MUST support <a>filtering on MIME types</a> or
+        <a>filtering on file extensions</a>, or both.
+      </p>
+      <p>
+        If a file being shared is not <a>accepted</a> by any of a share
+        target's <a data-link-for="ShareTargetParams">files</a> entries, the
+        user MUST NOT be presented with that web share target as an option.
       </p>
     </section>
     <section>
@@ -846,8 +859,9 @@ partial dictionary WebAppManifest {
         </h3>
         <p>
           The algorithm for determining if a <a>ShareTargetFiles</a>
-          <var>bucket</var> <dfn>accepts</dfn> a <a>File</a> <var>shared
-          file</var> is as follows:-
+          <var>bucket</var> <dfn data-lt="accepted">accepts</dfn> a
+          <a data-cite="!FILE-API#file-section">File</a> <var>shared file</var>
+          is as follows:-
         </p>
         <ol>
           <li>If <var>bucket</var>["<a data-link-for=
@@ -859,23 +873,22 @@ partial dictionary WebAppManifest {
               <li>If the first character of <var>criterion</var> is a U+002E
               FULL STOP character (.) and <var>shared
               file</var>[<code>"name"</code>] ends with <var>criterion</var>,
-              and the implementation supports Web Share Target filtering on
-              file extensions, return <code>true</code>.
+              and the implementation supports <a>filtering on file
+              extensions</a>, return <code>true</code>.
               </li>
               <li>If <var>criterion</var> is
               <var>type</var><code>/</code><var>subtype</var> (where
               <var>type</var> and <var>subtype</var> are <a data-cite=
               "!RFC7230#section-3.2.6">RFC7230 tokens</a>) and matches the MIME
               type of <var>shared file</var>, and the implementation supports
-              Web Share Target filtering on MIME types, return
-              <code>true</code>.
+              <a>filtering on MIME types</a>, return <code>true</code>.
               </li>
               <li>If <var>criterion</var> is <var>type</var><code>/*</code>
               (where <var>type</var> is a <a data-cite=
               "!RFC7230#section-3.2.6">RFC7230 token</a>) and the MIME type of
               <var>shared file</var> is a subtype of <code>type</code>, and the
-              implementation supports Web Share Target filtering on MIME types,
-              return <code>true</code>.
+              implementation supports <a>filtering on MIME types</a>, return
+              <code>true</code>.
               </li>
               <li>If <var>criterion</var> is <code>*/*</code>, return
               <code>true</code>.
