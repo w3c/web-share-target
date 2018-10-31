@@ -114,8 +114,8 @@
       <p>
         The <a data-link-for="ShareTarget">params</a> keys correspond to the
         key names in <a data-cite="WebShare#dom-sharedata">ShareData</a> from
-        [[!WebShare]], while the values are arbitrary names that will be used
-        as query parameters when the target is launched.
+        [[WebShare]], while the values are arbitrary names that will be used as
+        query parameters when the target is launched.
       </p>
       <p>
         When a share takes place, if the user selects this share target, the
@@ -209,6 +209,44 @@ self.addEventListener('fetch', event =&gt; {
 });
 </pre>
       <p>
+        A <a data-link-for="ShareTargetParams">files</a> entry in params is
+        used to declare that files are accepted by the share target:
+      </p>
+      <pre class="example json" title="manifest.webmanifest">
+{
+  "name": "Aggregator",
+  "share_target": {
+    "action": "/cgi-bin/aggregate",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link",
+      "files": [
+        {
+          "name": "records",
+          "accept": ["text/csv", ".csv"]
+        },
+        {
+          "name": "graphs",
+          "accept": "image/svg+xml"
+        }
+      ]
+    }
+  }
+}
+</pre>
+      <p>
+        The target will be <a>invoked</a> with a
+        <code>multipart/form-data</code> POST request, with field names as
+        specified in params. Each shared file is assigned to the first files
+        entry that accepts its MIME type. (The <code>"POST"</code>
+        <code>method</code> and <code>"multipart/form-data"</code>
+        <code>enctype</code> are necessary when file sharing, as with HTML
+        forms.)
+      </p>
+      <p>
         How the handler deals with the shared data is at the handler's
         discretion, and will generally depend on the type of app. Here are some
         suggestions:
@@ -216,14 +254,16 @@ self.addEventListener('fetch', event =&gt; {
       <ul>
         <li>An email client might draft a new email, using <code>title</code>
         as the subject of an email, with <code>text</code> and <code>url</code>
-        concatenated together as the body.
+        concatenated together as the body, and <code>files</code> as
+        attachments.
         </li>
         <li>A social networking app might draft a new post, ignoring
         <code>title</code>, using <code>text</code> as the body of the message
-        and adding <code>url</code> as a link. If <code>text</code> is missing,
-        it might use <code>url</code> in the body as well. If <code>url</code>
-        is missing, it might scan <code>text</code> looking for a URL and add
-        that as a link.
+        and adding <code>url</code> as a link. Image <code>files</code> would
+        be accepted by MIME type or file extension, and attached to the post.
+        If <code>text</code> is missing, it might use <code>url</code> in the
+        body as well. If <code>url</code> is missing, it might scan
+        <code>text</code> looking for a URL and add that as a link.
         </li>
         <li>A text messaging app might draft a new message, ignoring
         <code>title</code> and using <code>text</code> and <code>url</code>
@@ -241,10 +281,16 @@ self.addEventListener('fetch', event =&gt; {
         "!appmanifest#dom-webappmanifest">WebAppManifest</dfn> dictionary.
       </p>
       <pre class="idl">
+dictionary ShareTargetFiles {
+  required USVString name;
+  (USVString or sequence&lt;USVString&gt;) accept = [];
+};
+
 dictionary ShareTargetParams {
   USVString title;
   USVString text;
   USVString url;
+  (ShareTargetFiles or sequence&lt;ShareTargetFiles&gt;) files;
 };
 
 dictionary ShareTarget {
@@ -321,6 +367,70 @@ partial dictionary WebAppManifest {
           "!appmanifest#dfn-issue-a-developer-warning">issue a developer
           warning</a> that the enctype is not supported, and return
           <code>undefined</code>.
+          </li>
+          <li>If <var>share target</var>["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"] is a <a>ShareTargetFiles</a>
+          dictionary, <var>bucket</var>, set <var>share
+          target</var>["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"] to [<var>bucket</var>].
+          </li>
+          <li>If <var>share target</var>["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"] contains one or more
+          <a>ShareTargetFiles</a> dictionaries, and <var>share
+          target</var>["<a data-link-for="ShareTarget">method</a>"] is not an
+          <a data-cite="!INFRA#ascii-case-insensitive">ASCII
+          case-insensitive</a> match for the string <code>"POST"</code>, or
+          <var>share target</var>["<a data-link-for="ShareTarget">enctype</a>"]
+          is not an <a data-cite="!INFRA#ascii-case-insensitive">ASCII
+          case-insensitive</a> match for the string
+          <code>"multipart/form-data"</code>, <a data-cite=
+          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+          warning</a> that files are only supported with multipart/form-data
+          POST, and return <code>undefined</code>.
+          </li>
+          <li>For each <var>bucket</var> in <var>share
+          target</var>["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"]:
+            <ol>
+              <li>If <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">name</a>"] is an empty string, <a data-cite=
+              "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+              warning</a> and return <code>undefined</code>.
+              </li>
+              <li>If <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">accept</a>"] is a <a data-cite=
+              "!WEBIDL#idl-USVString">USVString</a>, <var>accept</var>, set
+              <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">accept</a>"] to [<var>accept</var>].
+              </li>
+              <li>If <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">accept</a>"] contains a string that does not
+              match any of the following, <a data-cite=
+              "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+              warning</a> and return <code>undefined</code>.
+                <ul>
+                  <li>a string whose first character is a U+002E FULL STOP
+                  character (.)
+                  </li>
+                  <li>
+                    <var>type</var><code>/</code><var>subtype</var> (where
+                    <var>type</var> and <var>subtype</var> are <a data-cite=
+                    "!RFC7230#section-3.2.6">RFC7230 tokens</a>)
+                  </li>
+                  <li>
+                    <var>type</var><code>/*</code> (where <var>type</var> is a
+                    <a data-cite="!RFC7230#section-3.2.6">RFC7230 token</a>)
+                  </li>
+                  <li>
+                    <code>*/*</code>
+                  </li>
+                </ul>
+              </li>
+            </ol>
           </li>
           <li>Let <var>action</var> be the result of <a data-cite=
           "!URL#concept-url-parser">parsing</a> the <a data-cite=
@@ -408,6 +518,30 @@ partial dictionary WebAppManifest {
           The <dfn>url</dfn> member specifies the name of the query parameter
           used for the URL string referring to a resource being shared.
         </p>
+        <p>
+          The <dfn>files</dfn> member contains zero or more
+          <a>ShareTargetFiles</a> dictionaries.
+        </p>
+      </section>
+      <section data-dfn-for="ShareTargetFiles" data-link-for=
+      "ShareTargetFiles">
+        <h3>
+          <code>ShareTargetFiles</code> and its members
+        </h3>
+        <p>
+          The <dfn>ShareTargetFiles</dfn> dictionary contains the following
+          members.
+        </p>
+        <p>
+          The <dfn>name</dfn> member specifies the name of the form field used
+          to share the files.
+        </p>
+        <p>
+          The <dfn>accept</dfn> member specifies a sequence of accepted MIME
+          type(s) or file extension(s), the latter expressed as strings
+          starting with U+002E FULL STOP (.). An empty sequence indicates that
+          all files are accepted.
+        </p>
       </section>
     </section>
     <section>
@@ -456,6 +590,25 @@ partial dictionary WebAppManifest {
         visited or explicitly registered.
       </p>
       <div class="issue" data-number="26"></div>
+      <p>
+        An implementation supports <dfn>filtering on MIME types</dfn> if it
+        takes into account the MIME types of the files being shared when
+        presenting the user with a choice of share targets.
+      </p>
+      <p>
+        An implementation supports <dfn>filtering on file extensions</dfn> if
+        it takes into account the extensions in the names of the files being
+        shared when presenting the user with a choice of share targets.
+      </p>
+      <p>
+        An implementation MUST support <a>filtering on MIME types</a> or
+        <a>filtering on file extensions</a>, or both.
+      </p>
+      <p>
+        If a file being shared is not <a>accepted</a> by any of a share
+        target's <a data-link-for="ShareTargetParams">files</a> entries, the
+        user MUST NOT be presented with that web share target as an option.
+      </p>
     </section>
     <section>
       <h2>
@@ -538,7 +691,9 @@ partial dictionary WebAppManifest {
           "ShareTarget">action</a>"].
           </li>
           <li>Let <var>entry list</var> be a new empty list of name-value
-          tuples.
+          tuples. Each value can be either a <a data-cite=
+          "!WEBIDL#idl-USVString">USVString</a> or a <a data-cite=
+          "!FILE-API#file-section">File</a> list.
           </li>
           <li>For each <var>member</var> in the sequence «
           <code>"title"</code>, <code>"text"</code>, <code>"url"</code> »,
@@ -554,6 +709,56 @@ partial dictionary WebAppManifest {
               <var>data</var>[<var>member</var>].
               </li>
               <li>If <var>value</var> is <code>undefined</code>, then continue.
+              </li>
+              <li>
+                <a data-cite="!INFRA#list-append">Append</a> to <var>entry
+                list</var> a tuple with <var>name</var> and <var>value</var>.
+              </li>
+            </ol>
+          </li>
+          <li>Let <var>accepted</var> be an empty map of
+          name/<code><a data-cite="!FILE-API#file-section">File</a></code> list
+          pairs.
+          </li>
+          <li>For each <var>bucket</var> in the sequence
+          <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"],
+            <ol>
+              <li>Set
+                <var>accepted</var>[<var>bucket</var>["<a data-link-for="ShareTargetFiles">name</a>"]]
+                to a new empty <code><a data-cite=
+                "!FILE-API#file-section">File</a></code> list.
+              </li>
+            </ol>
+          </li>
+          <li>For each <var>shared file</var> in the sequence
+          <var>data</var>[<code>"files"</code>],
+            <ol>
+              <li>Find the first <var>bucket</var> in the sequence
+              <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
+              "ShareTarget">params</a>"]["<a data-link-for=
+              "ShareTargetParams">files</a>"] that <a>accepts</a> <var>shared
+              file</var>.
+              </li>
+              <li>Append <var>shared file</var> to
+              <var>accepted</var>[<var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">name</a>"]].
+              </li>
+            </ol>
+          </li>
+          <li>For each <var>bucket</var> in the sequence
+          <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"],
+            <ol>
+              <li>Let <var>name</var> be the value of
+              <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">name</a>"].
+              </li>
+              <li>Let <var>value</var> be the value of
+              <var>accepted</var>[<var>name</var>], a (possibly empty)
+              <code><a data-cite="!FILE-API#file-section">File</a></code> list.
               </li>
               <li>
                 <a data-cite="!INFRA#list-append">Append</a> to <var>entry
@@ -647,6 +852,52 @@ partial dictionary WebAppManifest {
           <a>post-processing the <code>share_target</code> member</a> algorithm
           run on it and still has a <a>share_target</a> afterwards.
         </p>
+      </section>
+      <section>
+        <h3>
+          Determining if a file is accepted
+        </h3>
+        <p>
+          The algorithm for determining if a <a>ShareTargetFiles</a>
+          <var>bucket</var> <dfn data-lt="accepted">accepts</dfn> a
+          <a data-cite="!FILE-API#file-section">File</a> <var>shared file</var>
+          is as follows:-
+        </p>
+        <ol>
+          <li>If <var>bucket</var>["<a data-link-for=
+          "ShareTargetFiles">accept</a>"] is empty, return <code>true</code>.
+          </li>
+          <li>For each <var>criterion</var> in
+          <var>bucket</var>["<a data-link-for="ShareTargetFiles">accept</a>"]:
+            <ol>
+              <li>If the first character of <var>criterion</var> is a U+002E
+              FULL STOP character (.) and <var>shared
+              file</var>[<code>"name"</code>] ends with <var>criterion</var>,
+              and the implementation supports <a>filtering on file
+              extensions</a>, return <code>true</code>.
+              </li>
+              <li>If <var>criterion</var> is
+              <var>type</var><code>/</code><var>subtype</var> (where
+              <var>type</var> and <var>subtype</var> are <a data-cite=
+              "!RFC7230#section-3.2.6">RFC7230 tokens</a>) and matches the MIME
+              type of <var>shared file</var>, and the implementation supports
+              <a>filtering on MIME types</a>, return <code>true</code>.
+              </li>
+              <li>If <var>criterion</var> is <var>type</var><code>/*</code>
+              (where <var>type</var> is a <a data-cite=
+              "!RFC7230#section-3.2.6">RFC7230 token</a>) and the MIME type of
+              <var>shared file</var> is a subtype of <code>type</code>, and the
+              implementation supports <a>filtering on MIME types</a>, return
+              <code>true</code>.
+              </li>
+              <li>If <var>criterion</var> is <code>*/*</code>, return
+              <code>true</code>.
+              </li>
+            </ol>
+          </li>
+          <li>Return <code>false</code>.
+          </li>
+        </ol>
       </section>
     </section>
     <section class="informative">
