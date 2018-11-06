@@ -358,6 +358,18 @@ partial dictionary WebAppManifest {
           <li>If <var>share target</var>["<a data-link-for=
           "ShareTarget">method</a>"] is an <a data-cite=
           "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
+          the string <code>"GET"</code> and <var>share
+          target</var>["<a data-link-for="ShareTarget">enctype</a>"] is not an
+          <a data-cite="!INFRA#ascii-case-insensitive">ASCII
+          case-insensitive</a> match for the string
+          <code>"application/x-www-form-urlencoded"</code>, <a data-cite=
+          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+          warning</a> that the enctype is not supported with method GET, and
+          return <code>undefined</code>.
+          </li>
+          <li>If <var>share target</var>["<a data-link-for=
+          "ShareTarget">method</a>"] is an <a data-cite=
+          "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
           the string <code>"POST"</code> and <var>share
           target</var>["<a data-link-for="ShareTarget">enctype</a>"] is neither
           an <a data-cite="!INFRA#ascii-case-insensitive">ASCII
@@ -488,8 +500,7 @@ partial dictionary WebAppManifest {
         </p>
         <p>
           The <dfn>enctype</dfn> member specifies how the share data is encoded
-          in the body of a <code>POST</code> request. It is ignored when
-          <a>method</a> is <code>"GET"</code>.
+          in the request.
         </p>
         <p>
           The <dfn>params</dfn> member contains a <a>ShareTargetParams</a>
