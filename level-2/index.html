@@ -409,11 +409,6 @@ partial dictionary WebAppManifest {
           "ShareTargetParams">files</a>"]:
             <ol>
               <li>If <var>bucket</var>["<a data-link-for=
-              "ShareTargetFiles">name</a>"] is an empty string, <a data-cite=
-              "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-              warning</a> and return <code>undefined</code>.
-              </li>
-              <li>If <var>bucket</var>["<a data-link-for=
               "ShareTargetFiles">accept</a>"] is a <a data-cite=
               "!WEBIDL#idl-USVString">USVString</a>, <var>accept</var>, set
               <var>bucket</var>["<a data-link-for=
@@ -421,9 +416,9 @@ partial dictionary WebAppManifest {
               </li>
               <li>If <var>bucket</var>["<a data-link-for=
               "ShareTargetFiles">accept</a>"] contains a string that does not
-              match any of the following, <a data-cite=
-              "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-              warning</a> and return <code>undefined</code>.
+              match any of the following, set
+              <var>bucket</var>["<a data-link-for="ShareTargetFiles">name</a>"]
+              to an empty string.
                 <ul>
                   <li>a string whose first character is a U+002E FULL STOP
                   character (.)
@@ -443,6 +438,12 @@ partial dictionary WebAppManifest {
                 </ul>
               </li>
             </ol>
+          </li>
+          <li>Remove from <var>share target</var>["<a data-link-for=
+          "ShareTarget">params</a>"]["<a data-link-for=
+          "ShareTargetParams">files</a>"] any <a>ShareTargetFiles</a>
+          <var>bucket</var> where <var>bucket</var>["<a data-link-for=
+          "ShareTargetFiles">name</a>"] is an empty string.
           </li>
           <li>Let <var>action</var> be the result of <a data-cite=
           "!URL#concept-url-parser">parsing</a> the <a data-cite=
