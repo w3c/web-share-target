@@ -283,7 +283,7 @@ self.addEventListener('fetch', event =&gt; {
       <pre class="idl">
 dictionary ShareTargetFiles {
   required USVString name;
-  (USVString or sequence&lt;USVString&gt;) accept = [];
+  required (USVString or sequence&lt;USVString&gt;) accept;
 };
 
 dictionary ShareTargetParams {
@@ -386,7 +386,7 @@ partial dictionary WebAppManifest {
           dictionary, <var>bucket</var>, set <var>share
           target</var>["<a data-link-for=
           "ShareTarget">params</a>"]["<a data-link-for=
-          "ShareTargetParams">files</a>"] to [<var>bucket</var>].
+          "ShareTargetParams">files</a>"] to «<var>bucket</var>».
           </li>
           <li>If <var>share target</var>["<a data-link-for=
           "ShareTarget">params</a>"]["<a data-link-for=
@@ -411,19 +411,25 @@ partial dictionary WebAppManifest {
               <li>If <var>bucket</var>["<a data-link-for=
               "ShareTargetFiles">name</a>"] is an empty string, <a data-cite=
               "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-              warning</a> and return <code>undefined</code>.
+              warning</a>, remove <var>bucket</var> from <var>share
+              target</var>["<a data-link-for=
+              "ShareTarget">params</a>"]["<a data-link-for=
+              "ShareTargetParams">files</a>"] and <a data-cite=
+              "!INFRA#iteration-continue">continue</a>.
               </li>
               <li>If <var>bucket</var>["<a data-link-for=
               "ShareTargetFiles">accept</a>"] is a <a data-cite=
               "!WEBIDL#idl-USVString">USVString</a>, <var>accept</var>, set
               <var>bucket</var>["<a data-link-for=
-              "ShareTargetFiles">accept</a>"] to [<var>accept</var>].
+              "ShareTargetFiles">accept</a>"] to «<var>accept</var>».
               </li>
-              <li>If <var>bucket</var>["<a data-link-for=
-              "ShareTargetFiles">accept</a>"] contains a string that does not
-              match any of the following, <a data-cite=
+              <li>For each string in <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">accept</a>"] that does not match any of the
+              following, <a data-cite=
               "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-              warning</a> and return <code>undefined</code>.
+              warning</a> and remove the string from
+              <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">accept</a>"].
                 <ul>
                   <li>a string whose first character is a U+002E FULL STOP
                   character (.)
@@ -441,6 +447,14 @@ partial dictionary WebAppManifest {
                     <code>*/*</code>
                   </li>
                 </ul>
+              </li>
+              <li>If <var>bucket</var>["<a data-link-for=
+              "ShareTargetFiles">accept</a>"] is empty, <a data-cite=
+              "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+              warning</a> and remove <var>bucket</var> from <var>share
+              target</var>["<a data-link-for=
+              "ShareTarget">params</a>"]["<a data-link-for=
+              "ShareTargetParams">files</a>"].
               </li>
             </ol>
           </li>
@@ -550,8 +564,7 @@ partial dictionary WebAppManifest {
         <p>
           The <dfn>accept</dfn> member specifies a sequence of accepted MIME
           type(s) or file extension(s), the latter expressed as strings
-          starting with U+002E FULL STOP (.). An empty sequence indicates that
-          all files are accepted.
+          starting with U+002E FULL STOP (.).
         </p>
       </section>
     </section>
@@ -875,9 +888,6 @@ partial dictionary WebAppManifest {
           is as follows:-
         </p>
         <ol>
-          <li>If <var>bucket</var>["<a data-link-for=
-          "ShareTargetFiles">accept</a>"] is empty, return <code>true</code>.
-          </li>
           <li>For each <var>criterion</var> in
           <var>bucket</var>["<a data-link-for="ShareTargetFiles">accept</a>"]:
             <ol>
