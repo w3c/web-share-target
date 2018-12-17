@@ -283,7 +283,7 @@ self.addEventListener('fetch', event =&gt; {
       <pre class="idl">
 dictionary ShareTargetFiles {
   required USVString name;
-  (USVString or sequence&lt;USVString&gt;) accept;
+  required (USVString or sequence&lt;USVString&gt;) accept;
 };
 
 dictionary ShareTargetParams {
@@ -386,7 +386,7 @@ partial dictionary WebAppManifest {
           dictionary, <var>bucket</var>, set <var>share
           target</var>["<a data-link-for=
           "ShareTarget">params</a>"]["<a data-link-for=
-          "ShareTargetParams">files</a>"] to [<var>bucket</var>].
+          "ShareTargetParams">files</a>"] to «<var>bucket</var>».
           </li>
           <li>If <var>share target</var>["<a data-link-for=
           "ShareTarget">params</a>"]["<a data-link-for=
@@ -421,7 +421,7 @@ partial dictionary WebAppManifest {
               "ShareTargetFiles">accept</a>"] is a <a data-cite=
               "!WEBIDL#idl-USVString">USVString</a>, <var>accept</var>, set
               <var>bucket</var>["<a data-link-for=
-              "ShareTargetFiles">accept</a>"] to [<var>accept</var>].
+              "ShareTargetFiles">accept</a>"] to «<var>accept</var>».
               </li>
               <li>For each string in <var>bucket</var>["<a data-link-for=
               "ShareTargetFiles">accept</a>"] that does not match any of the
