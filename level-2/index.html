@@ -200,8 +200,8 @@ self.addEventListener('fetch', event =&gt; {
   event.respondWith((async () =&gt; {
     const formData = await event.request.formData();
     const link = formData.get('link') || '';
-    saveBookmark(link);
-    return new Response('Bookmark saved: ' + link);
+    const responseUrl = await saveBookmark(link);
+    return Response.redirect(responseUrl, 303);
   })());
 });
 </pre>
@@ -268,6 +268,12 @@ self.addEventListener('fetch', event =&gt; {
         <code>url</code> with a short link to fit into the message size.
         </li>
       </ul>
+      <p>
+        As with HTML forms, replying to a POST request with a
+        <a data-cite="!RFC7231#section-6.4.4">303 See Other</a> redirect
+        is highly recommended, as it avoids the POST being submitted a
+        second time if the user requests a page refresh.
+      </p>
     </section>
     <section data-link-for="WebAppManifest">
       <h2>
