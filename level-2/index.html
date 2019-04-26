@@ -73,8 +73,7 @@
         choosing.
       </p>
     </section>
-    <section id="sotd">
-    </section>
+    <section id="sotd"></section>
     <section>
       <h2>
         Prerequisites
@@ -269,10 +268,10 @@ self.addEventListener('fetch', event =&gt; {
         </li>
       </ul>
       <p>
-        As with HTML forms, replying to a POST request with a
-        <a data-cite="!RFC7231#section-6.4.4">303 See Other</a> redirect
-        is highly recommended, as it avoids the POST being submitted a
-        second time if the user requests a page refresh.
+        As with HTML forms, replying to a POST request with a <a data-cite=
+        "!RFC7231#section-6.4.4">303 See Other</a> redirect is highly
+        recommended, as it avoids the POST being submitted a second time if the
+        user requests a page refresh.
       </p>
     </section>
     <section data-link-for="WebAppManifest">
@@ -515,6 +514,10 @@ partial dictionary WebAppManifest {
           performs a side-effect without any user interaction,
           <code>POST</code> requests should be used.
         </p>
+        <p class="warning">
+          The user agent MAY truncate the share data if <var>method</var> is
+          <code>"GET"</code> and an entry in the share data exceeds 2000 bytes.
+        </p>
         <p>
           The <dfn>enctype</dfn> member specifies how the share data is encoded
           in the request.
@@ -736,6 +739,10 @@ partial dictionary WebAppManifest {
               <var>data</var>[<var>member</var>].
               </li>
               <li>If <var>value</var> is <code>undefined</code>, then continue.
+              </li>
+              <li>If <var>method</var> is <code>"GET"</code> and
+              <var>value</var> exceeds 2000 bytes in length, the user agent MAY
+              set <var>value</var> to the first 2000 bytes of <var>value</var>.
               </li>
               <li>
                 <a data-cite="!INFRA#list-append">Append</a> to <var>entry
