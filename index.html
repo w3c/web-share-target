@@ -5,8 +5,8 @@
     <title>
       Web Share Target API
     </title>
-    <script src="https://www.w3.org/Tools/respec/respec-w3c-common" class=
-    "remove" defer></script>
+    <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"
+    defer></script>
     <script class='remove'>
       var respecConfig = {
         specStatus: "CG-DRAFT",
@@ -36,41 +36,28 @@
             href: "https://www.chromestatus.com/features/5662315307335680"
           }]
         }],
-        localBiblio: {
-          "WebShare": {
-            id: "WebShare",
-            title: "Web Share API",
-            href: "https://wicg.github.io/web-share",
-            authors: [
-              "Matt Giuca",
-            ],
-            status: "Draft Report",
-            publisher: "WICG"
-          }
-        }
+        xref: "web-platform",
       };
     </script>
   </head>
-  <body>
+  <body data-cite="Web-Share encoding">
     <section id="abstract">
       <p>
         This specification defines an API that allows websites to declare
         themselves as <a>web share targets</a>, which can receive shared
-        content from either the <a data-cite="!WebShare">Web Share API</a>, or
-        system events (e.g., shares from native apps).
+        content from either the [[[Web-Share]]], or system events (e.g., shares
+        from native apps).
       </p>
       <p>
-        This is a similar mechanism to <a data-cite=
-        "HTML#dom-navigator-registerprotocolhandler"><code>navigator.registerProtocolHandler</code></a>,
-        in that it works by registering the website with the user agent, to
-        later be <a>invoked</a> from another site or native application via the
-        user agent (possibly at the discretion of the user). The difference is
-        that <a data-cite=
-        "HTML#dom-navigator-registerprotocolhandler"><code>registerProtocolHandler</code></a>
-        registers the handler via a programmatic API, whereas a Web Share
-        Target is declared in the <a data-cite="!appmanifest">Web App
-        Manifest</a>, to be registered at a time of the user agent or user's
-        choosing.
+        This is a similar mechanism to
+        {{NavigatorContentUtils/registerProtocolHandler()}}, in that it works
+        by registering the website with the user agent, to later be
+        <a>invoked</a> from another site or native application via the user
+        agent (possibly at the discretion of the user). The difference is that
+        {{NavigatorContentUtils/registerProtocolHandler()}} registers the
+        handler via a programmatic API, whereas a Web Share Target is declared
+        in the [[[appmanifest]]], to be registered at a time of the user agent
+        or user's choosing.
       </p>
     </section>
     <section id="sotd">
@@ -83,11 +70,10 @@
         Prerequisites
       </h2>
       <p>
-        In order to implement this API, it is REQUIRED that the user agent
-        implements <a data-cite="!appmanifest">Web App Manifest</a>. This spec
-        also re-uses some definitions from the <a data-cite="!WebShare">Web
-        Share API</a> spec. Implementation of that spec is NOT REQUIRED to
-        implement this one (but it is RECOMMENDED).
+        In order to implement this API, a the user agent MUST support
+        [[[appmanifest]]]. This spec also re-uses some definitions from the
+        [[[Web-Share]]] spec. However, support for the [[[Web-Share]]] is
+        OPTIONAL.
       </p>
     </section>
     <section class="informative" data-link-for="WebAppManifest">
@@ -96,54 +82,54 @@
       </h2>
       <p>
         To register a site as a share target, a <a>share_target</a> entry is
-        added to the <a data-cite="appmanifest">Web App Manifest</a>, as shown:
+        added to the [[[appmanifest]]], as shown:
       </p>
       <pre class="example json" title="manifest.webmanifest">
-{
-  "name": "Includinator",
-  "share_target": {
-    "action": "share.html",
-    "params": {
-      "title": "name",
-      "text": "description",
-      "url": "link"
-    }
-  }
-}
-</pre>
+      {
+        "name": "Includinator",
+        "share_target": {
+          "action": "share.html",
+          "params": {
+            "title": "name",
+            "text": "description",
+            "url": "link"
+          }
+        }
+      }
+      </pre>
       <p>
-        The <a data-link-for="ShareTarget">params</a> keys correspond to the
-        key names in <a data-cite="WebShare#dom-sharedata">ShareData</a> from
-        [[!WebShare]], while the values are arbitrary names that will be used
-        as query parameters when the target is launched.
+        The {{ShareTarget/params}} keys correspond to the key names in
+        {{ShareData}} from [[Web-Share]], while the values are arbitrary names
+        that will be used as query parameters when the target is launched.
       </p>
       <p>
         When a share takes place, if the user selects this share target, the
-        user agent opens a new browsing context at the <code>action</code> URL,
-        with query parameter values containing the shared data, just like an
-        HTML form submission.
+        user agent opens a new browsing context at the `action` URL, with query
+        parameter values containing the shared data, just like an HTML form
+        submission.
       </p>
       <p>
         For the purpose of this example, we assume the manifest is located at
-        <code>https://example.org/includinator/manifest.webmanifest</code>.
+        `https://example.org/includinator/manifest.webmanifest`.
       </p>
       <pre class="example html" title="share.html">
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;link rel="manifest" href="manifest.webmanifest"&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;script&gt;
-      window.addEventListener('load', () =&gt; {
-        var parsedUrl = new URL(window.location);
-        console.log('Title shared: ' + parsedUrl.searchParams.get('name'));
-        console.log('Text shared: ' + parsedUrl.searchParams.get('description'));
-        console.log('URL shared: ' + parsedUrl.searchParams.get('link'));
-      });
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</pre>
+      &lt;html&gt;
+        &lt;head&gt;
+          &lt;link rel="manifest" href="manifest.webmanifest"&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+          &lt;script&gt;
+            window.addEventListener('load', () =&gt; {
+              const parsedUrl = new URL(window.location);
+              const { searchParams } = parsedUrl;
+              console.log("Title shared:", searchParams.get('name'));
+              console.log("Text shared:", searchParams.get('description'));
+              console.log("URL shared:", searchParams.get('link'));
+            });
+          &lt;/script&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+      </pre>
       <p>
         If an incoming share contains the title "My News" and the URL
         <code>http://example.com/news</code>, the user agent will open a new
@@ -153,61 +139,58 @@
 https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fexample.com%2Fnews
 </pre>
       <p class="warning">
-        U+0020 (SPACE) characters are encoded as "<code>+</code>", due to the
-        use of <a data-cite=
-        "URL#application/x-www-form-urlencoded"><code>application/x-www-form-urlencoded</code></a>
-        encoding, not "<code>%20</code>" as might be expected. Processors must
-        take care to decode U+002B (+) characters as U+0020 (SPACE), which some
-        URL decoding libraries, including ECMAScript's <a data-cite=
-        "ECMASCRIPT#sec-decodeuricomponent-encodeduricomponent"><code>decodeURIComponent</code></a>
+        U+0020 (SPACE) characters are encoded as "`+`", due to the use of
+        <a data-cite="url">application/x-www-form-urlencoded</a> encoding, not
+        "`%20`" as might be expected. Processors must take care to decode
+        U+002B (+) characters as U+0020 (SPACE), which some URL decoding
+        libraries, including ECMAScript's <a data-cite=
+        "ECMASCRIPT#sec-decodeuricomponent-encodeduricomponent">`decodeURIComponent`</a>
         function, may not do automatically.
       </p>
       <p>
         The query parameters are populated with information from the
-        <a data-cite="WebShare#dom-sharedata"><code>ShareData</code></a> being
-        shared. If the ShareData contains no information for a given member,
-        the query parameter is omitted.
+        {{ShareData}} being shared. If the ShareData contains no information
+        for a given member, the query parameter is omitted.
       </p>
       <p>
         A share target might only be interested in a subset of the
-        <a data-cite="WebShare#dom-sharedata">ShareData</a> members. This
-        example also shows a share target that receives data as a
-        <code>POST</code> request, which should be the case if the request
-        causes an immediate side effect.
+        {{ShareData}} members. This example also shows a share target that
+        receives data as a `POST` request, which should be the case if the
+        request causes an immediate side effect.
       </p>
       <pre class="example json" title="manifest.webmanifest">
-{
-  "name": "Bookmark",
-  "share_target": {
-    "action": "/bookmark",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "url": "link"
-    }
-  }
-}
-</pre>
+      {
+        "name": "Bookmark",
+        "share_target": {
+          "action": "/bookmark",
+          "method": "POST",
+          "enctype": "multipart/form-data",
+          "params": {
+            "url": "link"
+          }
+        }
+      }
+      </pre>
       <p>
         The shared information might be read by a <a data-cite=
         "service-workers-1#service-worker-concept">service worker</a>, rather
         than being sent over the network to the server.
       </p>
       <pre class="example javascript" title="sw.js">
-self.addEventListener('fetch', event =&gt; {
-  if (event.request.method !== 'POST') {
-    event.respondWith(fetch(event.request));
-    return;
-  }
+      self.addEventListener('fetch', event =&gt; {
+        if (event.request.method !== 'POST') {
+          event.respondWith(fetch(event.request));
+          return;
+        }
 
-  event.respondWith((async () =&gt; {
-    const formData = await event.request.formData();
-    const link = formData.get('link') || '';
-    saveBookmark(link);
-    return new Response('Bookmark saved: ' + link);
-  })());
-});
-</pre>
+        event.respondWith((async () =&gt; {
+          const formData = await event.request.formData();
+          const link = formData.get('link') || '';
+          saveBookmark(link);
+          return new Response('Bookmark saved: ' + link);
+        })());
+      });
+      </pre>
       <p>
         How the handler deals with the shared data is at the handler's
         discretion, and will generally depend on the type of app. Here are some
@@ -241,27 +224,27 @@ self.addEventListener('fetch', event =&gt; {
         "!appmanifest#dom-webappmanifest">WebAppManifest</dfn> dictionary.
       </p>
       <pre class="idl">
-dictionary ShareTargetParams {
-  USVString title;
-  USVString text;
-  USVString url;
-};
+      dictionary ShareTargetParams {
+        USVString title;
+        USVString text;
+        USVString url;
+      };
 
-dictionary ShareTarget {
-  required USVString action;
-  DOMString method = "GET";
-  DOMString enctype = "application/x-www-form-urlencoded";
-  required ShareTargetParams params;
-};
+      dictionary ShareTarget {
+        required USVString action;
+        DOMString method = "GET";
+        DOMString enctype = "application/x-www-form-urlencoded";
+        required ShareTargetParams params;
+      };
 
-partial dictionary WebAppManifest {
-  ShareTarget share_target;
-};
-</pre>
+      partial dictionary WebAppManifest {
+        ShareTarget share_target;
+      };
+      </pre>
       <p>
         The following steps are added to the <a data-cite=
         "!appmanifest#dfn-extension-point">extension point</a> in the steps for
-        <a data-cite="!appmanifest#dfn-processing-a-manifest">processing a
+        <a data-cite="appmanifest#dfn-processing-a-manifest">processing a
         manifest</a>:
       </p>
       <ol>
@@ -286,15 +269,13 @@ partial dictionary WebAppManifest {
         <p>
           A <dfn data-lt="web share targets">web share target</dfn> is a web
           site with a valid manifest containing a <a>share_target</a> member. A
-          web share target is a type of <a data-cite=
-          "!WebShare#dfn-share-target">share target</a>.
+          web share target is a type of <a>share target</a>.
         </p>
         <p>
           The steps for <dfn>post-processing the <code>share_target</code>
           member</dfn> is given by the following algorithm. The algorithm takes
-          a <a>ShareTarget</a> <var>share target</var>, a <a data-cite=
-          "!URL#concept-url">URL</a> <var>scope URL</var>, and a <a data-cite=
-          "!URL#concept-url">URL</a> <var>manifest URL</var>. This algorithm
+          a <a>ShareTarget</a> <var>share target</var>, a <a>URL</a> <var>scope
+          URL</var>, and a <a>URL</a> <var>manifest URL</var>. This algorithm
           returns a <a>ShareTarget</a> or <code>undefined</code>.
         </p>
         <ol>
@@ -305,7 +286,7 @@ partial dictionary WebAppManifest {
           "ShareTarget">method</a>"] is neither an <a data-cite=
           "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
           the strings <code>"GET"</code> nor <code>"POST"</code>,
-            <a data-cite="!appmanifest#dfn-issue-a-developer-warning">issue a
+            <a data-cite="appmanifest#dfn-issue-a-developer-warning">issue a
             developer warning</a> that the method is not supported, and return
             <code>undefined</code>.
           </li>
@@ -314,7 +295,7 @@ partial dictionary WebAppManifest {
           "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
           the string <code>"POST"</code> and <var>share
           target</var>["<a data-link-for="ShareTarget">enctype</a>"] is neither
-          an <a data-cite="!INFRA#ascii-case-insensitive">ASCII
+          an <a data-cite="INFRA#ascii-case-insensitive">ASCII
           case-insensitive</a> match for the strings
           <code>"application/x-www-form-urlencoded"</code> nor
           <code>"multipart/form-data"</code>, <a data-cite=
@@ -323,23 +304,22 @@ partial dictionary WebAppManifest {
           <code>undefined</code>.
           </li>
           <li>Let <var>action</var> be the result of <a data-cite=
-          "!URL#concept-url-parser">parsing</a> the <a data-cite=
-          "!URL#concept-url">URL</a> <var>share
-            target</var>["<a data-link-for="ShareTarget">action</a>"], relative
-            to the <var>manifest URL</var> and with no encoding override. If
-            the result is failure, <a data-cite=
-            "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-            warning</a> and return <code>undefined</code>.
+          "!URL#concept-url-parser">parsing</a> the <a>URL</a> <var>share
+          target</var>["<a data-link-for="ShareTarget">action</a>"], relative
+          to the <var>manifest URL</var> and with no encoding override. If the
+          result is failure, <a data-cite=
+          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
+          warning</a> and return <code>undefined</code>.
           </li>
           <li>If <var>action</var> is not <a data-cite=
           "!appmanifest#dfn-within-scope">within scope</a> of <var>scope
-          URL</var>, <a data-cite="!appmanifest#dfn-issue-a-developer-warning">
+          URL</var>, <a data-cite="appmanifest#dfn-issue-a-developer-warning">
             issue a developer warning</a> that <a data-link-for=
             "ShareTarget">action</a> is outside of the <a data-cite=
             "!appmanifest#dfn-navigation-scope">navigation scope</a> , and
             return <code>undefined</code>.
           </li>
-          <li>If the <a data-cite="!URL#concept-url-origin">origin</a> of <var>
+          <li>If the <a data-cite="URL#concept-url-origin">origin</a> of <var>
             action</var> is not <a data-cite=
             "!SECURE-CONTEXTS/#is-origin-trustworthy">potentially
             trustworthy</a>, <a data-cite=
@@ -361,9 +341,8 @@ partial dictionary WebAppManifest {
           The <dfn>ShareTarget</dfn> dictionary contains the following members.
         </p>
         <p>
-          The <dfn>action</dfn> member specifies the <a data-cite=
-          "!URL#concept-url">URL</a> for the <a data-link-for=
-          "web share targets">web share target</a>.
+          The <dfn>action</dfn> member specifies the <a>URL</a> for the
+          <a data-link-for="web share targets">web share target</a>.
         </p>
         <p>
           The <dfn>method</dfn> member specifies the HTTP request <a href=
@@ -373,13 +352,13 @@ partial dictionary WebAppManifest {
         <p class="note">
           A use case for <code>GET</code> requests is when the share target
           drafts a message for subsequent user approval. If the share target
-          performs a side-effect without any user interaction,
-          <code>POST</code> requests should be used.
+          performs a side-effect without any user interaction, `POST` requests
+          should be used.
         </p>
         <p>
           The <dfn>enctype</dfn> member specifies how the share data is encoded
-          in the body of a <code>POST</code> request. It is ignored when
-          <a>method</a> is <code>"GET"</code>.
+          in the body of a `POST` request. It is ignored when <a>method</a> is
+          <code>"GET"</code>.
         </p>
         <p>
           The <dfn>params</dfn> member contains a <a>ShareTargetParams</a>
@@ -422,7 +401,7 @@ partial dictionary WebAppManifest {
         targets at all; they are only REQUIRED to provide some mechanism to
         convey shared data to a web share target of the end user's choosing.
         User agents MAY consider a web share target "registered" even if it is
-        not <a data-cite="!appmanifest#dfn-install">installed</a>.
+        not <a data-cite="appmanifest#dfn-install">installed</a>.
       </p>
       <p>
         The user agent MAY automatically register all <a>web share targets</a>
@@ -442,8 +421,8 @@ partial dictionary WebAppManifest {
           site for some period of time.
           </li>
           <li>Explicitly prompt the user to register a web share target
-          (perhaps using the same UI as <a data-cite=
-          "HTML#dom-navigator-registerprotocolhandler"><code>navigator.registerProtocolHandler</code></a>).
+          (perhaps using the same UI as
+          {{NavigatorContentUtils/registerProtocolHandler()}}).
           </li>
           <li>Only register a web share target if it has a service worker.
           </li>
@@ -470,8 +449,7 @@ partial dictionary WebAppManifest {
       <p>
         It is not specified where the data comes from, or how the end user
         indicates the web share target as the receiver. However, one possible
-        source is a call to <a data-cite=
-        "!WebShare#dom-navigator-share"><code>navigator.share</code></a> in the
+        source is a call to {{Navigator}}'s {{Navigator/share()}} method in the
         same user agent.
       </p>
       <div class="note">
@@ -498,28 +476,22 @@ partial dictionary WebAppManifest {
         <p>
           When a <a>web share target</a> is <a>invoked</a>, the data MAY be in
           an unspecified format. The user agent MUST first convert the data
-          into a <a data-cite=
-          "!WebShare#dom-sharedata"><code>ShareData</code></a> dictionary, if
-          it is not already, by mapping to the fields of <code>ShareData</code>
-          from equivalent concepts in the host system. If the source was a call
-          to <a data-cite=
-          "!WebShare#dom-navigator-share"><code>navigator.share</code></a>, the
-          user agent SHOULD use the <a data-cite=
-          "!WebShare#dom-sharedata"><code>ShareData</code></a> argument
-          unmodified (but this is not always possible, as it might have to
-          round-trip through some other format in a lossy manner). The user
-          agent MAY employ heuristics to map the data onto the
-          <code>ShareData</code> fields as well as possible.
+          into a {{ShareData}} dictionary, if it is not already, by mapping to
+          the fields of <code>ShareData</code> from equivalent concepts in the
+          host system. If the source was a call to {{Navigator/share()}}, the
+          user agent SHOULD use the {{ShareData}} argument unmodified (but this
+          is not always possible, as it might have to round-trip through some
+          other format in a lossy manner). The user agent MAY employ heuristics
+          to map the data onto the <code>ShareData</code> fields as well as
+          possible.
         </p>
         <p class="note">
           For example, the host share system may not have a dedicated URL
           field, but a convention that both plain text and URLs are sometimes
           transmitted in a "text" field. This is the case on Android. The user
-          agent can check whether all or part of the "text" field is a
-          <a data-cite="URL#valid-url-string">valid URL string</a>, and if so,
-          move that part of the "text" field to the <a data-cite=
-          "!WebShare#dom-sharedata"><code>ShareData</code></a>'s <a data-cite=
-          "!WebShare#dom-sharedata-url"><code>url</code></a> field.
+          agent can check whether all or part of the "text" field is a [=valid
+          URL string=], and if so, move that part of the "text" field to the
+          {{ShareData}}'s {{ShareData/url}} member.
         </p>
       </section>
       <section data-link-for="WebAppManifest">
@@ -528,9 +500,8 @@ partial dictionary WebAppManifest {
         </h3>
         <p>
           When <a>web share target</a> having <a>WebAppManifest</a>
-          <var>manifest</var> is <a>invoked</a> with <a data-cite=
-          "!WebShare#dom-sharedata"><code>ShareData</code></a> <var>data</var>,
-          run the following steps:
+          <var>manifest</var> is <a>invoked</a> with {{ShareData}}
+          <var>data</var>, run the following steps:
         </p>
         <ol>
           <li>Let <var>url</var> be a copy of
@@ -556,7 +527,7 @@ partial dictionary WebAppManifest {
               <li>If <var>value</var> is <code>undefined</code>, then continue.
               </li>
               <li>
-                <a data-cite="!INFRA#list-append">Append</a> to <var>entry
+                <a data-cite="INFRA#list-append">Append</a> to <var>entry
                 list</var> a tuple with <var>name</var> and <var>value</var>.
               </li>
             </ol>
@@ -575,10 +546,8 @@ partial dictionary WebAppManifest {
           <li>If <var>method</var> is <code>"GET"</code>:
             <ol>
               <li>Let <var>query</var> be the result of running the
-              <a data-cite=
-              "!URL#concept-urlencoded-serializer"><code>application/x-www-form-urlencoded</code>
-              serializer</a> with <var>entry list</var> and no encoding
-              override.
+              <a data-cite="url">application/x-www-form-urlencoded</a>
+              serializer with <var>entry list</var> and no encoding override.
               </li>
               <li>Set <var>url</var>'s <a data-cite=
               "!URL#concept-url-query">query</a> component to <var>query</var>.
@@ -591,17 +560,15 @@ partial dictionary WebAppManifest {
             enctype</var> is <code>"application/x-www-form-urlencoded"</code>:
             <ol>
               <li>Let <var>body</var> be the result of running the
-                <a data-cite="!URL#concept-urlencoded-serializer"><code>application/x-www-form-urlencoded</code>
-                serializer</a> with <var>entry list</var> and no encoding
-                override.
+                <a data-cite="url">application/x-www-form-urlencoded</a>
+                serializer with <var>entry list</var> and no encoding override.
               </li>
-              <li>Set <var>body</var> to the result of <a data-cite=
-              "!Encoding#utf-8-encode">encoding</a> <var>body</var>.
+              <li>Set <var>body</var> to the result of [=UTF-8 encode=]
+              <var>body</var>.
               </li>
-              <li>
-                <a data-cite="!FETCH/#concept-header-list-append">Append</a>
-                <code>"Content-Type"</code>/<code>"application/x-www-form-urlencoded"</code>
-                to <var>header list</var>.
+              <li>[=header list/Append=]
+              <code>"Content-Type"</code>/<code>"application/x-www-form-urlencoded"</code>
+              to <var>header list</var>.
               </li>
             </ol>
           </li>
@@ -609,10 +576,8 @@ partial dictionary WebAppManifest {
             enctype</var> is <code>"multipart/form-data"</code>:
             <ol>
               <li>Let <var>body</var> be the result of running the
-                <a data-cite="!HTML#multipart/form-data-encoding-algorithm"><code>
-                multipart/form-data</code> encoding algorithm</a> with
-                <var>entry list</var> and <a data-cite="!UTF-8">UTF-8</a>
-                encoding.
+              <a>multipart/form-data encoding algorithm</a> with <var>entry
+              list</var> and [[[UTF-8]]] encoding.
               </li>
               <li>Let <var>MIME type</var> be the concatenation of the string
               <code>"multipart/form-data;"</code>, a U+0020 SPACE character,
@@ -622,22 +587,20 @@ partial dictionary WebAppManifest {
               "!HTML#multipart/form-data-encoding-algorithm"><code>multipart/form-data</code>
               encoding algorithm</a>.
               </li>
-              <li>
-                <a data-cite="!FETCH/#concept-header-list-append">Append</a>
-                <code>"Content-Type"</code>/<var>MIME type</var> to <var>header
-                list</var>.
+              <li>[=header list/Append=] <code>"Content-Type"</code>/<var>MIME
+              type</var> to <var>header list</var>.
               </li>
             </ol>
           </li>
           <li>Let <var>browsing context</var> be the result of creating a
-          <a data-cite="!HTML#creating-a-new-browsing-context">new</a>
-          <a data-cite="!HTML#top-level-browsing-context">top-level browsing
+          <a data-cite="HTML#creating-a-new-browsing-context">new</a>
+          <a data-cite="HTML#top-level-browsing-context">top-level browsing
           context</a>.
           </li>
           <li>
-            <a data-cite="!HTML#navigate">Navigate</a> <var>browsing
+            <a data-cite="HTML#navigate">Navigate</a> <var>browsing
             context</var> to a new <a data-cite=
-            "!FETCH/#concept-request">request</a> whose method is
+            "!FETCH/#concept-request">Request</a> whose method is
             <var>method</var>, url is <var>url</var>, header list is
             <var>header list</var>, and body is <var>body</var>.
           </li>
@@ -649,7 +612,7 @@ partial dictionary WebAppManifest {
         </p>
       </section>
     </section>
-    <section class="informative">
+    <section class="informative" data-cite="secure-contexts">
       <h2>
         Security and privacy considerations
       </h2>
@@ -667,23 +630,23 @@ partial dictionary WebAppManifest {
         from an online index, rather than a set of targets that the end user
         has explicitly installed or registered.
         </li>
-        <li>The requirement that the web share target's origin be
-          <a data-cite="SECURE-CONTEXTS/#is-origin-trustworthy">potentially
-          trustworthy</a> is to prevent private user data from being
-          transmitted to a party that does not control the origin in question,
-          or in clear text over the network.
+        <li>The requirement that the web share target's origin be a
+        [=potentially trustworthy origin=] is to prevent private user data from
+        being transmitted to a party that does not control the origin in
+        question, or in clear text over the network.
         </li>
       </ul>
     </section>
+    <section id="conformance"></section>
     <section class="appendix informative">
       <h2>
         Acknowledgments
       </h2>
       <p>
-        Thanks to the <a data-cite="web-intents">Web Intents</a> team, who laid
-        the groundwork for the web app interoperability use cases. In
-        particular, <a href="https://paul.kinlan.me/">Paul Kinlan</a>, who did
-        a lot of early advocacy for Web Share and Web Share Target.
+        Thanks to the [[[WEBINTENTS]]] team, who laid the groundwork for the
+        web app interoperability use cases. In particular, <a href=
+        "https://paul.kinlan.me/">Paul Kinlan</a>, who did a lot of early
+        advocacy for Web Share and Web Share Target.
       </p>
       <p>
         Thanks to Connie Pyromallis, who wrote an early draft of this spec, and
