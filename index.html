@@ -546,8 +546,8 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
           <li>If <var>method</var> is <code>"GET"</code>:
             <ol>
               <li>Let <var>query</var> be the result of running the
-              <a data-cite="url">application/x-www-form-urlencoded</a>
-              serializer with <var>entry list</var> and no encoding override.
+              [=urlencoded serializer=] with <var>entry list</var> and no
+              encoding override.
               </li>
               <li>Set <var>url</var>'s <a data-cite=
               "!URL#concept-url-query">query</a> component to <var>query</var>.
@@ -559,9 +559,8 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
           <li>Otherwise, if <var>method</var> is <code>"POST"</code> and <var>
             enctype</var> is <code>"application/x-www-form-urlencoded"</code>:
             <ol>
-              <li>Let <var>body</var> be the result of running the
-                <a data-cite="url">application/x-www-form-urlencoded</a>
-                serializer with <var>entry list</var> and no encoding override.
+              <li>Let <var>body</var> be the result of running the [=urlencoded
+              serializer=] with <var>entry list</var> and no encoding override.
               </li>
               <li>Set <var>body</var> to the result of [=UTF-8 encode=]
               <var>body</var>.
