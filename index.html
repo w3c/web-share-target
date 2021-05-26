@@ -32,7 +32,7 @@
       };
     </script>
   </head>
-  <body data-cite="Web-Share encoding">
+  <body data-cite="Web-Share encoding secure-contexts appmanifest">
     <section id="abstract">
       <p>
         This specification defines an API that allows websites to declare
@@ -68,13 +68,13 @@
         OPTIONAL.
       </p>
     </section>
-    <section class="informative" data-link-for="WebAppManifest">
+    <section class="informative">
       <h2>
         Usage Example
       </h2>
       <p>
-        To register a site as a share target, a <a>share_target</a> entry is
-        added to the [[[appmanifest]]], as shown:
+        To register a site as a share target, a [=manifest/share_target=] entry
+        is added to the [[[appmanifest]]], as shown:
       </p>
       <pre class="example json" title="manifest.webmanifest">
       {
@@ -90,9 +90,10 @@
       }
       </pre>
       <p>
-        The {{ShareTarget/params}} keys correspond to the key names in
-        {{ShareData}} from [[Web-Share]], while the values are arbitrary names
-        that will be used as query parameters when the target is launched.
+        The [=ShareTarget/params=] keys correspond to the key names in
+        {{ShareData}} from [[[Web-Share]]], while the values are arbitrary
+        names that will be used as query parameters when the target is
+        launched.
       </p>
       <p>
         When a share takes place, if the user selects this share target, the
@@ -106,43 +107,38 @@
       </p>
       <pre class="example html" title="share.html">
       &lt;html&gt;
-        &lt;head&gt;
-          &lt;link rel="manifest" href="manifest.webmanifest"&gt;
-        &lt;/head&gt;
-        &lt;body&gt;
-          &lt;script&gt;
-            window.addEventListener('load', () =&gt; {
-              const parsedUrl = new URL(window.location);
-              const { searchParams } = parsedUrl;
-              console.log("Title shared:", searchParams.get('name'));
-              console.log("Text shared:", searchParams.get('description'));
-              console.log("URL shared:", searchParams.get('link'));
-            });
-          &lt;/script&gt;
-        &lt;/body&gt;
-      &lt;/html&gt;
+      &lt;link rel="manifest" href="manifest.webmanifest"&gt;
+      &lt;script&gt;
+        window.addEventListener('load', () =&gt; {
+          const parsedUrl = new URL(window.location);
+          const { searchParams } = parsedUrl;
+          console.log("Title shared:", searchParams.get('name'));
+          console.log("Text shared:", searchParams.get('description'));
+          console.log("URL shared:", searchParams.get('link'));
+        });
+      &lt;/script&gt;
       </pre>
       <p>
         If an incoming share contains the title "My News" and the URL
-        <code>http://example.com/news</code>, the user agent will open a new
-        window or tab and navigate to:
+        `http://example.com/news`, the user agent will open a new window or tab
+        and navigate to:
       </p>
       <pre>
 https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fexample.com%2Fnews
 </pre>
       <p class="warning">
         U+0020 (SPACE) characters are encoded as "`+`", due to the use of
-        <a data-cite="url">application/x-www-form-urlencoded</a> encoding, not
-        "`%20`" as might be expected. Processors must take care to decode
-        U+002B (+) characters as U+0020 (SPACE), which some URL decoding
-        libraries, including ECMAScript's <a data-cite=
+        [=`application\/x-www-form-urlencoded`=] encoding, not "`%20`" as might
+        be expected. Processors must take care to decode U+002B (+) characters
+        as U+0020 (SPACE), which some URL decoding libraries, including
+        ECMAScript's <a data-cite=
         "ECMASCRIPT#sec-decodeuricomponent-encodeduricomponent">`decodeURIComponent`</a>
         function, may not do automatically.
       </p>
       <p>
         The query parameters are populated with information from the
-        {{ShareData}} being shared. If the ShareData contains no information
-        for a given member, the query parameter is omitted.
+        {{ShareData}} being shared. If the {{ShareData}} contains no
+        information for a given member, the query parameter is omitted.
       </p>
       <p>
         A share target might only be interested in a subset of the
@@ -163,25 +159,26 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         }
       }
       </pre>
-      <p>
-        The shared information might be read by a <a data-cite=
-        "service-workers-1#service-worker-concept">service worker</a>, rather
+      <p data-cite="service-workers-1">
+        The shared information might be read by a [=service worker=], rather
         than being sent over the network to the server.
       </p>
       <pre class="example javascript" title="sw.js">
-      self.addEventListener('fetch', event =&gt; {
-        if (event.request.method !== 'POST') {
-          event.respondWith(fetch(event.request));
-          return;
-        }
+        self.addEventListener("fetch", (event) =&gt; {
+          if (event.request.method !== "POST") {
+            event.respondWith(fetch(event.request));
+            return;
+          }
 
-        event.respondWith((async () =&gt; {
-          const formData = await event.request.formData();
-          const link = formData.get('link') || '';
-          saveBookmark(link);
-          return new Response('Bookmark saved: ' + link);
-        })());
-      });
+          const formDataPromise = event.request.formData();
+          event.respondWith(
+            formDataPromise.then((formData) =&gt; {
+              const link = formData.get("link") || "";
+              saveBookmark(link);
+              return new Response(`Bookmark saved: ${link}`);
+            })
+          );
+        });
       </pre>
       <p>
         How the handler deals with the shared data is at the handler's
@@ -189,196 +186,215 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         suggestions:
       </p>
       <ul>
-        <li>An email client might draft a new email, using <code>title</code>
-        as the subject of an email, with <code>text</code> and <code>url</code>
-        concatenated together as the body.
+        <li>An email client might draft a new email, using `title` as the
+        subject of an email, with `text` and `url` concatenated together as the
+        body.
         </li>
-        <li>A social networking app might draft a new post, ignoring
-        <code>title</code>, using <code>text</code> as the body of the message
-        and adding <code>url</code> as a link. If <code>text</code> is missing,
-        it might use <code>url</code> in the body as well. If <code>url</code>
-        is missing, it might scan <code>text</code> looking for a URL and add
-        that as a link.
+        <li>A social networking app might draft a new post, ignoring `title`,
+        using `text` as the body of the message and adding `url` as a link. If
+        `text` is missing, it might use `url` in the body as well. If `url` is
+        missing, it might scan `text` looking for a URL and add that as a link.
         </li>
-        <li>A text messaging app might draft a new message, ignoring
-        <code>title</code> and using <code>text</code> and <code>url</code>
-        concatenated together. It might truncate the text or replace
-        <code>url</code> with a short link to fit into the message size.
+        <li>A text messaging app might draft a new message, ignoring `title`
+        and using `text` and `url` concatenated together. It might truncate the
+        text or replace `url` with a short link to fit into the message size.
         </li>
       </ul>
     </section>
-    <section data-link-for="WebAppManifest">
+    <section>
       <h2>
         Extension to the Web App Manifest
       </h2>
       <p>
-        The following IDL extends the <dfn data-cite=
-        "!appmanifest#dom-webappmanifest">WebAppManifest</dfn> dictionary.
+        As a [=manifest=] is <abbr title=
+        "JavaScript Object Notation">JSON</abbr>, this specification relies on
+        the types defined in the [[JSON]] specification: namely <dfn data-cite=
+        "JSON#section-4">object</dfn> and <dfn data-cite=
+        "JSON#section-7">string</dfn>.
       </p>
-      <pre class="idl">
-      dictionary ShareTargetParams {
-        USVString title;
-        USVString text;
-        USVString url;
-      };
-
-      dictionary ShareTarget {
-        required USVString action;
-        DOMString method = "GET";
-        DOMString enctype = "application/x-www-form-urlencoded";
-        required ShareTargetParams params;
-      };
-
-      partial dictionary WebAppManifest {
-        ShareTarget share_target;
-      };
-      </pre>
       <p>
-        The following steps are added to the <a data-cite=
-        "!appmanifest#dfn-extension-point">extension point</a> in the steps for
-        <a data-cite="appmanifest#dfn-processing-a-manifest">processing a
-        manifest</a>:
+        The following steps are added to the [=processing extension-point of
+        web manifest=]:
       </p>
-      <ol>
-        <li>Set <var>manifest</var>["<a>share_target</a>"] to the result of
-        running <a>post-processing the <code>share_target</code> member</a>
-        given <var>manifest</var>["<a>share_target</a>"],
-        <var>manifest</var>["<a data-cite=
-        "!appmanifest#dom-webappmanifest-scope"><code>scope</code></a>"], and
-        <var>manifest URL</var>.
+      <ol class="algorithm">
+        <li>Let |json| and |manifest| be the corresponding variables from
+        [=processing a manifest=].
+        </li>
+        <li>[=Process the `share_target` member=] with |json| and |manifest|.
         </li>
       </ol>
-      <section data-dfn-for="WebAppManifest">
+      <section>
         <h3>
-          <code>share_target</code> member
+          `share_target` member
         </h3>
         <p>
-          The <dfn>share_target</dfn> member of the manifest is a
-          <a>ShareTarget</a> dictionary that declares this application to be a
-          <a>web share target</a>, and describes how the application receives
-          share data.
+          The <code><dfn data-dfn-for="manifest">share_target</dfn></code>
+          member of the manifest is an [=object=]. When present, it declares
+          this application to be a <a>web share target</a>, and describes how
+          the application receives share data.
         </p>
         <p>
-          A <dfn data-lt="web share targets">web share target</dfn> is a web
-          site with a valid manifest containing a <a>share_target</a> member. A
-          web share target is a type of <a>share target</a>.
+          A <dfn data-export="">web share target</dfn> is a web site with a
+          valid [=manifest=] containing a [=manifest/share_target=] member.
         </p>
         <p>
-          The steps for <dfn>post-processing the <code>share_target</code>
-          member</dfn> is given by the following algorithm. The algorithm takes
-          a <a>ShareTarget</a> <var>share target</var>, a <a>URL</a> <var>scope
-          URL</var>, and a <a>URL</a> <var>manifest URL</var>. This algorithm
-          returns a <a>ShareTarget</a> or <code>undefined</code>.
+          A web share target is a type of <a>share target</a> (other types can
+          be available, e.g., some system applications).
         </p>
-        <ol>
-          <li>If <var>share target</var> is <code>undefined</code>, then return
-          <code>undefined</code>.
+        <p>
+          To <dfn>process the `share_target` member</dfn> given [=object=]
+          |json:JSON| and [=ordered map=] |manifest:ordered map|:
+        </p>
+        <ol class="algorithm">
+          <li>If |json|["share_target"] is not an [=object=], return.
           </li>
-          <li>If <var>share target</var>["<a data-link-for=
-          "ShareTarget">method</a>"] is neither an <a data-cite=
-          "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
-          the strings <code>"GET"</code> nor <code>"POST"</code>,
-            <a data-cite="appmanifest#dfn-issue-a-developer-warning">issue a
-            developer warning</a> that the method is not supported, and return
-            <code>undefined</code>.
+          <li>Let |target:object| be |json|["share_target"].
           </li>
-          <li>If <var>share target</var>["<a data-link-for=
-          "ShareTarget">method</a>"] is an <a data-cite=
-          "!INFRA#ascii-case-insensitive">ASCII case-insensitive</a> match for
-          the string <code>"POST"</code> and <var>share
-          target</var>["<a data-link-for="ShareTarget">enctype</a>"] is neither
-          an <a data-cite="INFRA#ascii-case-insensitive">ASCII
-          case-insensitive</a> match for the strings
-          <code>"application/x-www-form-urlencoded"</code> nor
-          <code>"multipart/form-data"</code>, <a data-cite=
-          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-          warning</a> that the enctype is not supported, and return
-          <code>undefined</code>.
+          <li>If |target|["action"] or |target|["params"] is missing, return.
           </li>
-          <li>Let <var>action</var> be the result of <a data-cite=
-          "!URL#concept-url-parser">parsing</a> the <a>URL</a> <var>share
-          target</var>["<a data-link-for="ShareTarget">action</a>"], relative
-          to the <var>manifest URL</var> and with no encoding override. If the
-          result is failure, <a data-cite=
-          "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-          warning</a> and return <code>undefined</code>.
+          <li>Process [=ShareTarget/action=]:
+            <ol>
+              <li>Let |action:URL| be the result of [=URL parser|parsing=]
+              |share target|["action"] relative to the |manifest URL| and with
+              no encoding override. If the result is failure, return.
+              </li>
+              <li>If |action| is not [=URL/within scope=] of the
+              |manifest|["scope"], return.
+              </li>
+              <li>If the [=url/origin=] of |action| is not a [=potentially
+              trustworthy origin=], return.
+              </li>
+            </ol>
           </li>
-          <li>If <var>action</var> is not <a data-cite=
-          "!appmanifest#dfn-within-scope">within scope</a> of <var>scope
-          URL</var>, <a data-cite="appmanifest#dfn-issue-a-developer-warning">
-            issue a developer warning</a> that <a data-link-for=
-            "ShareTarget">action</a> is outside of the <a data-cite=
-            "!appmanifest#dfn-navigation-scope">navigation scope</a> , and
-            return <code>undefined</code>.
+          <li>Let |method:string| be "GET".
           </li>
-          <li>If the <a data-cite="URL#concept-url-origin">origin</a> of <var>
-            action</var> is not <a data-cite=
-            "!SECURE-CONTEXTS/#is-origin-trustworthy">potentially
-            trustworthy</a>, <a data-cite=
-            "!appmanifest#dfn-issue-a-developer-warning">issue a developer
-            warning</a> and return <code>undefined</code>.
+          <li>If |target|["method"] is present, process [=ShareTarget/method=]:
+            <ol>
+              <li>If |target|["method"] is neither an [=ASCII
+              case-insensitive=] match for the strings `"GET"` nor `"POST"`,
+              return.
+              </li>
+              <li>Set |method| to [=ASCII uppercase=] |target|["method"].
+              </li>
+            </ol>
           </li>
-          <li>Set <var>share target</var>["<a data-link-for=
-          "ShareTarget">action</a>"] to <var>action</var>.
+          <li>Let |enctype:string| be "application/x-www-form-urlencoded".
           </li>
-          <li>Return <var>share target</var>.
+          <li>If |method| is `"POST"`:
+            <ol>
+              <li>If |target|["enctype"] is neither an [=ASCII
+              case-insensitive=] match for the strings
+              `"application/x-www-form-urlencoded"` nor
+              `"multipart/form-data"`, return.
+              </li>
+              <li>Set |enctype| to [=ASCII lowercase=] |target|["enctype"].
+              </li>
+            </ol>
+          </li>
+          <li>Let |params:ordered map| be a new [=ordered map=].
+          </li>
+          <li>Process [=ShareTarget/params=]:
+            <ol>
+              <li>[=List/For each=] |member:string| of « "title", "text", "url"
+              »:
+                <ol>
+                  <li>If |target|["param"] doesn't have a property |member|,
+                  continue.
+                  </li>
+                  <li>If |target|["param"][member] is not a [=string=], return.
+                  </li>
+                  <li>Set |params|[member] to |target|["param"][member].
+                  </li>
+                </ol>
+              </li>
+            </ol>
+          </li>
+          <li>Set |manifest|["share_target"] to [=ordered map=] «[<br>
+            "action" → [=URL serializer|serialize=] |action|,<br>
+            "enctype" → |enctype|,<br>
+            "method" → |method|,<br>
+            "params" → |params|,<br>
+            ]».
           </li>
         </ol>
       </section>
-      <section data-dfn-for="ShareTarget" data-link-for="ShareTarget">
+      <section>
         <h3>
-          <code>ShareTarget</code> and its members
+          `ShareTarget` and its members
         </h3>
         <p>
-          The <dfn>ShareTarget</dfn> dictionary contains the following members.
+          The <dfn>ShareTarget</dfn> [=object=] can have the following members:
         </p>
-        <p>
-          The <dfn>action</dfn> member specifies the <a>URL</a> for the
-          <a data-link-for="web share targets">web share target</a>.
-        </p>
-        <p>
-          The <dfn>method</dfn> member specifies the HTTP request <a href=
-          "https://tools.ietf.org/html/rfc7231#section-4">method</a> for the
-          <a data-link-for="web share targets">web share target</a>.
-        </p>
-        <p class="note">
-          A use case for <code>GET</code> requests is when the share target
-          drafts a message for subsequent user approval. If the share target
-          performs a side-effect without any user interaction, `POST` requests
-          should be used.
-        </p>
-        <p>
-          The <dfn>enctype</dfn> member specifies how the share data is encoded
-          in the body of a `POST` request. It is ignored when <a>method</a> is
-          <code>"GET"</code>.
-        </p>
-        <p>
-          The <dfn>params</dfn> member contains a <a>ShareTargetParams</a>
-          dictionary.
-        </p>
+        <dl>
+          <dt>
+            <code><dfn data-dfn-for="ShareTarget">action</dfn></code> member
+          </dt>
+          <dd>
+            A [=string=] that specifies the [=URL=] for the [=web share
+            target=].
+          </dd>
+          <dt>
+            <code><dfn data-dfn-for="ShareTarget">method</dfn></code> member
+          </dt>
+          <dd>
+            A [=string=] that specifies the HTTP [=request=] [=request/method=]
+            for the [=web share target=].
+            <aside class="note">
+              A use case for `GET` requests is when the share target drafts a
+              message for subsequent user approval. Otherwise, use `POST` if
+              the share target performs a side-effect without any user
+              interaction.
+            </aside>
+          </dd>
+          <dt>
+            <code><dfn data-dfn-for="ShareTarget">enctype</dfn></code> member
+          </dt>
+          <dd>
+            A [=string=] that specifies how the share data is encoded in the
+            body of a `POST` request. It is ignored when [=method=] is `"GET"`.
+          </dd>
+          <dt>
+            <code><dfn data-dfn-for="ShareTarget">params</dfn></code> member
+          </dt>
+          <dd>
+            A <a>ShareTargetParams</a> [=object=].
+          </dd>
+        </dl>
       </section>
-      <section data-dfn-for="ShareTargetParams" data-link-for=
-      "ShareTargetParams">
+      <section>
         <h3>
-          <code>ShareTargetParams</code> and its members
+          `ShareTargetParams` and its members
         </h3>
         <p>
-          The <dfn>ShareTargetParams</dfn> dictionary contains the following
-          members.
+          The <dfn>ShareTargetParams</dfn> [=object=] can have the following
+          members:
         </p>
-        <p>
-          The <dfn>title</dfn> member specifies the name of the query parameter
-          used for the title of the document being shared.
-        </p>
-        <p>
-          The <dfn>text</dfn> member specifies the name of the query parameter
-          used for the arbitrary text that forms the body of the message being
-          shared.
-        </p>
-        <p>
-          The <dfn>url</dfn> member specifies the name of the query parameter
-          used for the URL string referring to a resource being shared.
-        </p>
+        <dl>
+          <dt>
+            <code><dfn data-dfn-for="ShareTargetParams">title</dfn></code>
+            member
+          </dt>
+          <dd>
+            A [=string=] that specifies the name of the query parameter used
+            for the title of the document being shared.
+          </dd>
+          <dt>
+            <code><dfn data-dfn-for="ShareTargetParams">text</dfn></code>
+            member
+          </dt>
+          <dd>
+            A [=string=] that specifies the name of the query parameter used
+            for the arbitrary text that forms the body of the message being
+            shared.
+          </dd>
+          <dt>
+            <code><dfn data-dfn-for="ShareTargetParams">url</dfn></code> member
+          </dt>
+          <dd>
+            A [=string=] that specifies the name of the query parameter used
+            for the URL string referring to a resource being shared.
+          </dd>
+        </dl>
       </section>
     </section>
     <section>
@@ -393,7 +409,7 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         targets at all; they are only REQUIRED to provide some mechanism to
         convey shared data to a web share target of the end user's choosing.
         User agents MAY consider a web share target "registered" even if it is
-        not <a data-cite="appmanifest#dfn-install">installed</a>.
+        not [=installed web application|installed=]
       </p>
       <p>
         The user agent MAY automatically register all <a>web share targets</a>
@@ -406,8 +422,8 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
           Examples of registration strategies that user agents can employ are:
         </p>
         <ul>
-          <li>Only register a web share target once it is <a data-cite=
-          "appmanifest#dfn-install">installed</a>.
+          <li>Only register a web share target once it is [=installed web
+          application|installed=].
           </li>
           <li>Only register a web share target once the end user has used the
           site for some period of time.
@@ -452,8 +468,7 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         <ul>
           <li>From the built-in UI of the user agent (<i>e.g.</i>, the end user
           picks "Share" from a browser's menu, to share the current page title
-          as "<code>title</code>" and the current page URL as
-          "<code>url</code>").
+          as "`title`" and the current page URL as "`url`").
           </li>
           <li>A share action triggered from a native application (via a
           proprietary share system), followed by the end user choosing a web
@@ -463,19 +478,18 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
       </div>
       <section>
         <h3>
-          Obtaining a <code>ShareData</code>
+          Obtaining a `ShareData`
         </h3>
         <p>
           When a <a>web share target</a> is <a>invoked</a>, the data MAY be in
           an unspecified format. The user agent MUST first convert the data
-          into a {{ShareData}} dictionary, if it is not already, by mapping to
-          the fields of <code>ShareData</code> from equivalent concepts in the
-          host system. If the source was a call to {{Navigator/share()}}, the
-          user agent SHOULD use the {{ShareData}} argument unmodified (but this
-          is not always possible, as it might have to round-trip through some
-          other format in a lossy manner). The user agent MAY employ heuristics
-          to map the data onto the <code>ShareData</code> fields as well as
-          possible.
+          into a {{ShareData}} object, if it is not already, by mapping to the
+          members of `ShareData` from equivalent concepts in the host system.
+          If the source was a call to {{Navigator/share()}}, the user agent
+          SHOULD use the {{ShareData}} argument unmodified (but this is not
+          always possible, as it might have to round-trip through some other
+          format in a lossy manner). The user agent MAY employ heuristics to
+          map the data onto the `ShareData` fields as well as possible.
         </p>
         <p class="note">
           For example, the host share system may not have a dedicated URL
@@ -486,124 +500,103 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
           {{ShareData}}'s {{ShareData/url}} member.
         </p>
       </section>
-      <section data-link-for="WebAppManifest">
+      <section>
         <h3>
           Launching the web share target
         </h3>
         <p>
-          When <a>web share target</a> having <a>WebAppManifest</a>
-          <var>manifest</var> is <a>invoked</a> with {{ShareData}}
-          <var>data</var>, run the following steps:
+          When <a>web share target</a> having [=ordered map=] |manifest| is
+          <a>invoked</a> with {{ShareData}} |data|, run the following steps:
         </p>
-        <ol>
-          <li>Let <var>url</var> be a copy of
-          <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
-          "ShareTarget">action</a>"].
+        <ol class="algorithm">
+          <li>Let |url:URL| be the result of [=URL parser|parsing=]
+          |manifest|["share_target"]["action"].
           </li>
-          <li>Let <var>entry list</var> be a new empty list of name-value
-          tuples.
+          <li>Let |entries:list| be a new empty [=list=].
           </li>
-          <li>For each <var>member</var> in the sequence «
-          <code>"title"</code>, <code>"text"</code>, <code>"url"</code> »,
+          <li>[=List/For each=] |member:string| of « "title", "text", "url" »:
             <ol>
-              <li>Let <var>name</var> be the value of
-              <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
-              "ShareTarget">params</a>"][<var>member</var>].
+              <li>Let |name:string| be the value of
+              |manifest|["share_target"]["params"][|member|].
               </li>
-              <li>If <var>name</var> is <code>undefined</code> or an empty
-              string, then continue.
+              <li>If |name| is `undefined` or the empty string, continue.
               </li>
-              <li>Let <var>value</var> be the value of
-              <var>data</var>[<var>member</var>].
+              <li>If |data|[|member|] is `undefined`, continue.
               </li>
-              <li>If <var>value</var> is <code>undefined</code>, then continue.
+              <li>Let |value:string| be <a data-cite=
+              "ecma262#sec-tostring">ToString</a>(|data|[|member|]).
               </li>
-              <li>
-                <a data-cite="INFRA#list-append">Append</a> to <var>entry
-                list</var> a tuple with <var>name</var> and <var>value</var>.
+              <li>[=List/Append=] [=tuple=] (|name|, |value|) to |entry list|.
               </li>
             </ol>
           </li>
-          <li>Let <var>header list</var> be a new empty <a data-cite=
-          "!FETCH/#concept-header-list">header list</a>.
+          <li>Let |header list| be a newly created [=Headers/header list=].
           </li>
-          <li>Let <var>method</var> be
-          <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
-          "ShareTarget">method</a>"].
+          <li>Let |method:string| be |manifest|["share_target"]["method"].
           </li>
-          <li>Let <var>enctype</var> be
-          <var>manifest</var>["<a>share_target</a>"]["<a data-link-for=
-          "ShareTarget">enctype</a>"].
+          <li>Let |enctype:string| be |manifest|["share_target"]["enctype"].
           </li>
-          <li>If <var>method</var> is <code>"GET"</code>:
+          <li>If |method| is `"GET"`:
             <ol>
-              <li>Let <var>query</var> be the result of running the
-              [=urlencoded serializer=] with <var>entry list</var> and no
-              encoding override.
+              <li>Let |query| be the result of running the [=urlencoded
+              serializer=] with |entries| and no encoding override.
               </li>
-              <li>Set <var>url</var>'s <a data-cite=
-              "!URL#concept-url-query">query</a> component to <var>query</var>.
+              <li>Set |url|'s [=URL/query=] component to |query|.
               </li>
-              <li>Let <var>body</var> be null.
+              <li>Let |body| be null.
               </li>
             </ol>
           </li>
-          <li>Otherwise, if <var>method</var> is <code>"POST"</code> and <var>
-            enctype</var> is <code>"application/x-www-form-urlencoded"</code>:
+          <li>Otherwise, if |method| is `"POST"` and |enctype| is
+          `"application/x-www-form-urlencoded"`:
             <ol>
-              <li>Let <var>body</var> be the result of running the [=urlencoded
-              serializer=] with <var>entry list</var> and no encoding override.
+              <li>Let |body:string| be the result of running the [=urlencoded
+              serializer=] with |entries| and no encoding override.
               </li>
-              <li>Set <var>body</var> to the result of [=UTF-8 encode=]
-              <var>body</var>.
+              <li>Set |body| to the result of [=UTF-8 encode=] |body|.
               </li>
               <li>[=header list/Append=]
-              <code>"Content-Type"</code>/<code>"application/x-www-form-urlencoded"</code>
-              to <var>header list</var>.
+              `"Content-Type"`/`"application/x-www-form-urlencoded"` to |header
+              list|.
               </li>
             </ol>
           </li>
-          <li>Otherwise, if <var>method</var> is <code>"POST"</code> and <var>
-            enctype</var> is <code>"multipart/form-data"</code>:
+          <li>Otherwise, if |method| is `"POST"` and | enctype| is
+          `"multipart/form-data"`:
             <ol>
-              <li>Let <var>body</var> be the result of running the
-              <a>multipart/form-data encoding algorithm</a> with <var>entry
-              list</var> and the [=UTF-8=] encoding.
+              <li>Let |body| be the result of running the
+              <a>multipart/form-data encoding algorithm</a> with |entries| and
+              the [=UTF-8=] encoding.
               </li>
-              <li>Let <var>MIME type</var> be the concatenation of the string
-              <code>"multipart/form-data;"</code>, a U+0020 SPACE character,
-              the string <code>"boundary="</code>, and the <a data-cite=
-              "!HTML#multipart/form-data-boundary-string"><code>multipart/form-data</code>
-              boundary string</a> generated by the <a data-cite=
-              "!HTML#multipart/form-data-encoding-algorithm"><code>multipart/form-data</code>
-              encoding algorithm</a>.
+              <li>Let |MIME type:string| be the concatenation of the string
+              `"multipart/form-data;"`, a U+0020 SPACE character, the string
+              `"boundary="`, and the [=`multipart\/form-data` boundary string=]
+              generated by the [=`multipart\/form-data` encoding algorithm=].
               </li>
-              <li>[=header list/Append=] <code>"Content-Type"</code>/<var>MIME
-              type</var> to <var>header list</var>.
+              <li>[=header list/Append=] `"Content-Type"`/|MIME type| to
+              |header list|.
               </li>
             </ol>
           </li>
-          <li>Let <var>browsing context</var> be the result of creating a
-          <a data-cite="HTML#creating-a-new-browsing-context">new</a>
-          <a data-cite="HTML#top-level-browsing-context">top-level browsing
-          context</a>.
+          <li>Let |browsing context| be the result of creating a
+            <a data-cite="HTML#creating-a-new-browsing-context">new</a>
+            [=top-level browsing context=].
           </li>
-          <li>
-            <a data-cite="HTML#navigate">Navigate</a> <var>browsing
-            context</var> to a new <a data-cite=
-            "!FETCH/#concept-request">Request</a> whose method is
-            <var>method</var>, url is <var>url</var>, header list is
-            <var>header list</var>, and body is <var>body</var>.
+          <li>Let |request:Request| be a new [=Request=] whose method is
+          |method|, url is |url|, header list is |header list|, and body is
+          |body|.
+          </li>
+          <li>[=Navigate=] |browsing context| to |request =|
           </li>
         </ol>
         <p class="note">
-          This algorithm assumes that <var>manifest</var> has had the
-          <a>post-processing the <code>share_target</code> member</a> algorithm
-          run on it and still has a <a>share_target</a> afterwards.
+          This algorithm assumes that |manifest| has had the [=process the
+          `share_target` member=] algorithm run on it and still has a
+          [=manifest/share_target=] afterwards.
         </p>
       </section>
     </section>
-    <section class="informative" data-cite="secure-contexts">
+    <section class="informative">
       <h2>
         Accessibility
       </h2>
@@ -611,7 +604,7 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         This specification has no known accessibility considerations.
       </p>
     </section>
-    <section class="informative" data-cite="secure-contexts">
+    <section class="informative">
       <h2>
         Security and privacy considerations
       </h2>
@@ -656,5 +649,6 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         drafts of this spec.
       </p>
     </section>
+    <section id="index"></section>
   </body>
 </html>
