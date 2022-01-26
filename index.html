@@ -634,6 +634,14 @@ https://example.org/includinator/share.html?name=My+News&amp;link=http%3A%2F%2Fe
         being transmitted to a party that does not control the origin in
         question, or in clear text over the network.
         </li>
+        <li>A source site using Web Share API, and a receipient site using Web
+        Share Target, could cooperate to join user ids. The source site could
+        use `navigator.share(text: my_id_for_this_user)`, and the (user-chosen)
+        recipient could use that information to join its own user ID with the
+        source origin's user ID. Both sides of the transfer would need to write
+        code to accomplish the transfer, and the user would need to pick the
+        recipient.
+        </li>
       </ul>
     </section>
     <section id="conformance"></section>
