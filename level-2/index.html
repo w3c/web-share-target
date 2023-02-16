@@ -450,6 +450,43 @@ partial dictionary WebAppManifest {
                   </li>
                 </ul>
               </li>
+              <li>If the implementation does not support <a>filtering on MIME
+              types</a>:
+                <ol>
+                  <li>For each <var>criterion</var> in
+                  <var>bucket</var>["<a data-link-for=
+                  "ShareTargetFiles">accept</a>"]:
+                    <ol>
+                      <li>If <var>criterion</var> is
+                      <var>type</var><code>/</code><var>subtype</var> or <var>
+                        type</var><code>/*</code>, and the implementation
+                        associates <var>criterion</var> with one or more file
+                        extensions, append those file extensions to
+                        <var>bucket</var>["<a data-link-for=
+                        "ShareTargetFiles">accept</a>"].
+                      </li>
+                    </ol>
+                  </li>
+                </ol>
+              </li>
+              <li>If the implementation does not support <a>filtering on file
+              extensions</a>:
+                <ol>
+                  <li>For each <var>criterion</var> in
+                  <var>bucket</var>["<a data-link-for=
+                  "ShareTargetFiles">accept</a>"]:
+                    <ol>
+                      <li>If <var>criterion</var> is a string whose first
+                      character is a U+002E FULL STOP character (.), and the
+                      implementation associates the file extension
+                      <var>criterion</var> with a MIME type, append that MIME
+                      type to <var>bucket</var>["<a data-link-for=
+                      "ShareTargetFiles">accept</a>"].
+                      </li>
+                    </ol>
+                  </li>
+                </ol>
+              </li>
               <li>If <var>bucket</var>["<a data-link-for=
               "ShareTargetFiles">accept</a>"] is empty, <a data-cite=
               "!appmanifest#dfn-issue-a-developer-warning">issue a developer
