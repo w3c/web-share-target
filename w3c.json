@@ -1,6 +1,6 @@
  {
-    "group":      ["80485"]
+    "group":      ["wg/webapps"]
 ,   "contacts":   ["marcoscaceres"]
 ,   "shortName":  "web-share-target",
-    "repo-type":  "cg-report"
+    "repo-type":  "rec-track"
 }
